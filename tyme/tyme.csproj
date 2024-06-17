@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>7.3</LangVersion>
+        <AssemblyName>tyme</AssemblyName>
+        <RootNamespace>tyme</RootNamespace>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <PackageId>tyme4net</PackageId>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>6tail</Authors>
+        <Description>Tyme是一个非常强大的日历工具库，可以看作 Lunar 的升级版，拥有更优的设计和扩展性，支持公历和农历、星座、干支、生肖、节气、法定假日等。</Description>
+        <Copyright>Copyright (c) 2024 6tail</Copyright>
+        <RepositoryUrl>https://github.com/6tail/tyme4net.git</RepositoryUrl>
+        <PackageVersion>1.0.0</PackageVersion>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <PackageReleaseNotes>移植自tyme4j。</PackageReleaseNotes>
+        <PackageProjectUrl>https://6tail.cn/tyme.html</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <Title>Tyme</Title>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageTags>公历;农历;节气;星座;干支;法定假日;儒略日</PackageTags>
+        <PackageIcon>tyme.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="tyme.png">
+            <Pack>True</Pack>
+            <PackagePath/>
+        </None>
+        <None Include="README.md">
+            <Pack>True</Pack>
+            <PackagePath/>
+        </None>
+        <None Include="LICENSE">
+            <Pack>True</Pack>
+            <PackagePath/>
+        </None>
+    </ItemGroup>
+
+</Project>

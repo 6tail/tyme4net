@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tyme4net", "tyme\tyme.csproj", "{5A1354E9-8244-4FB8-A651-582A46F06928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{6F18C470-9F8D-486A-B461-4CBFE0119736}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A1354E9-8244-4FB8-A651-582A46F06928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A1354E9-8244-4FB8-A651-582A46F06928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A1354E9-8244-4FB8-A651-582A46F06928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A1354E9-8244-4FB8-A651-582A46F06928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F18C470-9F8D-486A-B461-4CBFE0119736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F18C470-9F8D-486A-B461-4CBFE0119736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F18C470-9F8D-486A-B461-4CBFE0119736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F18C470-9F8D-486A-B461-4CBFE0119736}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
