@@ -148,8 +148,12 @@ namespace tyme.solar
                 return Day.IsBefore(target.Day);
             }
 
-            return Hour != target.Hour ? Hour < target.Hour :
-                Minute == target.Minute ? Second < target.Second : Minute < target.Minute;
+            if (Hour != target.Hour)
+            {
+                return Hour < target.Hour;
+            }
+
+            return Minute != target.Minute ? Minute < target.Minute : Second < target.Second;
         }
 
         /// <summary>
@@ -164,8 +168,12 @@ namespace tyme.solar
                 return Day.IsAfter(target.Day);
             }
 
-            return Hour != target.Hour ? Hour > target.Hour :
-                Minute == target.Minute ? Second > target.Second : Minute > target.Minute;
+            if (Hour != target.Hour)
+            {
+                return Hour > target.Hour;
+            }
+
+            return Minute != target.Minute ? Minute > target.Minute : Second > target.Second;
         }
 
         /// <summary>
@@ -175,7 +183,15 @@ namespace tyme.solar
         {
             get
             {
-                var term = SolarTerm.FromIndex(Day.Month.Year.Year + 1, 0);
+                var y = Day.Month.Year.Year;
+                var i = Day.Month.Month * 2;
+                if (i == 24)
+                {
+                    y += 1;
+                    i = 0;
+                }
+
+                var term = SolarTerm.FromIndex(y, i);
                 while (IsBefore(term.JulianDay.GetSolarTime()))
                 {
                     term = term.Next(-1);

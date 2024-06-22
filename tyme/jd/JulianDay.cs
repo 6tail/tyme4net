@@ -214,5 +214,15 @@ namespace tyme.jd
         /// 星期
         /// </summary>
         public Week Week => Week.FromIndex((int)(Day + 0.5) + 7000001);
+
+        /// <summary>
+        /// 儒略日相减
+        /// </summary>
+        /// <param name="target">儒略日</param>
+        /// <returns>差</returns>
+        public double Subtract(JulianDay target)
+        {
+            return Day - target.Day;
+        }
     }
 }

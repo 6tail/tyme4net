@@ -1,5 +1,6 @@
 ﻿using System;
 using tyme.culture.star.nine;
+using tyme.culture.star.twelve;
 using tyme.eightchar;
 using tyme.sixtycycle;
 using tyme.solar;
@@ -217,7 +218,7 @@ namespace tyme.lunar
             get
             {
                 var d = Day.SixtyCycle;
-                return Hour > 22 ? d.Next(1) : d;
+                return Hour < 23 ? d : d.Next(1);
             }
         }
 
@@ -234,6 +235,12 @@ namespace tyme.lunar
                                            EarthBranch.FromIndex(earthBranchIndex).GetName());
             }
         }
+
+        /// <summary>
+        /// 黄道黑道十二神
+        /// </summary>
+        public TwelveStar TwelveStar =>
+            TwelveStar.FromIndex(SixtyCycle.EarthBranch.Index + (8 - DaySixtyCycle.EarthBranch.Index % 6) * 2);
 
         /// <summary>
         /// 九星

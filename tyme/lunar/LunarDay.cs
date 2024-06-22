@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using tyme.culture;
 using tyme.culture.fetus;
 using tyme.culture.star.nine;
+using tyme.culture.star.six;
 using tyme.culture.star.twelve;
 using tyme.culture.star.twentyeight;
 using tyme.festival;
@@ -96,8 +98,8 @@ namespace tyme.lunar
             }
 
             var d = Day + n;
-            var lm = Month;
-            var daysInMonth = lm.DayCount;
+            var m = Month;
+            var daysInMonth = m.DayCount;
             var forward = n > 0;
             var add = forward ? 1 : -1;
             while (forward ? (d > daysInMonth) : (d <= 0))
@@ -107,15 +109,15 @@ namespace tyme.lunar
                     d -= daysInMonth;
                 }
 
-                lm = lm.Next(add);
-                daysInMonth = lm.DayCount;
+                m = m.Next(add);
+                daysInMonth = m.DayCount;
                 if (!forward)
                 {
                     d += daysInMonth;
                 }
             }
 
-            return FromYmd(lm.Year.Year, lm.MonthWithLeap, d);
+            return FromYmd(m.Year.Year, m.MonthWithLeap, d);
         }
 
         /// <summary>
@@ -214,7 +216,8 @@ namespace tyme.lunar
                 var year = solarDay.Month.Year.Year;
                 var term = solarDay.Term;
                 var index = term.Index - 3;
-                if (index < 0 && term.JulianDay.GetSolarDay().IsAfter(SolarTerm.FromIndex(year, 3).JulianDay.GetSolarDay()))
+                if (index < 0 && term.JulianDay.GetSolarDay()
+                        .IsAfter(SolarTerm.FromIndex(year, 3).JulianDay.GetSolarDay()))
                 {
                     index += 24;
                 }
@@ -307,6 +310,11 @@ namespace tyme.lunar
         public Phase Phase => Phase.FromIndex(Day - 1);
 
         /// <summary>
+        /// 六曜
+        /// </summary>
+        public SixStar SixStar => SixStar.FromIndex((Month.Month + Day - 2) % 6);
+
+        /// <summary>
         /// 公历日
         /// </summary>
         /// <returns>公历日</returns>
@@ -326,6 +334,23 @@ namespace tyme.lunar
         /// 农历传统节日，如果当天不是农历传统节日，返回null
         /// </summary>
         public LunarFestival Festival => LunarFestival.FromYmd(Month.Year.Year, Month.MonthWithLeap, Day);
+
+        /// <summary>
+        /// 当天的时辰列表
+        /// </summary>
+        public List<LunarHour> Hours
+        {
+            get
+            {
+                var l = new List<LunarHour> { LunarHour.FromYmdHms(Month.Year.Year, Month.Month, Day, 0, 0, 0) };
+                for (var i = 0; i < 24; i += 2)
+                {
+                    l.Add(LunarHour.FromYmdHms(Month.Year.Year, Month.Month, Day, i + 1, 0, 0));
+                }
+
+                return l;
+            }
+        }
 
         /// <summary>
         /// 是否相等

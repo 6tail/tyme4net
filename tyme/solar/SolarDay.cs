@@ -3,6 +3,7 @@ using tyme.culture;
 using tyme.culture.dog;
 using tyme.culture.nine;
 using tyme.culture.phenology;
+using tyme.culture.plumrain;
 using tyme.festival;
 using tyme.holiday;
 using tyme.jd;
@@ -175,10 +176,12 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsBefore(SolarDay target)
         {
-            var aYear = Month.Year.Year;
-            var bYear = target.Month.Year.Year;
-            return aYear != bYear ? aYear < bYear :
-                Month.Month == target.Month.Month ? Day < target.Day : Month.Month < target.Month.Month;
+            if (Month.Year.Year != target.Month.Year.Year)
+            {
+                return Month.Year.Year < target.Month.Year.Year;
+            }
+
+            return Month.Month != target.Month.Month ? Month.Month < target.Month.Month : Day < target.Day;
         }
 
         /// <summary>
@@ -188,10 +191,12 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsAfter(SolarDay target)
         {
-            var aYear = Month.Year.Year;
-            var bYear = target.Month.Year.Year;
-            return aYear != bYear ? aYear > bYear :
-                Month.Month == target.Month.Month ? Day > target.Day : Month.Month > target.Month.Month;
+            if (Month.Year.Year != target.Month.Year.Year)
+            {
+                return Month.Year.Year > target.Month.Year.Year;
+            }
+
+            return Month.Month != target.Month.Month ? Month.Month > target.Month.Month : Day > target.Day;
         }
 
         /// <summary>
@@ -206,7 +211,15 @@ namespace tyme.solar
         {
             get
             {
-                var term = SolarTerm.FromIndex(Month.Year.Year + 1, 0);
+                var y = Month.Year.Year;
+                var i = Month.Month * 2;
+                if (i == 24)
+                {
+                    y += 1;
+                    i = 0;
+                }
+
+                var term = SolarTerm.FromIndex(y, i);
                 var d = term.JulianDay.GetSolarDay();
                 while (IsBefore(d))
                 {
@@ -333,6 +346,48 @@ namespace tyme.solar
         }
 
         /// <summary>
+        /// 梅雨天（芒种后的第1个丙日入梅，小暑后的第1个未日出梅）
+        /// </summary>
+        public PlumRainDay PlumRainDay
+        {
+            get
+            {
+                // 芒种
+                var grainInEar = SolarTerm.FromIndex(Month.Year.Year, 11);
+                var start = grainInEar.JulianDay.GetSolarDay();
+                var add = 2 - start.GetLunarDay().SixtyCycle.HeavenStem.Index;
+                if (add < 0)
+                {
+                    add += 10;
+                }
+
+                // 芒种后的第1个丙日
+                start = start.Next(add);
+
+                // 小暑
+                var slightHeat = grainInEar.Next(2);
+                var end = slightHeat.JulianDay.GetSolarDay();
+                add = 7 - end.GetLunarDay().SixtyCycle.EarthBranch.Index;
+                if (add < 0)
+                {
+                    add += 12;
+                }
+
+                // 小暑后的第1个未日
+                end = end.Next(add);
+
+                if (IsBefore(start) || IsAfter(end))
+                {
+                    return null;
+                }
+
+                return Equals(end)
+                    ? new PlumRainDay(PlumRain.FromIndex(1), 0)
+                    : new PlumRainDay(PlumRain.FromIndex(0), Subtract(start));
+            }
+        }
+
+        /// <summary>
         /// 位于当年的索引
         /// </summary>
         public int IndexInYear => Subtract(FromYmd(Month.Year.Year, 1, 1));
@@ -344,7 +399,7 @@ namespace tyme.solar
         /// <returns>天数</returns>
         public int Subtract(SolarDay target)
         {
-            return (int)(GetJulianDay().Day - target.GetJulianDay().Day);
+            return (int)GetJulianDay().Subtract(target.GetJulianDay());
         }
 
         /// <summary>
@@ -360,11 +415,11 @@ namespace tyme.solar
         /// </summary>
         public LunarDay GetLunarDay()
         {
-            var m = LunarMonth.FromYm(Month.Year.Year, Month.Month).Next(-3);
+            var m = LunarMonth.FromYm(Month.Year.Year, Month.Month);
             var days = Subtract(m.FirstJulianDay.GetSolarDay());
-            while (days >= m.DayCount)
+            while (days < 0)
             {
-                m = m.Next(1);
+                m = m.Next(-1);
                 days = Subtract(m.FirstJulianDay.GetSolarDay());
             }
 
