@@ -48,7 +48,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 农历年
         /// </summary>
-        public LunarYear LunarYear => ChildLimit.EndTime.GetLunarHour().Day.Month.Year.Next(Index);
+        public LunarYear LunarYear => ChildLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.Next(Index);
 
         /// <summary>
         /// 干支

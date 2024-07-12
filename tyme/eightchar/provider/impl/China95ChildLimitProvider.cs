@@ -24,16 +24,16 @@ namespace tyme.eightchar.provider.impl
             minutes %= 360;
             var day = minutes / 12;
 
-            var sm = SolarMonth.FromYm(birthTime.Day.Month.Year.Year + year, birthTime.Day.Month.Month).Next(month);
+            var sm = SolarMonth.FromYm(birthTime.Year + year, birthTime.Month).Next(month);
 
-            var d = birthTime.Day.Day + day;
+            var d = birthTime.Day + day;
             var dc = sm.DayCount;
             if (d > dc) {
                 d -= dc;
                 sm = sm.Next(1);
             }
 
-            return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year.Year, sm.Month, d, birthTime.Hour, birthTime.Minute, birthTime.Second), year, month, day, 0, 0);
+            return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year, sm.Month, d, birthTime.Hour, birthTime.Minute, birthTime.Second), year, month, day, 0, 0);
         }
     }
 }

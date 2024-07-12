@@ -90,11 +90,11 @@ namespace tyme.holiday
         {
             if (n == 0)
             {
-                return FromYmd(Day.Month.Year.Year, Day.Month.Month, Day.Day);
+                return FromYmd(Day.Year, Day.Month, Day.Day);
             }
 
-            var today = $"{Day.Month.Year.Year:D4}{Day.Month.Month:D2}{Day.Day:D2}";
-            var matches = Regex.Matches(Data, $@"{Day.Month.Year.Year:D4}\d{{4}}[0-1][0-8][\+|-]\d{{2}}");
+            var today = $"{Day.Year:D4}{Day.Month:D2}{Day.Day:D2}";
+            var matches = Regex.Matches(Data, $@"{Day.Year:D4}\d{{4}}[0-1][0-8][\+|-]\d{{2}}");
             var data = (from Match match in matches select match.Value).ToList();
             var index = -1;
             var size = data.Count;
@@ -113,7 +113,7 @@ namespace tyme.holiday
             }
 
             index += n;
-            var y = Day.Month.Year.Year;
+            var y = Day.Year;
             var forward = n > 0;
             var add = forward ? 1 : -1;
             while (forward ? (index >= size) : (index < 0))

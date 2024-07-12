@@ -53,7 +53,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 开始农历年
         /// </summary>
-        public LunarYear StartLunarYear => ChildLimit.EndTime.GetLunarHour().Day.Month.Year.Next(Index * 10);
+        public LunarYear StartLunarYear => ChildLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.Next(Index * 10);
 
         /// <summary>
         /// 结束农历年

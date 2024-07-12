@@ -143,7 +143,7 @@ namespace tyme.festival
         public new SolarFestival Next(int n)
         {
             if (n == 0) {
-                return FromYmd(Day.Month.Year.Year, Day.Month.Month, Day.Day);
+                return FromYmd(Day.Year, Day.Month, Day.Day);
             }
             var size = Names.Length;
             var t = Index + n;
@@ -151,7 +151,7 @@ namespace tyme.festival
             if (t < 0) {
                 t -= size;
             }
-            return FromIndex(Day.Month.Year.Year + t / size, offset);
+            return FromIndex(Day.Year + t / size, offset);
         }
     }
 }

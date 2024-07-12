@@ -157,7 +157,7 @@ namespace tyme.lunar
             {
                 var l = new List<LunarMonth>(13);
                 var m = LunarMonth.FromYm(Year, 1);
-                while (m.Year.Year == Year)
+                while (m.Year == Year)
                 {
                     l.Add(m);
                     m = m.Next(1);

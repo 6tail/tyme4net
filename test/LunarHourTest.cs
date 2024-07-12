@@ -70,16 +70,16 @@ public class LunarHourTest
         Assert.Equal("甲子", h.SixtyCycle.GetName());
 
         Assert.Equal("己未", h.DaySixtyCycle.GetName());
-        Assert.Equal("戊午", h.Day.SixtyCycle.GetName());
-        Assert.Equal("农历癸卯年十一月十四", h.Day.ToString());
+        Assert.Equal("戊午", h.LunarDay.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年十一月十四", h.LunarDay.ToString());
 
         Assert.Equal("甲子", h.MonthSixtyCycle.GetName());
-        Assert.Equal("农历癸卯年十一月", h.Day.Month.ToString());
-        Assert.Equal("乙丑", h.Day.Month.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年十一月", h.LunarDay.LunarMonth.ToString());
+        Assert.Equal("乙丑", h.LunarDay.LunarMonth.SixtyCycle.GetName());
 
         Assert.Equal("癸卯", h.YearSixtyCycle.GetName());
-        Assert.Equal("农历癸卯年", h.Day.Month.Year.ToString());
-        Assert.Equal("癸卯", h.Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年", h.LunarDay.LunarMonth.LunarYear.ToString());
+        Assert.Equal("癸卯", h.LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 
     [Fact]
@@ -89,15 +89,15 @@ public class LunarHourTest
         Assert.Equal("乙卯", h.SixtyCycle.GetName());
 
         Assert.Equal("戊午", h.DaySixtyCycle.GetName());
-        Assert.Equal("戊午", h.Day.SixtyCycle.GetName());
-        Assert.Equal("农历癸卯年十一月十四", h.Day.ToString());
+        Assert.Equal("戊午", h.LunarDay.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年十一月十四", h.LunarDay.ToString());
 
         Assert.Equal("甲子", h.MonthSixtyCycle.GetName());
-        Assert.Equal("农历癸卯年十一月", h.Day.Month.ToString());
-        Assert.Equal("乙丑", h.Day.Month.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年十一月", h.LunarDay.LunarMonth.ToString());
+        Assert.Equal("乙丑", h.LunarDay.LunarMonth.SixtyCycle.GetName());
 
         Assert.Equal("癸卯", h.YearSixtyCycle.GetName());
-        Assert.Equal("农历癸卯年", h.Day.Month.Year.ToString());
-        Assert.Equal("癸卯", h.Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("农历癸卯年", h.LunarDay.LunarMonth.LunarYear.ToString());
+        Assert.Equal("癸卯", h.LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 }

@@ -26,9 +26,19 @@ namespace tyme.solar
         };
 
         /// <summary>
+        /// 公历月
+        /// </summary>
+        public SolarMonth SolarMonth { get; }
+
+        /// <summary>
+        /// 年
+        /// </summary>
+        public int Year => SolarMonth.Year;
+
+        /// <summary>
         /// 月
         /// </summary>
-        public SolarMonth Month { get; }
+        public int Month => SolarMonth.Month;
 
         /// <summary>
         /// 日
@@ -62,7 +72,7 @@ namespace tyme.solar
                 throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
             }
 
-            Month = m;
+            SolarMonth = m;
             Day = day;
         }
 
@@ -91,7 +101,7 @@ namespace tyme.solar
             get
             {
                 var index = 11;
-                var y = Month.Month * 100 + Day;
+                var y = Month * 100 + Day;
                 if (y >= 321 && y <= 419)
                 {
                     index = 0;
@@ -156,7 +166,7 @@ namespace tyme.solar
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return Month + GetName();
+            return SolarMonth + GetName();
         }
 
         /// <summary>
@@ -176,12 +186,12 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsBefore(SolarDay target)
         {
-            if (Month.Year.Year != target.Month.Year.Year)
+            if (Year != target.Year)
             {
-                return Month.Year.Year < target.Month.Year.Year;
+                return Year < target.Year;
             }
 
-            return Month.Month != target.Month.Month ? Month.Month < target.Month.Month : Day < target.Day;
+            return Month != target.Month ? Month < target.Month : Day < target.Day;
         }
 
         /// <summary>
@@ -191,12 +201,12 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsAfter(SolarDay target)
         {
-            if (Month.Year.Year != target.Month.Year.Year)
+            if (Year != target.Year)
             {
-                return Month.Year.Year > target.Month.Year.Year;
+                return Year > target.Year;
             }
 
-            return Month.Month != target.Month.Month ? Month.Month > target.Month.Month : Day > target.Day;
+            return Month != target.Month ? Month > target.Month : Day > target.Day;
         }
 
         /// <summary>
@@ -211,8 +221,8 @@ namespace tyme.solar
         {
             get
             {
-                var y = Month.Year.Year;
-                var i = Month.Month * 2;
+                var y = Year;
+                var i = Month * 2;
                 if (i == 24)
                 {
                     y += 1;
@@ -238,9 +248,8 @@ namespace tyme.solar
         /// <returns>公历周</returns>
         public SolarWeek GetSolarWeek(int start)
         {
-            return SolarWeek.FromYm(Month.Year.Year, Month.Month,
-                (int)Math.Ceiling((Day + FromYmd(Month.Year.Year, Month.Month, 1).Week.Next(-start).Index) / 7D) - 1,
-                start);
+            return SolarWeek.FromYm(Year, Month,
+                (int)Math.Ceiling((Day + FromYmd(Year, Month, 1).Week.Next(-start).Index) / 7D) - 1, start);
         }
 
         /// <summary>
@@ -269,7 +278,7 @@ namespace tyme.solar
         {
             get
             {
-                var xiaZhi = SolarTerm.FromIndex(Month.Year.Year, 12);
+                var xiaZhi = SolarTerm.FromIndex(Year, 12);
                 // 第1个庚日
                 var start = xiaZhi.JulianDay.GetSolarDay();
                 var add = 6 - start.GetLunarDay().SixtyCycle.HeavenStem.Index;
@@ -327,7 +336,7 @@ namespace tyme.solar
         {
             get
             {
-                var year = Month.Year.Year;
+                var year = Year;
                 var start = SolarTerm.FromIndex(year + 1, 0).JulianDay.GetSolarDay();
                 if (IsBefore(start))
                 {
@@ -353,7 +362,7 @@ namespace tyme.solar
             get
             {
                 // 芒种
-                var grainInEar = SolarTerm.FromIndex(Month.Year.Year, 11);
+                var grainInEar = SolarTerm.FromIndex(Year, 11);
                 var start = grainInEar.JulianDay.GetSolarDay();
                 var add = 2 - start.GetLunarDay().SixtyCycle.HeavenStem.Index;
                 if (add < 0)
@@ -390,7 +399,7 @@ namespace tyme.solar
         /// <summary>
         /// 位于当年的索引
         /// </summary>
-        public int IndexInYear => Subtract(FromYmd(Month.Year.Year, 1, 1));
+        public int IndexInYear => Subtract(FromYmd(Year, 1, 1));
 
         /// <summary>
         /// 公历日期相减，获得相差天数
@@ -407,7 +416,7 @@ namespace tyme.solar
         /// </summary>
         public JulianDay GetJulianDay()
         {
-            return JulianDay.FromYmdHms(Month.Year.Year, Month.Month, Day, 0, 0, 0);
+            return JulianDay.FromYmdHms(Year, Month, Day, 0, 0, 0);
         }
 
         /// <summary>
@@ -415,7 +424,7 @@ namespace tyme.solar
         /// </summary>
         public LunarDay GetLunarDay()
         {
-            var m = LunarMonth.FromYm(Month.Year.Year, Month.Month);
+            var m = LunarMonth.FromYm(Year, Month);
             var days = Subtract(m.FirstJulianDay.GetSolarDay());
             while (days < 0)
             {
@@ -423,17 +432,17 @@ namespace tyme.solar
                 days = Subtract(m.FirstJulianDay.GetSolarDay());
             }
 
-            return LunarDay.FromYmd(m.Year.Year, m.MonthWithLeap, days + 1);
+            return LunarDay.FromYmd(m.Year, m.MonthWithLeap, days + 1);
         }
 
         /// <summary>
         /// 法定假日，如果当天不是法定假日，返回null
         /// </summary>
-        public LegalHoliday LegalHoliday => LegalHoliday.FromYmd(Month.Year.Year, Month.Month, Day);
+        public LegalHoliday LegalHoliday => LegalHoliday.FromYmd(Year, Month, Day);
 
         /// <summary>
         /// 公历现代节日，如果当天不是公历现代节日，返回null
         /// </summary>
-        public SolarFestival Festival => SolarFestival.FromYmd(Month.Year.Year, Month.Month, Day);
+        public SolarFestival Festival => SolarFestival.FromYmd(Year, Month, Day);
     }
 }

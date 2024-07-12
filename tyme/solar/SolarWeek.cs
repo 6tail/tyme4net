@@ -15,9 +15,19 @@ namespace tyme.solar
         public static string[] Names = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
 
         /// <summary>
+        /// 公历月
+        /// </summary>
+        public SolarMonth SolarMonth { get; }
+        
+        /// <summary>
+        /// 年
+        /// </summary>
+        public int Year => SolarMonth.Year;
+
+        /// <summary>
         /// 月
         /// </summary>
-        public SolarMonth Month { get; }
+        public int Month => SolarMonth.Month;
 
         /// <summary>
         /// 索引，0-5
@@ -55,7 +65,7 @@ namespace tyme.solar
                 throw new ArgumentException($"illegal solar week index: {index} in month: {m}");
             }
 
-            Month = m;
+            SolarMonth = m;
             Index = index;
             Start = Week.FromIndex(start);
         }
@@ -81,9 +91,10 @@ namespace tyme.solar
             get
             {
                 var i = 0;
+                var firstDay = FirstDay;
                 // 今年第1周
-                var w = FromYm(Month.Year.Year, 1, 0, Start.Index);
-                while (!w.Equals(this))
+                var w = FromYm(Year, 1, 0, Start.Index);
+                while (!w.FirstDay.Equals(firstDay))
                 {
                     w = w.Next(1);
                     i++;
@@ -108,7 +119,7 @@ namespace tyme.solar
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return Month + GetName();
+            return SolarMonth + GetName();
         }
 
         /// <summary>
@@ -120,11 +131,11 @@ namespace tyme.solar
         {
             if (n == 0)
             {
-                return FromYm(Month.Year.Year, Month.Month, Index, Start.Index);
+                return FromYm(Year, Month, Index, Start.Index);
             }
 
             var d = Index + n;
-            var m = Month;
+            var m = SolarMonth;
             var weeksInMonth = m.GetWeekCount(Start.Index);
             var forward = n > 0;
             var add = forward ? 1 : -1;
@@ -136,7 +147,7 @@ namespace tyme.solar
                 }
                 else
                 {
-                    if (!SolarDay.FromYmd(m.Year.Year, m.Month, 1).Week.Equals(Start))
+                    if (!SolarDay.FromYmd(m.Year, m.Month, 1).Week.Equals(Start))
                     {
                         d += add;
                     }
@@ -145,7 +156,7 @@ namespace tyme.solar
                 m = m.Next(add);
                 if (forward)
                 {
-                    if (!SolarDay.FromYmd(m.Year.Year, m.Month, 1).Week.Equals(Start))
+                    if (!SolarDay.FromYmd(m.Year, m.Month, 1).Week.Equals(Start))
                     {
                         d += add;
                     }
@@ -158,7 +169,7 @@ namespace tyme.solar
                 }
             }
 
-            return FromYm(m.Year.Year, m.Month, d, Start.Index);
+            return FromYm(m.Year, m.Month, d, Start.Index);
         }
 
         /// <summary>
@@ -168,7 +179,7 @@ namespace tyme.solar
         {
             get
             {
-                var firstDay = SolarDay.FromYmd(Month.Year.Year, Month.Month, 1);
+                var firstDay = SolarDay.FromYmd(Year, Month, 1);
                 return firstDay.Next(Index * 7 - IndexOf(firstDay.Week.Index - Start.Index, 7));
             }
         }

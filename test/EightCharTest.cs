@@ -254,9 +254,9 @@ public class EightCharTest
         // 童限结束(即开始起运)的公历时刻
         Assert.Equal("1989年5月4日 18:24:00", childLimit.EndTime.ToString());
         // 童限开始(即出生)的农历年干支
-        Assert.Equal("癸亥", childLimit.StartTime.GetLunarHour().Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("癸亥", childLimit.StartTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
         // 童限结束(即开始起运)的农历年干支
-        Assert.Equal("己巳", childLimit.EndTime.GetLunarHour().Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("己巳", childLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
 
         // 第1轮大运
         DecadeFortune decadeFortune = childLimit.StartDecadeFortune;
@@ -306,9 +306,9 @@ public class EightCharTest
         // 童限结束(即开始起运)的公历时刻
         Assert.Equal("2001年2月11日 18:58:00", childLimit.EndTime.ToString());
         // 童限开始(即出生)的农历年干支
-        Assert.Equal("辛未", childLimit.StartTime.GetLunarHour().Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("辛未", childLimit.StartTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
         // 童限结束(即开始起运)的农历年干支
-        Assert.Equal("辛巳", childLimit.EndTime.GetLunarHour().Day.Month.Year.SixtyCycle.GetName());
+        Assert.Equal("辛巳", childLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
 
         // 第1轮大运
         DecadeFortune decadeFortune = childLimit.StartDecadeFortune;

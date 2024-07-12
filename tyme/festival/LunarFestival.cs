@@ -125,7 +125,7 @@ namespace tyme.festival
                 var data = match.Value;
                 var solarTerm = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
                 var d = solarTerm.JulianDay.GetSolarDay().GetLunarDay();
-                if (d.Month.Year.Year == year && d.Month.Month == month && d.Day == day)
+                if (d.Year == year && d.Month == month && d.Day == day)
                 {
                     return new LunarFestival(FestivalType.Term, d, solarTerm, data);
                 }
@@ -139,7 +139,7 @@ namespace tyme.festival
 
             var lunarDay = LunarDay.FromYmd(year, month, day);
             var nextDay = lunarDay.Next(1);
-            return nextDay.Month.Month == 1 && nextDay.Day == 1
+            return nextDay.Month == 1 && nextDay.Day == 1
                 ? new LunarFestival(FestivalType.Eve, lunarDay, null, matcher.Value)
                 : null;
         }
@@ -171,7 +171,7 @@ namespace tyme.festival
         {
             if (n == 0)
             {
-                return FromYmd(Day.Month.Year.Year, Day.Month.MonthWithLeap, Day.Day);
+                return FromYmd(Day.Year, Day.Month, Day.Day);
             }
 
             var size = Names.Length;
@@ -182,7 +182,7 @@ namespace tyme.festival
                 t -= size;
             }
 
-            return FromIndex(Day.Month.Year.Year + t / size, offset);
+            return FromIndex(Day.Year + t / size, offset);
         }
     }
 }

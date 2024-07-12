@@ -129,11 +129,11 @@ namespace tyme.eightchar
                         term = term.Next(m);
                     }
                     var solarTime = term.JulianDay.GetSolarTime();
-                    if (solarTime.Day.Month.Year.Year >= startYear) {
+                    if (solarTime.Year >= startYear) {
                         var mi = 0;
                         var s = 0;
                         // 日干支和节令干支的偏移值
-                        var solarDay = solarTime.Day;
+                        var solarDay = solarTime.SolarDay;
                         var d = Day.Next(-solarDay.GetLunarDay().SixtyCycle.Index).Index;
                         if (d > 0) {
                             // 从节令推移天数
@@ -143,7 +143,7 @@ namespace tyme.eightchar
                             mi = solarTime.Minute;
                             s = solarTime.Second;
                         }
-                        var time = SolarTime.FromYmdHms(solarDay.Month.Year.Year, solarDay.Month.Month, solarDay.Day, h, mi, s);
+                        var time = SolarTime.FromYmdHms(solarDay.Year, solarDay.Month, solarDay.Day, h, mi, s);
                         // 验证一下
                         if (time.GetLunarHour().EightChar.Equals(this)) {
                             l.Add(time);

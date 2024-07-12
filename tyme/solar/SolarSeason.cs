@@ -14,9 +14,14 @@ namespace tyme.solar
         public static string[] Names = { "一季度", "二季度", "三季度", "四季度" };
 
         /// <summary>
+        /// 公历年
+        /// </summary>
+        public SolarYear SolarYear { get; }
+
+        /// <summary>
         /// 年
         /// </summary>
-        public SolarYear Year { get; }
+        public int Year => SolarYear.Year;
 
         /// <summary>
         /// 索引，0-3
@@ -35,7 +40,7 @@ namespace tyme.solar
             {
                 throw new ArgumentException($"illegal solar season index: {index}");
             }
-            Year = SolarYear.FromYear(year);
+            SolarYear = SolarYear.FromYear(year);
             Index = index;
         }
 
@@ -65,7 +70,7 @@ namespace tyme.solar
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return Year + GetName();
+            return SolarYear + GetName();
         }
 
         /// <summary>
@@ -77,11 +82,11 @@ namespace tyme.solar
         {
             if (n == 0)
             {
-                return FromIndex(Year.Year, Index);
+                return FromIndex(Year, Index);
             }
 
             var i = Index + n;
-            var y = Year.Year + i / 4;
+            var y = Year + i / 4;
             i %= 4;
             if (i < 0)
             {
@@ -102,7 +107,7 @@ namespace tyme.solar
                 var l = new List<SolarMonth>(3);
                 for (var i = 0; i < 3; i++)
                 {
-                    l.Add(SolarMonth.FromYm(Year.Year, Index * 3 + i + 1));
+                    l.Add(SolarMonth.FromYm(Year, Index * 3 + i + 1));
                 }
 
                 return l;

@@ -19,9 +19,14 @@ namespace tyme.solar
         public static readonly int[] DayCounts = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         /// <summary>
+        /// 公历年
+        /// </summary>
+        public SolarYear SolarYear { get; }
+
+        /// <summary>
         /// 年
         /// </summary>
-        public SolarYear Year { get; }
+        public int Year => SolarYear.Year;
 
         /// <summary>
         /// 月
@@ -40,7 +45,8 @@ namespace tyme.solar
             {
                 throw new ArgumentException($"illegal solar month: {month}");
             }
-            Year = SolarYear.FromYear(year);
+
+            SolarYear = SolarYear.FromYear(year);
             Month = month;
         }
 
@@ -62,14 +68,14 @@ namespace tyme.solar
         {
             get
             {
-                if (1582 == Year.Year && 10 == Month)
+                if (1582 == Year && 10 == Month)
                 {
                     return 21;
                 }
 
                 var d = DayCounts[IndexInYear];
                 //公历闰年2月多一天
-                if (2 == Month && Year.IsLeap)
+                if (2 == Month && SolarYear.IsLeap)
                 {
                     d++;
                 }
@@ -98,7 +104,7 @@ namespace tyme.solar
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return Year + GetName();
+            return SolarYear + GetName();
         }
 
         /// <summary>
@@ -110,11 +116,11 @@ namespace tyme.solar
         {
             if (n == 0)
             {
-                return FromYm(Year.Year, Month);
+                return FromYm(Year, Month);
             }
 
             var m = Month + n;
-            var y = Year.Year + m / 12;
+            var y = Year + m / 12;
             m %= 12;
             if (m < 1)
             {
@@ -128,7 +134,7 @@ namespace tyme.solar
         /// <summary>
         /// 公历季度
         /// </summary>
-        public SolarSeason Season => SolarSeason.FromIndex(Year.Year, IndexInYear / 3);
+        public SolarSeason Season => SolarSeason.FromIndex(Year, IndexInYear / 3);
 
         /// <summary>
         /// 周数
@@ -137,8 +143,7 @@ namespace tyme.solar
         /// <returns>周数</returns>
         public int GetWeekCount(int start)
         {
-            return (int)Math.Ceiling((IndexOf(SolarDay.FromYmd(Year.Year, Month, 1).Week.Index - start, 7) +
-                                      DayCount) / 7D);
+            return (int)Math.Ceiling((IndexOf(SolarDay.FromYmd(Year, Month, 1).Week.Index - start, 7) + DayCount) / 7D);
         }
 
         /// <summary>
@@ -152,7 +157,7 @@ namespace tyme.solar
             var l = new List<SolarWeek>(size);
             for (var i = 0; i < size; i++)
             {
-                l.Add(SolarWeek.FromYm(Year.Year, Month, i, start));
+                l.Add(SolarWeek.FromYm(Year, Month, i, start));
             }
 
             return l;
@@ -168,7 +173,7 @@ namespace tyme.solar
                 var l = new List<SolarDay>(DayCount);
                 for (var i = 0; i < DayCount; i++)
                 {
-                    l.Add(SolarDay.FromYmd(Year.Year, Month, i + 1));
+                    l.Add(SolarDay.FromYmd(Year, Month, i + 1));
                 }
 
                 return l;

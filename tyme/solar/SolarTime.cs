@@ -12,7 +12,22 @@ namespace tyme.solar
         /// <summary>
         /// 公历日
         /// </summary>
-        public SolarDay Day { get; }
+        public SolarDay SolarDay { get; }
+        
+        /// <summary>
+        /// 年
+        /// </summary>
+        public int Year => SolarDay.Year;
+
+        /// <summary>
+        /// 月
+        /// </summary>
+        public int Month => SolarDay.Month;
+
+        /// <summary>
+        /// 日
+        /// </summary>
+        public int Day => SolarDay.Day;
 
         /// <summary>
         /// 时
@@ -56,7 +71,7 @@ namespace tyme.solar
                 throw new ArgumentException($"illegal second: {second}");
             }
 
-            Day = SolarDay.FromYmd(year, month, day);
+            SolarDay = SolarDay.FromYmd(year, month, day);
             Hour = hour;
             Minute = minute;
             Second = second;
@@ -92,7 +107,7 @@ namespace tyme.solar
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return $"{Day} {GetName()}";
+            return $"{SolarDay} {GetName()}";
         }
 
         /// <summary>
@@ -104,7 +119,7 @@ namespace tyme.solar
         {
             if (n == 0)
             {
-                return FromYmdHms(Day.Month.Year.Year, Day.Month.Month, Day.Day, Hour, Minute, Second);
+                return FromYmdHms(Year, Month, Day, Hour, Minute, Second);
             }
 
             var ts = Second + n;
@@ -132,8 +147,8 @@ namespace tyme.solar
                 td -= 1;
             }
 
-            var d = Day.Next(td);
-            return FromYmdHms(d.Month.Year.Year, d.Month.Month, d.Day, th, tm, ts);
+            var d = SolarDay.Next(td);
+            return FromYmdHms(d.Year, d.Month, d.Day, th, tm, ts);
         }
 
         /// <summary>
@@ -143,9 +158,9 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsBefore(SolarTime target)
         {
-            if (!Day.Equals(target.Day))
+            if (!SolarDay.Equals(target.SolarDay))
             {
-                return Day.IsBefore(target.Day);
+                return SolarDay.IsBefore(target.SolarDay);
             }
 
             if (Hour != target.Hour)
@@ -163,9 +178,9 @@ namespace tyme.solar
         /// <returns>True/False</returns>
         public bool IsAfter(SolarTime target)
         {
-            if (!Day.Equals(target.Day))
+            if (!SolarDay.Equals(target.SolarDay))
             {
-                return Day.IsAfter(target.Day);
+                return SolarDay.IsAfter(target.SolarDay);
             }
 
             if (Hour != target.Hour)
@@ -183,8 +198,8 @@ namespace tyme.solar
         {
             get
             {
-                var y = Day.Month.Year.Year;
-                var i = Day.Month.Month * 2;
+                var y = Year;
+                var i = Month * 2;
                 if (i == 24)
                 {
                     y += 1;
@@ -208,7 +223,7 @@ namespace tyme.solar
         /// <returns>秒数</returns>
         public int Subtract(SolarTime target)
         {
-            var days = Day.Subtract(target.Day);
+            var days = SolarDay.Subtract(target.SolarDay);
             var cs = Hour * 3600 + Minute * 60 + Second;
             var ts = target.Hour * 3600 + target.Minute * 60 + target.Second;
             var seconds = cs - ts;
@@ -228,7 +243,7 @@ namespace tyme.solar
         /// <returns>儒略日</returns>
         public JulianDay GetJulianDay()
         {
-            return JulianDay.FromYmdHms(Day.Month.Year.Year, Day.Month.Month, Day.Day, Hour, Minute, Second);
+            return JulianDay.FromYmdHms(Year, Month, Day, Hour, Minute, Second);
         }
 
         /// <summary>
@@ -236,8 +251,8 @@ namespace tyme.solar
         /// </summary>
         public LunarHour GetLunarHour()
         {
-            var d = Day.GetLunarDay();
-            return LunarHour.FromYmdHms(d.Month.Year.Year, d.Month.MonthWithLeap, d.Day, Hour, Minute, Second);
+            var d = SolarDay.GetLunarDay();
+            return LunarHour.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
         }
     }
 }

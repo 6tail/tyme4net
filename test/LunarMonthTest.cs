@@ -189,7 +189,7 @@ public class LunarMonthTest
     public void Test29()
     {
         LunarDay d = SolarDay.FromYmd(2023, 10, 7).GetLunarDay();
-        Assert.Equal("壬戌", d.Month.SixtyCycle.ToString());
+        Assert.Equal("壬戌", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("辛酉", d.MonthSixtyCycle.ToString());
     }
 
@@ -197,7 +197,7 @@ public class LunarMonthTest
     public void Test30()
     {
         LunarDay d = SolarDay.FromYmd(2023, 10, 8).GetLunarDay();
-        Assert.Equal("壬戌", d.Month.SixtyCycle.ToString());
+        Assert.Equal("壬戌", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("壬戌", d.MonthSixtyCycle.ToString());
     }
 
@@ -205,8 +205,8 @@ public class LunarMonthTest
     public void Test31()
     {
         LunarDay d = SolarDay.FromYmd(2023, 10, 15).GetLunarDay();
-        Assert.Equal("九月", d.Month.GetName());
-        Assert.Equal("癸亥", d.Month.SixtyCycle.ToString());
+        Assert.Equal("九月", d.LunarMonth.GetName());
+        Assert.Equal("癸亥", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("壬戌", d.MonthSixtyCycle.ToString());
     }
 
@@ -214,7 +214,7 @@ public class LunarMonthTest
     public void Test32()
     {
         LunarDay d = SolarDay.FromYmd(2023, 11, 7).GetLunarDay();
-        Assert.Equal("癸亥", d.Month.SixtyCycle.ToString());
+        Assert.Equal("癸亥", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("壬戌", d.MonthSixtyCycle.ToString());
     }
 
@@ -222,7 +222,7 @@ public class LunarMonthTest
     public void Test33()
     {
         LunarDay d = SolarDay.FromYmd(2023, 11, 8).GetLunarDay();
-        Assert.Equal("癸亥", d.Month.SixtyCycle.ToString());
+        Assert.Equal("癸亥", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("癸亥", d.MonthSixtyCycle.ToString());
     }
 
@@ -253,7 +253,7 @@ public class LunarMonthTest
     public void Test36()
     {
         LunarDay d = SolarDay.FromYmd(1983, 2, 15).GetLunarDay();
-        Assert.Equal("甲寅", d.Month.SixtyCycle.ToString());
+        Assert.Equal("甲寅", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("甲寅", d.MonthSixtyCycle.ToString());
     }
 
@@ -261,7 +261,7 @@ public class LunarMonthTest
     public void Test37()
     {
         LunarDay d = SolarDay.FromYmd(2023, 10, 30).GetLunarDay();
-        Assert.Equal("癸亥", d.Month.SixtyCycle.ToString());
+        Assert.Equal("癸亥", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("壬戌", d.MonthSixtyCycle.ToString());
     }
 
@@ -269,7 +269,7 @@ public class LunarMonthTest
     public void Test38()
     {
         LunarDay d = SolarDay.FromYmd(2023, 10, 19).GetLunarDay();
-        Assert.Equal("癸亥", d.Month.SixtyCycle.ToString());
+        Assert.Equal("癸亥", d.LunarMonth.SixtyCycle.ToString());
         Assert.Equal("壬戌", d.MonthSixtyCycle.ToString());
     }
 

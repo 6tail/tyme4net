@@ -136,13 +136,13 @@ public class LunarDayTest
     [Fact]
     public void Test22()
     {
-        Assert.Equal("甲辰", LunarDay.FromYmd(2024, 1, 1).Month.Year.SixtyCycle.GetName());
+        Assert.Equal("甲辰", LunarDay.FromYmd(2024, 1, 1).LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 
     [Fact]
     public void Test23()
     {
-        Assert.Equal("癸卯", LunarDay.FromYmd(2023, 12, 30).Month.Year.SixtyCycle.GetName());
+        Assert.Equal("癸卯", LunarDay.FromYmd(2023, 12, 30).LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ public class LunarDayTest
     public void Test26()
     {
         var lunar = LunarDay.FromYmd(2005, 11, 23);
-        Assert.Equal("戊子", lunar.Month.SixtyCycle.GetName());
+        Assert.Equal("戊子", lunar.LunarMonth.SixtyCycle.GetName());
         Assert.Equal("戊子", lunar.MonthSixtyCycle.GetName());
     }
 }

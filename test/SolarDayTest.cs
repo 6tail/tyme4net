@@ -93,12 +93,12 @@ public class SolarDayTest
     [Fact]
     public void Test22()
     {
-        Assert.Equal("甲辰", SolarDay.FromYmd(2024, 2, 10).GetLunarDay().Month.Year.SixtyCycle.GetName());
+        Assert.Equal("甲辰", SolarDay.FromYmd(2024, 2, 10).GetLunarDay().LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 
     [Fact]
     public void Test23()
     {
-        Assert.Equal("癸卯", SolarDay.FromYmd(2024, 2, 9).GetLunarDay().Month.Year.SixtyCycle.GetName());
+        Assert.Equal("癸卯", SolarDay.FromYmd(2024, 2, 9).GetLunarDay().LunarMonth.LunarYear.SixtyCycle.GetName());
     }
 }

@@ -33,7 +33,7 @@ namespace tyme.eightchar.provider.impl
             // 1秒 = 2分，1秒/2=0.5秒 = 1分
             var minute = seconds * 2;
 
-            var d = birthTime.Day.Day + day;
+            var d = birthTime.Day + day;
             var h = birthTime.Hour + hour;
             var mi = birthTime.Minute + minute;
             h += mi / 60;
@@ -41,7 +41,7 @@ namespace tyme.eightchar.provider.impl
             d += h / 24;
             h %= 24;
 
-            var sm = SolarMonth.FromYm(birthTime.Day.Month.Year.Year + year, birthTime.Day.Month.Month).Next(month);
+            var sm = SolarMonth.FromYm(birthTime.Year + year, birthTime.Month).Next(month);
 
             var dc = sm.DayCount;
             if (d > dc)
@@ -50,9 +50,8 @@ namespace tyme.eightchar.provider.impl
                 sm = sm.Next(1);
             }
 
-            return new ChildLimitInfo(birthTime,
-                SolarTime.FromYmdHms(sm.Year.Year, sm.Month, d, h, mi, birthTime.Second), year, month, day, hour,
-                minute);
+            return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year, sm.Month, d, h, mi, birthTime.Second),
+                year, month, day, hour, minute);
         }
     }
 }

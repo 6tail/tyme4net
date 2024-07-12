@@ -34,7 +34,7 @@ public class LegalHolidayTest
     {
         var d = LegalHoliday.FromYmd(2010, 1, 1);
         Assert.NotNull(d);
-        while (d.Day.Month.Year.Year < 2012)
+        while (d.Day.Year < 2012)
         {
             _testOutputHelper.WriteLine(d.ToString());
             d = d.Next(1);
@@ -46,7 +46,7 @@ public class LegalHolidayTest
     {
         var d = LegalHoliday.FromYmd(2010, 1, 1);
         Assert.NotNull(d);
-        while (d.Day.Month.Year.Year > 2007)
+        while (d.Day.Year > 2007)
         {
             _testOutputHelper.WriteLine(d.ToString());
             d = d.Next(-1);
