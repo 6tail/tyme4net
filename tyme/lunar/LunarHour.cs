@@ -308,33 +308,5 @@ namespace tyme.lunar
         /// </summary>
         /// <returns>宜忌列表</returns>
         public List<Taboo> Avoids => Taboo.GetHourAvoids(DaySixtyCycle, SixtyCycle);
-
-        /// <summary>
-        /// 是否相等
-        /// </summary>
-        /// <param name="o">其他对象</param>
-        /// <returns>True/False</returns>
-        public override bool Equals(object o)
-        {
-            return o is LunarHour target && Day.Equals(target.Day) && Hour == target.Hour && Minute == target.Minute &&
-                   Second == target.Second;
-        }
-
-        /// <summary>
-        /// HashCode
-        /// </summary>
-        /// <returns>HashCode</returns>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = 17;
-                hash = hash * 23 + Day.GetHashCode();
-                hash = hash * 23 + Hour.GetHashCode();
-                hash = hash * 23 + Minute.GetHashCode();
-                hash = hash * 23 + Second.GetHashCode();
-                return hash;
-            }
-        }
     }
 }

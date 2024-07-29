@@ -114,6 +114,42 @@ namespace tyme.holiday
 
             index += n;
             var y = Day.Year;
+            if (n > 0)
+            {
+                while (index >= size)
+                {
+                    index -= size;
+                    y += 1;
+                    data.Clear();
+                    matches = Regex.Matches(Data, $@"{y:D4}\d{{4}}[0-1][0-8][\+|-]\d{{2}}");
+                    data.AddRange(from Match match in matches select match.Value);
+
+                    size = data.Count;
+                    if (size < 1)
+                    {
+                        return null;
+                    }
+                }
+            }
+            else
+            {
+                while (index < 0)
+                {
+                    y -= 1;
+                    data.Clear();
+                    matches = Regex.Matches(Data, $@"{y:D4}\d{{4}}[0-1][0-8][\+|-]\d{{2}}");
+                    data.AddRange(from Match match in matches select match.Value);
+
+                    size = data.Count;
+                    if (size < 1)
+                    {
+                        return null;
+                    }
+
+                    index += size;
+                }
+            }
+
             var forward = n > 0;
             var add = forward ? 1 : -1;
             while (forward ? (index >= size) : (index < 0))

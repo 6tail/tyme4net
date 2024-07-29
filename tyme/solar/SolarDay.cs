@@ -429,7 +429,7 @@ namespace tyme.solar
             while (days < 0)
             {
                 m = m.Next(-1);
-                days = Subtract(m.FirstJulianDay.GetSolarDay());
+                days += m.DayCount;
             }
 
             return LunarDay.FromYmd(m.Year, m.MonthWithLeap, days + 1);

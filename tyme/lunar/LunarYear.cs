@@ -85,6 +85,11 @@ namespace tyme.lunar
         public int DayCount => Months.Sum(m => m.DayCount);
 
         /// <summary>
+        /// 月数
+        /// </summary>
+        public int MonthCount => LeapMonth > 0 ? 13 : 12;
+
+        /// <summary>
         /// 名称
         /// </summary>
         /// <returns>名称</returns>
@@ -165,25 +170,6 @@ namespace tyme.lunar
 
                 return l;
             }
-        }
-
-        /// <summary>
-        /// 是否相等
-        /// </summary>
-        /// <param name="o">其他对象</param>
-        /// <returns>True/False</returns>
-        public override bool Equals(object o)
-        {
-            return o is LunarYear year && year.Year == Year;
-        }
-
-        /// <summary>
-        /// HashCode
-        /// </summary>
-        /// <returns>HashCode</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

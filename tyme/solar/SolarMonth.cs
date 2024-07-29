@@ -171,9 +171,9 @@ namespace tyme.solar
             get
             {
                 var l = new List<SolarDay>(DayCount);
-                for (var i = 0; i < DayCount; i++)
+                for (var i = 1; i <= DayCount; i++)
                 {
-                    l.Add(SolarDay.FromYmd(Year, Month, i + 1));
+                    l.Add(SolarDay.FromYmd(Year, Month, i));
                 }
 
                 return l;

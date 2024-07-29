@@ -110,7 +110,7 @@ namespace tyme.sixtycycle
         /// <summary>
         /// 方位
         /// </summary>
-        public Direction Direction => Direction.FromIndex(new[] { 2, 8, 4, 6, 0 }[Index / 2]);
+        public Direction Direction => Element.GetDirection();
 
         /// <summary>
         /// 喜神方位（《喜神方位歌》甲己在艮乙庚乾，丙辛坤位喜神安。丁壬只在离宫坐，戊癸原在在巽间。）
@@ -151,6 +151,21 @@ namespace tyme.sixtycycle
         {
             return Terrain.FromIndex(new[] { 1, 6, 10, 9, 10, 9, 7, 0, 4, 3 }[Index] +
                                      (YinYang.Yang == YinYang ? earthBranch.Index : -earthBranch.Index));
+        }
+
+        /// <summary>
+        /// 五合（甲己合，乙庚合，丙辛合，丁壬合，戊癸合）
+        /// </summary>
+        public HeavenStem Combine => Next(5);
+
+        /// <summary>
+        /// 合化（甲己合化土，乙庚合化金，丙辛合化水，丁壬合化木，戊癸合化火）
+        /// </summary>
+        /// <param name="target">天干</param>
+        /// <returns>五行，如果无法合化，返回null</returns>
+        public Element CombineWith(HeavenStem target)
+        {
+            return Combine.Equals(target) ? Element.FromIndex(Index + 2) : null;
         }
     }
 }

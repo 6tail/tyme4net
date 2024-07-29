@@ -65,5 +65,14 @@
         {
             return Land.FromIndex(Index);
         }
+
+        /// <summary>
+        /// 五行
+        /// </summary>
+        /// <returns>五行</returns>
+        public Element GetElement()
+        {
+            return Element.FromIndex(new[] { 4, 2, 0, 0, 2, 3, 3, 2, 1 }[Index]);
+        }
     }
 }

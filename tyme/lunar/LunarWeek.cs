@@ -18,7 +18,7 @@ namespace tyme.lunar
         /// 农历
         /// </summary>
         public LunarMonth LunarMonth { get; }
-        
+
         /// <summary>
         /// 年
         /// </summary>
@@ -115,36 +115,32 @@ namespace tyme.lunar
 
             var d = Index + n;
             var m = LunarMonth;
-            var weeksInMonth = m.GetWeekCount(Start.Index);
-            var forward = n > 0;
-            var add = forward ? 1 : -1;
-            while (forward ? (d >= weeksInMonth) : (d < 0))
+            if (n > 0)
             {
-                if (forward)
+                var weekCount = m.GetWeekCount(Start.Index);
+                while (d >= weekCount)
                 {
-                    d -= weeksInMonth;
+                    d -= weekCount;
+                    m = m.Next(1);
+                    if (!LunarDay.FromYmd(m.Year, m.MonthWithLeap, 1).Week.Equals(Start))
+                    {
+                        d += 1;
+                    }
+
+                    weekCount = m.GetWeekCount(Start.Index);
                 }
-                else
+            }
+            else
+            {
+                while (d < 0)
                 {
                     if (!LunarDay.FromYmd(m.Year, m.MonthWithLeap, 1).Week.Equals(Start))
                     {
-                        d += add;
+                        d -= 1;
                     }
-                }
 
-                m = m.Next(add);
-                if (forward)
-                {
-                    if (!LunarDay.FromYmd(m.Year, m.MonthWithLeap, 1).Week.Equals(Start))
-                    {
-                        d += add;
-                    }
-                }
-
-                weeksInMonth = m.GetWeekCount(Start.Index);
-                if (!forward)
-                {
-                    d += weeksInMonth;
+                    m = m.Next(-1);
+                    d += m.GetWeekCount(Start.Index);
                 }
             }
 
@@ -178,6 +174,25 @@ namespace tyme.lunar
 
                 return l;
             }
+        }
+
+        /// <summary>
+        /// 是否相等
+        /// </summary>
+        /// <param name="o">其他对象</param>
+        /// <returns>True/False</returns>
+        public override bool Equals(object o)
+        {
+            return o is LunarWeek week && FirstDay.Equals(week.FirstDay);
+        }
+
+        /// <summary>
+        /// HashCode
+        /// </summary>
+        /// <returns>HashCode</returns>
+        public override int GetHashCode()
+        {
+            return FirstDay.GetHashCode();
         }
     }
 }

@@ -102,32 +102,7 @@ namespace tyme.lunar
         /// <returns>推移后的农历日</returns>
         public new LunarDay Next(int n)
         {
-            if (n == 0)
-            {
-                return FromYmd(Year, Month, Day);
-            }
-
-            var d = Day + n;
-            var m = LunarMonth;
-            var daysInMonth = m.DayCount;
-            var forward = n > 0;
-            var add = forward ? 1 : -1;
-            while (forward ? (d > daysInMonth) : (d <= 0))
-            {
-                if (forward)
-                {
-                    d -= daysInMonth;
-                }
-
-                m = m.Next(add);
-                daysInMonth = m.DayCount;
-                if (!forward)
-                {
-                    d += daysInMonth;
-                }
-            }
-
-            return FromYmd(m.Year, m.MonthWithLeap, d);
+            return n == 0 ? FromYmd(Year, Month, Day) : GetSolarDay().Next(n).GetLunarDay();
         }
 
         /// <summary>
@@ -296,7 +271,7 @@ namespace tyme.lunar
         /// 太岁方位
         /// </summary>
         public Direction JupiterDirection => SixtyCycle.Index % 12 < 6
-            ? Direction.FromIndex(new[] { 2, 8, 4, 6, 0 }[SixtyCycle.Index / 12])
+            ? Element.FromIndex(SixtyCycle.Index / 12).GetDirection()
             : LunarMonth.LunarYear.JupiterDirection;
 
         /// <summary>
@@ -369,24 +344,5 @@ namespace tyme.lunar
         /// </summary>
         /// <returns>宜忌列表</returns>
         public List<Taboo> Avoids => Taboo.GetDayAvoids(MonthSixtyCycle, SixtyCycle);
-
-        /// <summary>
-        /// 是否相等
-        /// </summary>
-        /// <param name="o">其他对象</param>
-        /// <returns>True/False</returns>
-        public override bool Equals(object o)
-        {
-            return o is LunarDay target && Month.Equals(target.Month) && Day == target.Day;
-        }
-
-        /// <summary>
-        /// HashCode
-        /// </summary>
-        /// <returns>HashCode</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 }

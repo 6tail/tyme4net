@@ -92,5 +92,14 @@
         {
             return Next(-2);
         }
+
+        /// <summary>
+        /// 方位
+        /// </summary>
+        /// <returns>方位</returns>
+        public Direction GetDirection()
+        {
+            return Direction.FromIndex(new[] { 2, 8, 4, 6, 0 }[Index]);
+        }
     }
 }

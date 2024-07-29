@@ -105,9 +105,9 @@ namespace tyme.solar
             get
             {
                 var l = new List<SolarMonth>(6);
-                for (var i = 0; i < 6; i++)
+                for (var i = 1; i < 7; i++)
                 {
-                    l.Add(SolarMonth.FromYm(Year, Index * 6 + i + 1));
+                    l.Add(SolarMonth.FromYm(Year, Index * 6 + i));
                 }
 
                 return l;

@@ -16,6 +16,11 @@ namespace tyme.lunar
     public class LunarMonth : AbstractTyme
     {
         /// <summary>
+        /// 缓存
+        /// </summary>
+        private static readonly Dictionary<string, object[]> Cache = new Dictionary<string, object[]>();
+
+        /// <summary>
         /// 名称
         /// </summary>
         public static string[] Names = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
@@ -34,7 +39,7 @@ namespace tyme.lunar
         /// 月
         /// </summary>
         public int Month { get; }
-        
+
         /// <summary>
         /// 是否闰月
         /// </summary>
@@ -56,20 +61,39 @@ namespace tyme.lunar
         public JulianDay FirstJulianDay { get; }
 
         /// <summary>
+        /// 从缓存初始化
+        /// </summary>
+        /// <param name="cache">缓存[农历年(int)，农历月(int,闰月为负)，天数(int)，位于当年的索引(int)，初一的儒略日(double)]</param>
+        protected LunarMonth(object[] cache)
+        {
+            var m = (int)cache[1];
+            LunarYear = LunarYear.FromYear((int)cache[0]);
+            Month = Math.Abs(m);
+            IsLeap = m < 0;
+            DayCount = (int)cache[2];
+            IndexInYear = (int)cache[3];
+            FirstJulianDay = JulianDay.FromJulianDay((double)cache[4]);
+        }
+
+        /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="year">农历年</param>
         /// <param name="month">农历月</param>
         /// <exception cref="ArgumentException"></exception>
-        public LunarMonth(int year, int month) {
+        public LunarMonth(int year, int month)
+        {
             var currentYear = LunarYear.FromYear(year);
             var currentLeapMonth = currentYear.LeapMonth;
-            if (month == 0 || month > 12 || month < -12) {
+            if (month == 0 || month > 12 || month < -12)
+            {
                 throw new ArgumentException($"illegal lunar month: {month}");
             }
+
             var leap = month < 0;
             var m = Math.Abs(month);
-            if (leap && m != currentLeapMonth) {
+            if (leap && m != currentLeapMonth)
+            {
                 throw new ArgumentException($"illegal leap month {m} in lunar year {year}");
             }
 
@@ -78,23 +102,29 @@ namespace tyme.lunar
 
             // 冬至前的初一，今年首朔的日月黄经差
             var w = ShouXingUtil.CalcShuo(dongZhi.CursoryJulianDay);
-            if (w > dongZhi.CursoryJulianDay) {
+            if (w > dongZhi.CursoryJulianDay)
+            {
                 w -= 29.53;
             }
 
             // 正常情况正月初一为第3个朔日，但有些特殊的
             var offset = 2;
-            if (year > 8 && year < 24) {
+            if (year > 8 && year < 24)
+            {
                 offset = 1;
-            } else if (LunarYear.FromYear(year - 1).LeapMonth > 10 && year != 239 && year != 240) {
+            }
+            else if (LunarYear.FromYear(year - 1).LeapMonth > 10 && year != 239 && year != 240)
+            {
                 offset = 3;
             }
 
             // 位于当年的索引
             var index = m - 1;
-            if (leap || (currentLeapMonth > 0 && m > currentLeapMonth)) {
+            if (leap || (currentLeapMonth > 0 && m > currentLeapMonth))
+            {
                 index += 1;
             }
+
             IndexInYear = index;
 
             // 本月初一
@@ -102,7 +132,7 @@ namespace tyme.lunar
             var firstDay = ShouXingUtil.CalcShuo(w);
             FirstJulianDay = JulianDay.FromJulianDay(JulianDay.J2000 + firstDay);
             // 本月天数 = 下月初一 - 本月初一
-            DayCount = (int) (ShouXingUtil.CalcShuo(w + 29.5306) - firstDay);
+            DayCount = (int)(ShouXingUtil.CalcShuo(w + 29.5306) - firstDay);
             LunarYear = currentYear;
             Month = m;
             IsLeap = leap;
@@ -116,9 +146,38 @@ namespace tyme.lunar
         /// <returns>农历月</returns>
         public static LunarMonth FromYm(int year, int month)
         {
-            return new LunarMonth(year, month);
+            LunarMonth m;
+            var key = $"{year}{month}";
+            object[] c = null;
+            try
+            {
+                c = Cache[key];
+            }
+            catch
+            {
+                // ignored
+            }
+
+            if (null != c)
+            {
+                m = new LunarMonth(c);
+            }
+            else
+            {
+                m = new LunarMonth(year, month);
+                Cache[key] = new object[]
+                {
+                    m.Year,
+                    m.MonthWithLeap,
+                    m.DayCount,
+                    m.IndexInYear,
+                    m.FirstJulianDay.Day
+                };
+            }
+
+            return m;
         }
-        
+
         /// <summary>
         /// 月，当月为闰月时，返回负数
         /// </summary>
@@ -149,35 +208,49 @@ namespace tyme.lunar
         /// <returns>推移后的农历月</returns>
         public new LunarMonth Next(int n)
         {
-            if (n == 0) {
+            if (n == 0)
+            {
                 return FromYm(Year, MonthWithLeap);
             }
+
             var m = IndexInYear + 1 + n;
             var y = LunarYear;
             var leapMonth = y.LeapMonth;
-            var monthSize = 12 + (leapMonth > 0 ? 1 : 0);
-            var forward = n > 0;
-            var add = forward ? 1 : -1;
-            while (forward ? (m > monthSize) : (m <= 0)) {
-                if (forward) {
-                    m -= monthSize;
-                }
-                y = y.Next(add);
-                leapMonth = y.LeapMonth;
-                monthSize = 12 + (leapMonth > 0 ? 1 : 0);
-                if (!forward) {
-                    m += monthSize;
+            if (n > 0)
+            {
+                var monthCount = leapMonth > 0 ? 13 : 12;
+                while (m > monthCount)
+                {
+                    m -= monthCount;
+                    y = y.Next(1);
+                    leapMonth = y.LeapMonth;
+                    monthCount = leapMonth > 0 ? 13 : 12;
                 }
             }
+            else
+            {
+                while (m <= 0)
+                {
+                    y = y.Next(-1);
+                    leapMonth = y.LeapMonth;
+                    m += leapMonth > 0 ? 13 : 12;
+                }
+            }
+
             var leap = false;
-            if (leapMonth > 0) {
-                if (m == leapMonth + 1) {
+            if (leapMonth > 0)
+            {
+                if (m == leapMonth + 1)
+                {
                     leap = true;
                 }
-                if (m > leapMonth) {
+
+                if (m > leapMonth)
+                {
                     m--;
                 }
             }
+
             return FromYm(y.Year, leap ? -m : m);
         }
 
@@ -193,7 +266,7 @@ namespace tyme.lunar
         /// <returns>周数</returns>
         public int GetWeekCount(int start)
         {
-            return (int) Math.Ceiling((IndexOf(FirstJulianDay.Week.Index - start, 7) + DayCount) / 7D);
+            return (int)Math.Ceiling((IndexOf(FirstJulianDay.Week.Index - start, 7) + DayCount) / 7D);
         }
 
         /// <summary>
@@ -221,24 +294,28 @@ namespace tyme.lunar
             get
             {
                 var l = new List<LunarDay>(DayCount);
-                for (var i = 0; i < DayCount; i++)
+                for (var i = 1; i <= DayCount; i++)
                 {
-                    l.Add(LunarDay.FromYmd(Year, MonthWithLeap, i + 1));
+                    l.Add(LunarDay.FromYmd(Year, MonthWithLeap, i));
                 }
 
                 return l;
             }
         }
-        
+
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle => SixtyCycle.FromName(HeavenStem.FromIndex((LunarYear.SixtyCycle.HeavenStem.Index + 1) * 2 + IndexInYear).GetName() + EarthBranch.FromIndex(IndexInYear + 2).GetName());
-        
+        public SixtyCycle SixtyCycle =>
+            SixtyCycle.FromName(
+                HeavenStem.FromIndex((LunarYear.SixtyCycle.HeavenStem.Index + 1) * 2 + IndexInYear).GetName() +
+                EarthBranch.FromIndex(IndexInYear + 2).GetName());
+
         /// <summary>
         /// 九星
         /// </summary>
-        public NineStar NineStar => NineStar.FromIndex(27 - LunarYear.SixtyCycle.EarthBranch.Index % 3 * 3 - SixtyCycle.EarthBranch.Index);
+        public NineStar NineStar =>
+            NineStar.FromIndex(27 - LunarYear.SixtyCycle.EarthBranch.Index % 3 * 3 - SixtyCycle.EarthBranch.Index);
 
         /// <summary>
         /// 太岁方位
@@ -247,33 +324,14 @@ namespace tyme.lunar
         {
             get
             {
-                var n = new []{7, -1, 1, 3}[SixtyCycle.EarthBranch.Next(-2).Index % 4];
+                var n = new[] { 7, -1, 1, 3 }[SixtyCycle.EarthBranch.Next(-2).Index % 4];
                 return n == -1 ? SixtyCycle.HeavenStem.Direction : Direction.FromIndex(n);
             }
         }
-        
+
         /// <summary>
         /// 逐月胎神
         /// </summary>
         public FetusMonth Fetus => FetusMonth.FromLunarMonth(this);
-
-        /// <summary>
-        /// 是否相等
-        /// </summary>
-        /// <param name="o">其他对象</param>
-        /// <returns>True/False</returns>
-        public override bool Equals(object o)
-        {
-            return o is LunarMonth target && Year == target.Year && MonthWithLeap == target.MonthWithLeap;
-        }
-
-        /// <summary>
-        /// HashCode
-        /// </summary>
-        /// <returns>HashCode</returns>
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
     }
 }

@@ -115,7 +115,7 @@ namespace tyme.sixtycycle
         public Direction Direction => Direction.FromIndex(new[] { 0, 4, 2, 2, 4, 8, 8, 4, 6, 6, 4, 0 }[Index]);
 
         /// <summary>
-        /// 相冲的地支（子午冲，丑未冲，寅申冲，辰戌冲，卯酉冲，巳亥冲）
+        /// 六冲（子午冲，丑未冲，寅申冲，辰戌冲，卯酉冲，巳亥冲）
         /// </summary>
         public EarthBranch Opposite => Next(6);
 
@@ -123,6 +123,28 @@ namespace tyme.sixtycycle
         /// 煞（逢巳日、酉日、丑日必煞东；亥日、卯日、未日必煞西；申日、子日、辰日必煞南；寅日、午日、戌日必煞北。）
         /// </summary>
         public Direction Ominous => Direction.FromIndex(new[] { 8, 2, 0, 6 }[Index % 4]);
+
+        /// <summary>
+        /// 六合（子丑合，寅亥合，卯戌合，辰酉合，巳申合，午未合）
+        /// </summary>
+        public EarthBranch Combine => FromIndex(1 - Index);
+
+        /// <summary>
+        /// 六害（子未害、丑午害、寅巳害、卯辰害、申亥害、酉戌害）
+        /// </summary>
+        public EarthBranch Harm => FromIndex(19 - Index);
+
+        /// <summary>
+        /// 合化（子丑合化土，寅亥合化木，卯戌合化火，辰酉合化金，巳申合化水，午未合化土）
+        /// </summary>
+        /// <param name="target">地支</param>
+        /// <returns>五行，如果无法合化，返回null</returns>
+        public Element CombineWith(EarthBranch target)
+        {
+            return Combine.Equals(target)
+                ? Element.FromIndex(new[] { 2, 2, 0, 1, 3, 4, 2, 2, 4, 3, 1, 0 }[Index])
+                : null;
+        }
 
         /// <summary>
         /// 地支彭祖百忌
