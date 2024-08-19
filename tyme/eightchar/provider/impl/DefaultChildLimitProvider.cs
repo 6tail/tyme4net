@@ -44,10 +44,11 @@ namespace tyme.eightchar.provider.impl
             var sm = SolarMonth.FromYm(birthTime.Year + year, birthTime.Month).Next(month);
 
             var dc = sm.DayCount;
-            if (d > dc)
+            while (d > dc)
             {
                 d -= dc;
                 sm = sm.Next(1);
+                dc = sm.DayCount;
             }
 
             return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year, sm.Month, d, h, mi, birthTime.Second),

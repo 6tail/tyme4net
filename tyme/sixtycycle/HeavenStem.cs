@@ -84,27 +84,14 @@ namespace tyme.sixtycycle
                 return null;
             }
 
-            var guestElement = target.Element;
-            var offset = 0;
-            var sameYinYang = YinYang.Equals(target.YinYang);
-            if (Element.GetReinforce().Equals(guestElement))
+            var targetIndex = target.Index;
+            var offset = targetIndex - Index;
+            if (Index % 2 != 0 && targetIndex % 2 == 0)
             {
-                offset = 1;
-            }
-            else if (Element.GetRestrain().Equals(guestElement))
-            {
-                offset = 2;
-            }
-            else if (guestElement.GetRestrain().Equals(Element))
-            {
-                offset = 3;
-            }
-            else if (guestElement.GetReinforce().Equals(Element))
-            {
-                offset = 4;
+                offset += 2;
             }
 
-            return TenStar.FromIndex(offset * 2 + (sameYinYang ? 0 : 1));
+            return TenStar.FromIndex(offset);
         }
 
         /// <summary>

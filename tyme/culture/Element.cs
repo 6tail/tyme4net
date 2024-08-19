@@ -58,36 +58,36 @@
         }
 
         /// <summary>
-        /// 我生者（生）
+        /// 我生者
         /// </summary>
-        /// <returns>我生者（生）</returns>
+        /// <returns>五行</returns>
         public Element GetReinforce()
         {
             return Next(1);
         }
 
         /// <summary>
-        /// 我克者（克）
+        /// 我克者
         /// </summary>
-        /// <returns>我克者（克）</returns>
+        /// <returns>五行</returns>
         public Element GetRestrain()
         {
             return Next(2);
         }
 
         /// <summary>
-        /// 生我者（泄）
+        /// 生我者
         /// </summary>
-        /// <returns>生我者（泄）</returns>
+        /// <returns>五行</returns>
         public Element GetReinforced()
         {
             return Next(-1);
         }
 
         /// <summary>
-        /// 克我者（耗）
+        /// 克我者
         /// </summary>
-        /// <returns>克我者（耗）</returns>
+        /// <returns>五行</returns>
         public Element GetRestrained()
         {
             return Next(-2);

@@ -28,9 +28,10 @@ namespace tyme.eightchar.provider.impl
 
             var d = birthTime.Day + day;
             var dc = sm.DayCount;
-            if (d > dc) {
+            while (d > dc) {
                 d -= dc;
                 sm = sm.Next(1);
+                dc = sm.DayCount;
             }
 
             return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year, sm.Month, d, birthTime.Hour, birthTime.Minute, birthTime.Second), year, month, day, 0, 0);
