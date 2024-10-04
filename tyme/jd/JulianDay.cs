@@ -93,58 +93,7 @@ namespace tyme.jd
         /// <returns>公历日</returns>
         public SolarDay GetSolarDay()
         {
-            var d = (int)(Day + 0.5);
-            var f = Day + 0.5 - d;
-
-            if (d >= 2299161)
-            {
-                var c = (int)((d - 1867216.25) / 36524.25);
-                d += 1 + c - (int)(c * 1D / 4);
-            }
-
-            d += 1524;
-            var year = (int)((d - 122.1) / 365.25);
-            d -= (int)(365.25 * year);
-            var month = (int)(d * 1D / 30.601);
-            d -= (int)(30.601 * month);
-            var day = d;
-            if (month > 13)
-            {
-                month -= 13;
-                year -= 4715;
-            }
-            else
-            {
-                month -= 1;
-                year -= 4716;
-            }
-
-            f *= 24;
-            var hour = (int)f;
-
-            f -= hour;
-            f *= 60;
-            var minute = (int)f;
-
-            f -= minute;
-            f *= 60;
-            var second = (int)Math.Round(f);
-            if (second > 59)
-            {
-                minute++;
-            }
-
-            if (minute > 59)
-            {
-                hour++;
-            }
-
-            if (hour > 23)
-            {
-                day += 1;
-            }
-
-            return SolarDay.FromYmd(year, month, day);
+            return GetSolarTime().SolarDay;
         }
 
         /// <summary>
@@ -204,7 +153,7 @@ namespace tyme.jd
             if (hour > 23)
             {
                 hour -= 24;
-                day += 1;
+                day++;
             }
 
             return SolarTime.FromYmdHms(year, month, day, hour, minute, second);

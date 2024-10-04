@@ -4,6 +4,8 @@ using tyme.culture;
 using tyme.culture.star.nine;
 using tyme.culture.star.twelve;
 using tyme.eightchar;
+using tyme.eightchar.provider;
+using tyme.eightchar.provider.impl;
 using tyme.sixtycycle;
 using tyme.solar;
 
@@ -14,6 +16,11 @@ namespace tyme.lunar
     /// </summary>
     public class LunarHour : AbstractTyme
     {
+        /// <summary>
+        /// 八字计算接口
+        /// </summary>
+        public static IEightCharProvider Provider = new DefaultEightCharProvider();
+        
         /// <summary>
         /// 农历日
         /// </summary>
@@ -127,6 +134,10 @@ namespace tyme.lunar
         /// <returns>推移后的农历时辰</returns>
         public new LunarHour Next(int n)
         {
+            if (n == 0)
+            {
+                return FromYmdHms(Year,Month, Day, Hour, Minute, Second);
+            }
             var h = Hour + n * 2;
             var diff = h < 0 ? -1 : 1;
             var hour = Math.Abs(h);
@@ -295,7 +306,7 @@ namespace tyme.lunar
         /// <summary>
         /// 八字
         /// </summary>
-        public EightChar EightChar => new EightChar(YearSixtyCycle, MonthSixtyCycle, DaySixtyCycle, SixtyCycle);
+        public EightChar EightChar => Provider.GetEightChar(this);
 
         /// <summary>
         /// 宜

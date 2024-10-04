@@ -114,20 +114,19 @@ namespace tyme.solar
         /// <returns>推移后的公历月</returns>
         public new SolarMonth Next(int n)
         {
-            if (n == 0)
+            var m = Month;
+            var y = Year;
+            if (n != 0)
             {
-                return FromYm(Year, Month);
+                m += n;
+                y += m / 12;
+                m %= 12;
+                if (m < 1)
+                {
+                    m += 12;
+                    y--;
+                }
             }
-
-            var m = Month + n;
-            var y = Year + m / 12;
-            m %= 12;
-            if (m < 1)
-            {
-                m += 12;
-                y--;
-            }
-
             return FromYm(y, m);
         }
 

@@ -106,6 +106,15 @@ namespace tyme.culture
         {
             return FromIndex(NextIndex(n));
         }
+        
+        private static List<Taboo> GetTaboos(string[] data, int supIndex, int subIndex, int index) {
+            var l = new List<Taboo>();
+            var d = data[supIndex].Split(';')[subIndex].Split(',')[index];
+            for (int i = 0, j = d.Length; i < j; i += 2) {
+                l.Add(FromIndex(int.Parse(d.Substring(i, 2), NumberStyles.HexNumber)));
+            }
+            return l;
+        }
 
         /// <summary>
         /// 日宜
@@ -115,14 +124,7 @@ namespace tyme.culture
         /// <returns>宜忌列表</returns>
         public static List<Taboo> GetDayRecommends(SixtyCycle month, SixtyCycle day)
         {
-            var l = new List<Taboo>();
-            var data = DayTaboo[month.EarthBranch.Index].Split(';')[day.Index].Split(',')[0];
-            for (int i = 0, j = data.Length; i < j; i += 2)
-            {
-                l.Add(FromIndex(int.Parse(data.Substring(i, 2), NumberStyles.HexNumber)));
-            }
-
-            return l;
+            return GetTaboos(DayTaboo, month.EarthBranch.Index, day.Index, 0);
         }
 
         /// <summary>
@@ -133,14 +135,7 @@ namespace tyme.culture
         /// <returns>宜忌列表</returns>
         public static List<Taboo> GetDayAvoids(SixtyCycle month, SixtyCycle day)
         {
-            var l = new List<Taboo>();
-            var data = DayTaboo[month.EarthBranch.Index].Split(';')[day.Index].Split(',')[1];
-            for (int i = 0, j = data.Length; i < j; i += 2)
-            {
-                l.Add(FromIndex(int.Parse(data.Substring(i, 2), NumberStyles.HexNumber)));
-            }
-
-            return l;
+            return GetTaboos(DayTaboo, month.EarthBranch.Index, day.Index, 1);
         }
 
         /// <summary>
@@ -151,14 +146,7 @@ namespace tyme.culture
         /// <returns>宜忌列表</returns>
         public static List<Taboo> GetHourRecommends(SixtyCycle day, SixtyCycle hour)
         {
-            var l = new List<Taboo>();
-            var data = HourTaboo[hour.EarthBranch.Index].Split(';')[day.Index].Split(',')[0];
-            for (int i = 0, j = data.Length; i < j; i += 2)
-            {
-                l.Add(FromIndex(int.Parse(data.Substring(i, 2), NumberStyles.HexNumber)));
-            }
-
-            return l;
+            return GetTaboos(HourTaboo, hour.EarthBranch.Index, day.Index, 0);
         }
 
         /// <summary>
@@ -169,14 +157,7 @@ namespace tyme.culture
         /// <returns>宜忌列表</returns>
         public static List<Taboo> GetHourAvoids(SixtyCycle day, SixtyCycle hour)
         {
-            var l = new List<Taboo>();
-            var data = HourTaboo[hour.EarthBranch.Index].Split(';')[day.Index].Split(',')[1];
-            for (int i = 0, j = data.Length; i < j; i += 2)
-            {
-                l.Add(FromIndex(int.Parse(data.Substring(i, 2), NumberStyles.HexNumber)));
-            }
-
-            return l;
+            return GetTaboos(HourTaboo, hour.EarthBranch.Index, day.Index, 1);
         }
     }
 }

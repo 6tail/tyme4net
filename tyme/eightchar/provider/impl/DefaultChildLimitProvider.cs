@@ -6,15 +6,10 @@ namespace tyme.eightchar.provider.impl
     /// <summary>
     /// 默认的童限计算
     /// </summary>
-    public class DefaultChildLimitProvider : IChildLimitProvider
+    public class DefaultChildLimitProvider : AbstractChildLimitProvider
     {
-        /// <summary>
-        /// 童限信息
-        /// </summary>
-        /// <param name="birthTime">出生公历时刻</param>
-        /// <param name="term">节令</param>
-        /// <returns>童限信息</returns>
-        public ChildLimitInfo GetInfo(SolarTime birthTime, SolarTerm term)
+        /// <inheritdoc />
+        public override ChildLimitInfo GetInfo(SolarTime birthTime, SolarTerm term)
         {
             // 出生时刻和节令时刻相差的秒数
             var seconds = Math.Abs(term.JulianDay.GetSolarTime().Subtract(birthTime));
@@ -33,26 +28,7 @@ namespace tyme.eightchar.provider.impl
             // 1秒 = 2分，1秒/2=0.5秒 = 1分
             var minute = seconds * 2;
 
-            var d = birthTime.Day + day;
-            var h = birthTime.Hour + hour;
-            var mi = birthTime.Minute + minute;
-            h += mi / 60;
-            mi %= 60;
-            d += h / 24;
-            h %= 24;
-
-            var sm = SolarMonth.FromYm(birthTime.Year + year, birthTime.Month).Next(month);
-
-            var dc = sm.DayCount;
-            while (d > dc)
-            {
-                d -= dc;
-                sm = sm.Next(1);
-                dc = sm.DayCount;
-            }
-
-            return new ChildLimitInfo(birthTime, SolarTime.FromYmdHms(sm.Year, sm.Month, d, h, mi, birthTime.Second),
-                year, month, day, hour, minute);
+            return Next(birthTime, year, month, day, hour, minute, 0);
         }
     }
 }

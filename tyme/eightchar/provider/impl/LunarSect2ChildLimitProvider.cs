@@ -4,9 +4,9 @@ using tyme.solar;
 namespace tyme.eightchar.provider.impl
 {
     /// <summary>
-    /// 元亨利贞的童限计算
+    /// Lunar的流派2童限计算（按分钟数计算）
     /// </summary>
-    public class China95ChildLimitProvider : AbstractChildLimitProvider
+    public class LunarSect2ChildLimitProvider : AbstractChildLimitProvider
     {
         /// <inheritdoc />
         public override ChildLimitInfo GetInfo(SolarTime birthTime, SolarTerm term)
@@ -18,8 +18,10 @@ namespace tyme.eightchar.provider.impl
             var month = minutes / 360;
             minutes %= 360;
             var day = minutes / 12;
+            minutes %= 12;
+            var hour = minutes * 2;
 
-            return Next(birthTime, year, month, day, 0, 0, 0);
+            return Next(birthTime, year, month, day, hour, 0, 0);
         }
     }
 }
