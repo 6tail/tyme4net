@@ -187,4 +187,11 @@ public class LunarDayTest
         Assert.Equal("戊子", lunar.LunarMonth.SixtyCycle.GetName());
         Assert.Equal("戊子", lunar.MonthSixtyCycle.GetName());
     }
+    
+    [Fact]
+    public void Test28()
+    {
+        var lunar = LunarDay.FromYmd(2024, 3, 5);
+        Assert.Equal("大安", lunar.MinorRen.GetName());
+    }
 }

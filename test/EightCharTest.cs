@@ -27,19 +27,19 @@ public class EightCharTest
     public void Test1()
     {
         // 八字
-        EightChar eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
+        var eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
 
         // 年柱
-        SixtyCycle year = eightChar.Year;
+        var year = eightChar.Year;
         // 月柱
-        SixtyCycle month = eightChar.Month;
+        var month = eightChar.Month;
         // 日柱
-        SixtyCycle day = eightChar.Day;
+        var day = eightChar.Day;
         // 时柱
-        SixtyCycle hour = eightChar.Hour;
+        var hour = eightChar.Hour;
 
         // 日元(日主、日干)
-        HeavenStem me = day.HeavenStem;
+        var me = day.HeavenStem;
 
         // 年柱天干十神
         Assert.Equal("正财", me.GetTenStar(year.HeavenStem).GetName());
@@ -73,19 +73,19 @@ public class EightCharTest
     public void Test2()
     {
         // 八字
-        EightChar eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
+        var eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
 
         // 年柱
-        SixtyCycle year = eightChar.Year;
+        var year = eightChar.Year;
         // 月柱
-        SixtyCycle month = eightChar.Month;
+        var month = eightChar.Month;
         // 日柱
-        SixtyCycle day = eightChar.Day;
+        var day = eightChar.Day;
         // 时柱
-        SixtyCycle hour = eightChar.Hour;
+        var hour = eightChar.Hour;
 
         // 日元(日主、日干)
-        HeavenStem me = day.HeavenStem;
+        var me = day.HeavenStem;
 
         // 年柱地势
         Assert.Equal("沐浴", me.GetTerrain(year.EarthBranch).GetName());
@@ -104,10 +104,10 @@ public class EightCharTest
     public void Test3()
     {
         // 八字
-        EightChar eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
+        var eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
 
         // 胎元
-        SixtyCycle taiYuan = eightChar.FetalOrigin;
+        var taiYuan = eightChar.FetalOrigin;
         Assert.Equal("壬子", taiYuan.GetName());
         // 胎元纳音
         Assert.Equal("桑柘木", taiYuan.Sound.GetName());
@@ -120,10 +120,10 @@ public class EightCharTest
     public void Test4()
     {
         // 八字
-        EightChar eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
+        var eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
 
         // 胎息
-        SixtyCycle taiXi = eightChar.FetalBreath;
+        var taiXi = eightChar.FetalBreath;
         Assert.Equal("甲寅", taiXi.GetName());
         // 胎息纳音
         Assert.Equal("大溪水", taiXi.Sound.GetName());
@@ -136,10 +136,10 @@ public class EightCharTest
     public void Test5()
     {
         // 八字
-        EightChar eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
+        var eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
 
         // 命宫
-        SixtyCycle mingGong = eightChar.OwnSign;
+        var mingGong = eightChar.OwnSign;
         Assert.Equal("癸亥", mingGong.GetName());
         // 命宫纳音
         Assert.Equal("大海水", mingGong.Sound.GetName());
@@ -152,10 +152,10 @@ public class EightCharTest
     public void Test6()
     {
         // 八字
-        EightChar eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
+        var eightChar = new EightChar("癸卯", "辛酉", "己亥", "癸酉");
 
         // 身宫
-        SixtyCycle shenGong = eightChar.BodySign;
+        var shenGong = eightChar.BodySign;
         Assert.Equal("己未", shenGong.GetName());
         // 身宫纳音
         Assert.Equal("天上火", shenGong.Sound.GetName());
@@ -168,10 +168,10 @@ public class EightCharTest
     public void Test7()
     {
         // 八字
-        EightChar eightChar = new EightChar("乙酉", "戊子", "辛巳", "壬辰");
+        var eightChar = new EightChar("乙酉", "戊子", "辛巳", "壬辰");
 
         // 日干
-        HeavenStem me = eightChar.Day.HeavenStem;
+        var me = eightChar.Day.HeavenStem;
         // 年柱地势
         Assert.Equal("临官", me.GetTerrain(eightChar.Year.EarthBranch).GetName());
         // 月柱地势
@@ -188,7 +188,7 @@ public class EightCharTest
     [Fact]
     public void Test8()
     {
-        EightChar eightChar = SolarTime.FromYmdHms(2005, 12, 23, 8, 37, 0).GetLunarHour().EightChar;
+        var eightChar = SolarTime.FromYmdHms(2005, 12, 23, 8, 37, 0).GetLunarHour().EightChar;
         Assert.Equal("乙酉", eightChar.Year.GetName());
         Assert.Equal("戊子", eightChar.Month.GetName());
         Assert.Equal("辛巳", eightChar.Day.GetName());
@@ -198,7 +198,7 @@ public class EightCharTest
     [Fact]
     public void Test9()
     {
-        EightChar eightChar = SolarTime.FromYmdHms(1988, 2, 15, 23, 30, 0).GetLunarHour().EightChar;
+        var eightChar = SolarTime.FromYmdHms(1988, 2, 15, 23, 30, 0).GetLunarHour().EightChar;
         Assert.Equal("戊辰", eightChar.Year.GetName());
         Assert.Equal("甲寅", eightChar.Month.GetName());
         Assert.Equal("辛丑", eightChar.Day.GetName());
@@ -211,7 +211,7 @@ public class EightCharTest
     [Fact]
     public void Test11()
     {
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2022, 3, 9, 20, 51, 0), Gender.Man);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2022, 3, 9, 20, 51, 0), Gender.Man);
         Assert.Equal(8, childLimit.YearCount);
         Assert.Equal(9, childLimit.MonthCount);
         Assert.Equal(2, childLimit.DayCount);
@@ -226,7 +226,7 @@ public class EightCharTest
     [Fact]
     public void Test12()
     {
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2018, 6, 11, 9, 30, 0), Gender.Woman);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2018, 6, 11, 9, 30, 0), Gender.Woman);
         Assert.Equal(1, childLimit.YearCount);
         Assert.Equal(9, childLimit.MonthCount);
         Assert.Equal(10, childLimit.DayCount);
@@ -242,7 +242,7 @@ public class EightCharTest
     public void Test13()
     {
         // 童限
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1983, 2, 15, 20, 0, 0), Gender.Woman);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1983, 2, 15, 20, 0, 0), Gender.Woman);
         // 八字
         Assert.Equal("癸亥 甲寅 甲戌 甲戌", childLimit.EightChar.ToString());
         // 童限年数
@@ -259,7 +259,7 @@ public class EightCharTest
         Assert.Equal("己巳", childLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
 
         // 第1轮大运
-        DecadeFortune decadeFortune = childLimit.StartDecadeFortune;
+        var decadeFortune = childLimit.StartDecadeFortune;
         // 开始年龄
         Assert.Equal(7, decadeFortune.StartAge);
         // 结束年龄
@@ -278,7 +278,7 @@ public class EightCharTest
         Assert.Equal("癸亥", decadeFortune.Next(8).GetName());
 
         // 小运
-        Fortune fortune = childLimit.StartFortune;
+        var fortune = childLimit.StartFortune;
         // 年龄
         Assert.Equal(7, fortune.Age);
         // 农历年
@@ -294,7 +294,7 @@ public class EightCharTest
     public void Test14()
     {
         // 童限
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1992, 2, 2, 12, 0, 0), Gender.Man);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1992, 2, 2, 12, 0, 0), Gender.Man);
         // 八字
         Assert.Equal("辛未 辛丑 戊申 戊午", childLimit.EightChar.ToString());
         // 童限年数
@@ -311,7 +311,7 @@ public class EightCharTest
         Assert.Equal("辛巳", childLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.SixtyCycle.GetName());
 
         // 第1轮大运
-        DecadeFortune decadeFortune = childLimit.StartDecadeFortune;
+        var decadeFortune = childLimit.StartDecadeFortune;
         // 开始年龄
         Assert.Equal(10, decadeFortune.StartAge);
         // 结束年龄
@@ -326,7 +326,7 @@ public class EightCharTest
         Assert.Equal("己亥", decadeFortune.Next(1).GetName());
 
         // 小运
-        Fortune fortune = childLimit.StartFortune;
+        var fortune = childLimit.StartFortune;
         // 年龄
         Assert.Equal(10, fortune.Age);
         // 农历年
@@ -347,13 +347,13 @@ public class EightCharTest
     [Fact]
     public void Test15()
     {
-        EightChar eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
-        SixtyCycle year = eightChar.Year;
-        SixtyCycle month = eightChar.Month;
-        SixtyCycle day = eightChar.Day;
-        SixtyCycle hour = eightChar.Hour;
+        var eightChar = new EightChar("丙寅", "癸巳", "癸酉", "己未");
+        var year = eightChar.Year;
+        var month = eightChar.Month;
+        var day = eightChar.Day;
+        var hour = eightChar.Hour;
 
-        HeavenStem me = day.HeavenStem;
+        var me = day.HeavenStem;
         _testOutputHelper.WriteLine(
             $"主星：{me.GetTenStar(year.HeavenStem)} {me.GetTenStar(month.HeavenStem)} 日主 {me.GetTenStar(hour.HeavenStem)}");
         _testOutputHelper.WriteLine($"八字：{year} {month} {day} {hour}");
@@ -387,7 +387,7 @@ public class EightCharTest
     public void Test16()
     {
         // 童限
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1990, 3, 15, 10, 30, 0), Gender.Man);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1990, 3, 15, 10, 30, 0), Gender.Man);
         // 八字
         Assert.Equal("庚午 己卯 己卯 己巳", childLimit.EightChar.ToString());
         // 童限年数
@@ -400,7 +400,7 @@ public class EightCharTest
         Assert.Equal("1997年3月11日 00:22:00", childLimit.EndTime.ToString());
 
         // 小运
-        Fortune fortune = childLimit.StartFortune;
+        var fortune = childLimit.StartFortune;
         // 年龄
         Assert.Equal(7, fortune.Age);
     }
@@ -428,7 +428,7 @@ public class EightCharTest
     [Fact]
     public void Test20()
     {
-        EightChar eightChar = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2024, 1, 29, 9, 33, 0), Gender.Man)
+        var eightChar = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2024, 1, 29, 9, 33, 0), Gender.Man)
             .EightChar;
         Assert.Equal("癸亥", eightChar.OwnSign.GetName());
         Assert.Equal("己未", eightChar.BodySign.GetName());
@@ -493,7 +493,7 @@ public class EightCharTest
     [Fact]
     public void Test29()
     {
-        EightChar eightChar = new EightChar("丙寅", "庚寅", "辛卯", "壬辰");
+        var eightChar = new EightChar("丙寅", "庚寅", "辛卯", "壬辰");
         Assert.Equal("己亥", eightChar.OwnSign.GetName());
         Assert.Equal("乙未", eightChar.BodySign.GetName());
     }
@@ -507,7 +507,7 @@ public class EightCharTest
     [Fact]
     public void Test31()
     {
-        List<SolarTime> solarTimes = new EightChar("丙辰", "丁酉", "丙子", "甲午").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("丙辰", "丁酉", "丙子", "甲午").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -521,7 +521,7 @@ public class EightCharTest
     [Fact]
     public void Test32()
     {
-        List<SolarTime> solarTimes = new EightChar("壬寅", "庚戌", "己未", "乙亥").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("壬寅", "庚戌", "己未", "乙亥").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string> { "2022年11月2日 22:00:00" };
@@ -531,7 +531,7 @@ public class EightCharTest
     [Fact]
     public void Test33()
     {
-        List<SolarTime> solarTimes = new EightChar("己卯", "辛未", "甲戌", "壬申").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("己卯", "辛未", "甲戌", "壬申").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -545,7 +545,7 @@ public class EightCharTest
     [Fact]
     public void Test34()
     {
-        List<SolarTime> solarTimes = new EightChar("庚子", "戊子", "己卯", "庚午").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("庚子", "戊子", "己卯", "庚午").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -559,7 +559,7 @@ public class EightCharTest
     [Fact]
     public void Test35()
     {
-        List<SolarTime> solarTimes = new EightChar("庚子", "癸未", "乙丑", "丁亥").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("庚子", "癸未", "乙丑", "丁亥").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -573,7 +573,7 @@ public class EightCharTest
     [Fact]
     public void Test36()
     {
-        List<SolarTime> solarTimes = new EightChar("癸卯", "甲寅", "甲寅", "甲子").GetSolarTimes(1800, 2024);
+        var solarTimes = new EightChar("癸卯", "甲寅", "甲寅", "甲子").GetSolarTimes(1800, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -587,7 +587,7 @@ public class EightCharTest
     [Fact]
     public void Test37()
     {
-        List<SolarTime> solarTimes = new EightChar("甲辰", "丙寅", "己亥", "戊辰").GetSolarTimes(1800, 2024);
+        var solarTimes = new EightChar("甲辰", "丙寅", "己亥", "戊辰").GetSolarTimes(1800, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -601,7 +601,7 @@ public class EightCharTest
     [Fact]
     public void Test38()
     {
-        List<SolarTime> solarTimes = new EightChar("己亥", "丁丑", "壬寅", "戊申").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("己亥", "丁丑", "壬寅", "戊申").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -615,7 +615,7 @@ public class EightCharTest
     [Fact]
     public void Test39()
     {
-        List<SolarTime> solarTimes = new EightChar("己亥", "丙子", "癸酉", "庚申").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("己亥", "丙子", "癸酉", "庚申").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string> { "1959年12月17日 16:00:00" };
@@ -625,7 +625,7 @@ public class EightCharTest
     [Fact]
     public void Test40()
     {
-        List<SolarTime> solarTimes = new EightChar("丁丑", "癸卯", "癸丑", "辛酉").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("丁丑", "癸卯", "癸丑", "辛酉").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string>
@@ -639,7 +639,7 @@ public class EightCharTest
     [Fact]
     public void Test41()
     {
-        List<SolarTime> solarTimes = new EightChar("乙未", "己卯", "丁丑", "甲辰").GetSolarTimes(1900, 2024);
+        var solarTimes = new EightChar("乙未", "己卯", "丁丑", "甲辰").GetSolarTimes(1900, 2024);
         var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
 
         var expected = new List<string> { "1955年3月17日 08:00:00" };
@@ -658,7 +658,7 @@ public class EightCharTest
         // 采用元亨利贞的起运算法
         ChildLimit.Provider = new China95ChildLimitProvider();
         // 童限
-        ChildLimit childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1986, 5, 29, 13, 37, 0), Gender.Man);
+        var childLimit = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1986, 5, 29, 13, 37, 0), Gender.Man);
         // 童限年数
         Assert.Equal(2, childLimit.YearCount);
         // 童限月数
@@ -674,5 +674,19 @@ public class EightCharTest
 
         // 为了不影响其他测试用例，恢复默认起运算法
         ChildLimit.Provider = new DefaultChildLimitProvider();
+    }
+    
+    [Fact]
+    public void Test46()
+    {
+        LunarHour.Provider = new LunarSect2EightCharProvider();
+        
+        var solarTimes = new EightChar("壬寅", "丙午", "己亥", "丙子").GetSolarTimes(1900, 2024);
+        var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
+
+        var expected = new List<string> { "1962年6月30日 23:00:00", "2022年6月15日 23:00:00" };
+        Assert.Equal(expected, actual);
+
+        LunarHour.Provider = new DefaultEightCharProvider();
     }
 }

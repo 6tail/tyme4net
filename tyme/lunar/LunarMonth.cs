@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using tyme.culture;
 using tyme.culture.fetus;
+using tyme.culture.ren;
 using tyme.culture.star.nine;
 using tyme.jd;
 using tyme.sixtycycle;
@@ -333,5 +334,10 @@ namespace tyme.lunar
         /// 逐月胎神
         /// </summary>
         public FetusMonth Fetus => FetusMonth.FromLunarMonth(this);
+        
+        /// <summary>
+        /// 小六壬
+        /// </summary>
+        public MinorRen MinorRen => MinorRen.FromIndex((Month - 1) % 6);
     }
 }

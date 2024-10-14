@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using tyme.culture;
 using tyme.culture.fetus;
+using tyme.culture.ren;
 using tyme.culture.star.nine;
 using tyme.culture.star.six;
 using tyme.culture.star.twelve;
@@ -344,5 +345,10 @@ namespace tyme.lunar
         /// </summary>
         /// <returns>宜忌列表</returns>
         public List<Taboo> Avoids => Taboo.GetDayAvoids(MonthSixtyCycle, SixtyCycle);
+
+        /// <summary>
+        /// 小六壬
+        /// </summary>
+        public MinorRen MinorRen => LunarMonth.MinorRen.Next(Day - 1);
     }
 }

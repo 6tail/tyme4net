@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using tyme.culture;
+using tyme.culture.ren;
 using tyme.culture.star.nine;
 using tyme.culture.star.twelve;
 using tyme.eightchar;
@@ -319,5 +320,10 @@ namespace tyme.lunar
         /// </summary>
         /// <returns>宜忌列表</returns>
         public List<Taboo> Avoids => Taboo.GetHourAvoids(DaySixtyCycle, SixtyCycle);
+        
+        /// <summary>
+        /// 小六壬
+        /// </summary>
+        public MinorRen MinorRen => LunarDay.MinorRen.Next(IndexInDay);
     }
 }

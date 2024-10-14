@@ -12,10 +12,10 @@
         <Description>Tyme是一个非常强大的日历工具库，可以看作 Lunar 的升级版，拥有更优的设计和扩展性，支持公历和农历、星座、干支、生肖、节气、法定假日等。</Description>
         <Copyright>Copyright (c) 2024 6tail</Copyright>
         <RepositoryUrl>https://github.com/6tail/tyme4net.git</RepositoryUrl>
-        <PackageVersion>1.1.3</PackageVersion>
-        <AssemblyVersion>1.1.3</AssemblyVersion>
-        <FileVersion>1.1.3</FileVersion>
-        <PackageReleaseNotes>优化代码；修复吉神宜趋、凶神宜忌错误；新增Lunar的2种起运流派；新增支持八字晚子时日柱算当天。</PackageReleaseNotes>
+        <PackageVersion>1.1.4</PackageVersion>
+        <AssemblyVersion>1.1.4</AssemblyVersion>
+        <FileVersion>1.1.4</FileVersion>
+        <PackageReleaseNotes>新增八字转公历时刻支持晚子时算当天；新增小六壬。</PackageReleaseNotes>
         <PackageProjectUrl>https://6tail.cn/tyme.html</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
         <Title>Tyme</Title>

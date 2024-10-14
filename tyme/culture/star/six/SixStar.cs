@@ -1,7 +1,7 @@
 ﻿namespace tyme.culture.star.six
 {
     /// <summary>
-    /// 六曜（孔明六曜星、小六壬）
+    /// 六曜（孔明六曜星）
     /// </summary>
     public class SixStar : LoopTyme
     {
