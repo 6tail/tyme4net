@@ -16,6 +16,8 @@ namespace tyme.lunar
     /// </summary>
     public class LunarMonth : AbstractTyme
     {
+        private static object _lock = new object();
+        
         /// <summary>
         /// 缓存
         /// </summary>
@@ -147,36 +149,39 @@ namespace tyme.lunar
         /// <returns>农历月</returns>
         public static LunarMonth FromYm(int year, int month)
         {
-            LunarMonth m;
-            var key = $"{year}{month}";
-            object[] c = null;
-            try
+            lock (_lock)
             {
-                c = Cache[key];
-            }
-            catch
-            {
-                // ignored
-            }
-
-            if (null != c)
-            {
-                m = new LunarMonth(c);
-            }
-            else
-            {
-                m = new LunarMonth(year, month);
-                Cache[key] = new object[]
+                LunarMonth m;
+                var key = $"{year}{month}";
+                object[] c = null;
+                try
                 {
-                    m.Year,
-                    m.MonthWithLeap,
-                    m.DayCount,
-                    m.IndexInYear,
-                    m.FirstJulianDay.Day
-                };
-            }
+                    c = Cache[key];
+                }
+                catch
+                {
+                    // ignored
+                }
 
-            return m;
+                if (null != c)
+                {
+                    m = new LunarMonth(c);
+                }
+                else
+                {
+                    m = new LunarMonth(year, month);
+                    Cache[key] = new object[]
+                    {
+                        m.Year,
+                        m.MonthWithLeap,
+                        m.DayCount,
+                        m.IndexInYear,
+                        m.FirstJulianDay.Day
+                    };
+                }
+
+                return m;
+            }
         }
 
         /// <summary>

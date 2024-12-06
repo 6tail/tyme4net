@@ -43,12 +43,12 @@ namespace tyme.eightchar
         /// <summary>
         /// 年龄
         /// </summary>
-        public int Age => ChildLimit.YearCount + 1 + Index;
+        public int Age => ChildLimit.EndTime.Year - ChildLimit.StartTime.Year + 1 + Index;
 
         /// <summary>
         /// 农历年
         /// </summary>
-        public LunarYear LunarYear => ChildLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.Next(Index);
+        public LunarYear LunarYear => ChildLimit.EndLunarYear.Next(Index);
 
         /// <summary>
         /// 干支

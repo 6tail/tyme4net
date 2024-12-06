@@ -43,7 +43,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 开始年龄
         /// </summary>
-        public int StartAge => ChildLimit.YearCount + 1 + Index * 10;
+        public int StartAge => ChildLimit.EndTime.Year - ChildLimit.StartTime.Year + 1 + Index * 10;
 
         /// <summary>
         /// 结束年龄
@@ -53,7 +53,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 开始农历年
         /// </summary>
-        public LunarYear StartLunarYear => ChildLimit.EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear.Next(Index * 10);
+        public LunarYear StartLunarYear => ChildLimit.EndLunarYear.Next(Index * 10);
 
         /// <summary>
         /// 结束农历年

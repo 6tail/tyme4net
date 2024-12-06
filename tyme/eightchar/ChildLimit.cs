@@ -1,6 +1,7 @@
 ﻿using tyme.eightchar.provider;
 using tyme.eightchar.provider.impl;
 using tyme.enums;
+using tyme.lunar;
 using tyme.solar;
 
 namespace tyme.eightchar
@@ -117,5 +118,27 @@ namespace tyme.eightchar
         /// 小运
         /// </summary>
         public Fortune StartFortune => Fortune.FromChildLimit(this, 0);
+
+        /// <summary>
+        /// 结束农历年
+        /// </summary>
+        public LunarYear EndLunarYear
+        {
+            get
+            {
+                var solarYear = EndTime.Year;
+                var y = EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear;
+                if (y.Year < solarYear)
+                {
+                    // 正月初一在立春之后的，农历年往后推一年
+                    if (LunarHour.FromYmdHms(solarYear, 1, 1, 0, 0, 0).GetSolarTime().IsAfter(SolarTerm.FromIndex(solarYear, 3).JulianDay.GetSolarTime()))
+                    {
+                        y = y.Next(1);
+                    }
+                }
+
+                return y;
+            }
+        }
     }
 }

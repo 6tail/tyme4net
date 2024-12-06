@@ -4,10 +4,12 @@ using tyme.culture.dog;
 using tyme.culture.nine;
 using tyme.culture.phenology;
 using tyme.culture.plumrain;
+using tyme.enums;
 using tyme.festival;
 using tyme.holiday;
 using tyme.jd;
 using tyme.lunar;
+using tyme.sixtycycle;
 
 namespace tyme.solar
 {
@@ -351,6 +353,62 @@ namespace tyme.solar
 
                 var days = Subtract(start);
                 return new NineDay(Nine.FromIndex(days / 9), days % 9);
+            }
+        }
+
+        /// <summary>
+        /// 人元司令分野
+        /// </summary>
+        public HideHeavenStemDay HideHeavenStemDay
+        {
+            get
+            {
+                int[] dayCounts = { 3, 5, 7, 9, 10, 30 };
+                var term = Term;
+                if (term.IsQi)
+                {
+                    term = term.Next(-1);
+                }
+
+                var dayIndex = Subtract(term.JulianDay.GetSolarDay());
+                var startIndex = (term.Index - 1) * 3;
+                var data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95".Substring(startIndex, 6);
+                var days = 0;
+                var heavenStemIndex = 0;
+                var typeIndex = 0;
+                while (typeIndex < 3)
+                {
+                    var i = typeIndex * 2;
+                    var d = data.Substring(i, 1);
+                    var count = 0;
+                    if (d != "x")
+                    {
+                        heavenStemIndex = int.Parse(d);
+                        count = dayCounts[int.Parse(data.Substring(i + 1, 1))];
+                        days += count;
+                    }
+
+                    if (dayIndex <= days)
+                    {
+                        dayIndex -= days - count;
+                        break;
+                    }
+
+                    typeIndex++;
+                }
+
+                var type = HideHeavenStemType.Main;
+                switch (typeIndex)
+                {
+                    case 0:
+                        type = HideHeavenStemType.Residual;
+                        break;
+                    case 1:
+                        type = HideHeavenStemType.Middle;
+                        break;
+                }
+
+                return new HideHeavenStemDay(new HideHeavenStem(heavenStemIndex, type), dayIndex);
             }
         }
 

@@ -402,7 +402,7 @@ public class EightCharTest
         // 小运
         var fortune = childLimit.StartFortune;
         // 年龄
-        Assert.Equal(7, fortune.Age);
+        Assert.Equal(8, fortune.Age);
     }
 
     [Fact]

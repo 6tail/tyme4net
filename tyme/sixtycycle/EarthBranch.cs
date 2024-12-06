@@ -1,11 +1,12 @@
-﻿using tyme.culture;
+﻿using System.Collections.Generic;
+using tyme.culture;
 using tyme.culture.pengzu;
 using tyme.enums;
 
 namespace tyme.sixtycycle
 {
     /// <summary>
-    /// 地支
+    /// 地支（地元）
     /// </summary>
     public class EarthBranch : LoopTyme
     {
@@ -98,6 +99,30 @@ namespace tyme.sixtycycle
             {
                 var n = new[] { -1, 7, 4, -1, 9, 4, -1, 1, 4, -1, 3, -1 }[Index];
                 return n == -1 ? null : HeavenStem.FromIndex(n);
+            }
+        }
+
+        /// <summary>
+        /// 藏干列表
+        /// </summary>
+        public List<HideHeavenStem> HideHeavenStems
+        {
+            get
+            {
+                var l = new List<HideHeavenStem> { new HideHeavenStem(HideHeavenStemMain, HideHeavenStemType.Main) };
+                var o = HideHeavenStemMiddle;
+                if (null != o)
+                {
+                    l.Add(new HideHeavenStem(o, HideHeavenStemType.Middle));
+                }
+
+                o = HideHeavenStemResidual;
+                if (null != o)
+                {
+                    l.Add(new HideHeavenStem(o, HideHeavenStemType.Residual));
+                }
+
+                return l;
             }
         }
 

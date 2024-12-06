@@ -6,7 +6,7 @@ using tyme.enums;
 namespace tyme.sixtycycle
 {
     /// <summary>
-    /// 天干
+    /// 天干（天元）
     /// </summary>
     public class HeavenStem : LoopTyme
     {
