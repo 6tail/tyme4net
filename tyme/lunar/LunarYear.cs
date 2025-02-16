@@ -171,5 +171,10 @@ namespace tyme.lunar
                 return l;
             }
         }
+        
+        /// <summary>
+        /// 灶马头
+        /// </summary>
+        public KitchenGodSteed KitchenGodSteed => KitchenGodSteed.FromLunarYear(Year);
     }
 }

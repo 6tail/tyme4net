@@ -60,7 +60,7 @@
         /// <summary>
         /// 颜色
         /// </summary>
-        public string Color => new[] { "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫" }[Index];
+        public string Color => new[] { "白", "黑", "碧", "绿", "黄", "白", "赤", "白", "紫" }[Index];
 
         /// <summary>
         /// 五行

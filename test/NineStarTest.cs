@@ -53,7 +53,7 @@ public class NineStarTest
     public void Test5()
     {
         NineStar nineStar = LunarMonth.FromYm(2022, 1).NineStar;
-        Assert.Equal("二黒土", nineStar.ToString());
+        Assert.Equal("二黑土", nineStar.ToString());
         Assert.Equal("天璇", nineStar.Dipper.ToString());
     }
 

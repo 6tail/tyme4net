@@ -151,35 +151,21 @@ namespace tyme.lunar
         {
             lock (_lock)
             {
-                LunarMonth m;
                 var key = $"{year}{month}";
-                object[] c = null;
-                try
+                if (Cache.TryGetValue(key, out var c))
                 {
-                    c = Cache[key];
-                }
-                catch
-                {
-                    // ignored
+                    return new LunarMonth(c);
                 }
 
-                if (null != c)
+                var m = new LunarMonth(year, month);
+                Cache[key] = new object[]
                 {
-                    m = new LunarMonth(c);
-                }
-                else
-                {
-                    m = new LunarMonth(year, month);
-                    Cache[key] = new object[]
-                    {
-                        m.Year,
-                        m.MonthWithLeap,
-                        m.DayCount,
-                        m.IndexInYear,
-                        m.FirstJulianDay.Day
-                    };
-                }
-
+                    m.Year,
+                    m.MonthWithLeap,
+                    m.DayCount,
+                    m.IndexInYear,
+                    m.FirstJulianDay.Day
+                };
                 return m;
             }
         }
@@ -320,8 +306,17 @@ namespace tyme.lunar
         /// <summary>
         /// 九星
         /// </summary>
-        public NineStar NineStar =>
-            NineStar.FromIndex(27 - LunarYear.SixtyCycle.EarthBranch.Index % 3 * 3 - SixtyCycle.EarthBranch.Index);
+        public NineStar NineStar
+        {
+            get
+            {
+                var index = SixtyCycle.EarthBranch.Index;
+                if (index < 2) {
+                    index += 3;
+                }
+                return NineStar.FromIndex(27 - LunarYear.SixtyCycle.EarthBranch.Index % 3 * 3 - index);
+            }
+        }
 
         /// <summary>
         /// 太岁方位

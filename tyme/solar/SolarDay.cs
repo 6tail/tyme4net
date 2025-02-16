@@ -280,18 +280,12 @@ namespace tyme.solar
         {
             get
             {
+                // 夏至
                 var xiaZhi = SolarTerm.FromIndex(Year, 12);
                 // 第1个庚日
                 var start = xiaZhi.JulianDay.GetSolarDay();
-                var add = 6 - start.GetLunarDay().SixtyCycle.HeavenStem.Index;
-                if (add < 0)
-                {
-                    add += 10;
-                }
-
                 // 第3个庚日，即初伏第1天
-                add += 20;
-                start = start.Next(add);
+                start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(6) + 20);
                 var days = Subtract(start);
                 // 初伏以前
                 if (days < 0)
@@ -422,26 +416,14 @@ namespace tyme.solar
                 // 芒种
                 var grainInEar = SolarTerm.FromIndex(Year, 11);
                 var start = grainInEar.JulianDay.GetSolarDay();
-                var add = 2 - start.GetLunarDay().SixtyCycle.HeavenStem.Index;
-                if (add < 0)
-                {
-                    add += 10;
-                }
-
                 // 芒种后的第1个丙日
-                start = start.Next(add);
+                start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(2));
 
                 // 小暑
                 var slightHeat = grainInEar.Next(2);
                 var end = slightHeat.JulianDay.GetSolarDay();
-                add = 7 - end.GetLunarDay().SixtyCycle.EarthBranch.Index;
-                if (add < 0)
-                {
-                    add += 12;
-                }
-
                 // 小暑后的第1个未日
-                end = end.Next(add);
+                end = end.Next(end.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(7));
 
                 if (IsBefore(start) || IsAfter(end))
                 {

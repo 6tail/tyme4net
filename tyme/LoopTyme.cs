@@ -83,5 +83,14 @@ namespace tyme
         protected int NextIndex(int n) {
             return IndexOf(Index + n);
         }
+        
+        /// <summary>
+        /// 到目标索引的步数
+        /// </summary>
+        /// <param name="targetIndex">目标索引</param>
+        /// <returns>步数</returns>
+        public int StepsTo(int targetIndex) {
+            return IndexOf(targetIndex - Index);
+        }
     }
 }
