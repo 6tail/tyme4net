@@ -122,23 +122,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 结束农历年
         /// </summary>
-        public LunarYear EndLunarYear
-        {
-            get
-            {
-                var solarYear = EndTime.Year;
-                var y = EndTime.GetLunarHour().LunarDay.LunarMonth.LunarYear;
-                if (y.Year < solarYear)
-                {
-                    // 正月初一在立春之后的，农历年往后推一年
-                    if (LunarHour.FromYmdHms(solarYear, 1, 1, 0, 0, 0).GetSolarTime().IsAfter(SolarTerm.FromIndex(solarYear, 3).JulianDay.GetSolarTime()))
-                    {
-                        y = y.Next(1);
-                    }
-                }
+        public LunarYear EndLunarYear =>  LunarYear.FromYear(StartTime.GetLunarHour().Year + EndTime.Year - StartTime.Year);
 
-                return y;
-            }
-        }
     }
 }

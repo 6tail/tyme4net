@@ -142,16 +142,9 @@ namespace tyme.festival
         /// <returns>推移后的公历现代节日</returns>
         public new SolarFestival Next(int n)
         {
-            if (n == 0) {
-                return FromYmd(Day.Year, Day.Month, Day.Day);
-            }
             var size = Names.Length;
-            var t = Index + n;
-            var offset = IndexOf(t, size);
-            if (t < 0) {
-                t -= size;
-            }
-            return FromIndex(Day.Year + t / size, offset);
+            var i = Index + n;
+            return FromIndex((Day.Year * size + i) / size, IndexOf(i, size));
         }
     }
 }

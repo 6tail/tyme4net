@@ -80,20 +80,8 @@ namespace tyme.solar
         /// <returns>推移后的公历半年</returns>
         public new SolarHalfYear Next(int n)
         {
-            var i = Index;
-            var y = Year;
-            if (n != 0)
-            {
-                i += n;
-                y += i / 2;
-                i %= 2;
-                if (i < 0)
-                {
-                    i += 2;
-                    y -= 1;
-                }
-            }
-            return FromIndex(y, i);
+            var i = Index + n;
+            return FromIndex((Year * 2 + i) / 2, IndexOf(i, 2));
         }
 
         /// <summary>

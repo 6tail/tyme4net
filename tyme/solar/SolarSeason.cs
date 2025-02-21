@@ -80,20 +80,8 @@ namespace tyme.solar
         /// <returns>推移后的公历季度</returns>
         public new SolarSeason Next(int n)
         {
-            var i = Index;
-            var y = Year;
-            if (n != 0)
-            {
-                i += n;
-                y += i / 4;
-                i %= 4;
-                if (i < 0)
-                {
-                    i += 4;
-                    y -= 1;
-                }
-            }
-            return FromIndex(y, i);
+            var i = Index + n;
+            return FromIndex((Year * 4 + i) / 4, IndexOf(i, 4));
         }
 
         /// <summary>

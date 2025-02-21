@@ -317,9 +317,9 @@ public class EightCharTest
         // 结束年龄
         Assert.Equal(19, decadeFortune.EndAge);
         // 开始年
-        Assert.Equal(2001, decadeFortune.StartLunarYear.Year);
+        Assert.Equal(2000, decadeFortune.StartLunarYear.Year);
         // 结束年
-        Assert.Equal(2010, decadeFortune.EndLunarYear.Year);
+        Assert.Equal(2009, decadeFortune.EndLunarYear.Year);
         // 干支
         Assert.Equal("庚子", decadeFortune.GetName());
         // 下一大运
@@ -330,7 +330,7 @@ public class EightCharTest
         // 年龄
         Assert.Equal(10, fortune.Age);
         // 农历年
-        Assert.Equal(2001, fortune.LunarYear.Year);
+        Assert.Equal(2000, fortune.LunarYear.Year);
         // 干支
         Assert.Equal("戊申", fortune.GetName());
         // 小运推移
@@ -338,7 +338,7 @@ public class EightCharTest
         Assert.Equal("庚戌", fortune.Next(-2).GetName());
 
         // 流年
-        Assert.Equal("辛巳", fortune.LunarYear.SixtyCycle.GetName());
+        Assert.Equal("庚辰", fortune.LunarYear.SixtyCycle.GetName());
     }
 
     /// <summary>

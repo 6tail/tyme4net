@@ -17,6 +17,11 @@ namespace tyme.solar
             "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
             "秋分", "寒露", "霜降", "立冬", "小雪", "大雪"
         };
+        
+        /// <summary>
+        /// 年
+        /// </summary>
+        public int Year { get; }
 
         /// <summary>
         /// 粗略的儒略日
@@ -30,7 +35,9 @@ namespace tyme.solar
         /// <param name="index">索引值</param>
         public SolarTerm(int year, int index) : base(Names, index)
         {
-            InitByYear(year, index);
+            Year = year;
+            var size = Size;
+            InitByYear((year * size + index) / size, Index);
         }
 
         /// <summary>
@@ -40,17 +47,8 @@ namespace tyme.solar
         /// <param name="name">名称</param>
         public SolarTerm(int year, string name) : base(Names, name)
         {
+            Year = year;
             InitByYear(year, Index);
-        }
-
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        /// <param name="cursoryJulianDay">粗略的儒略日</param>
-        /// <param name="index">索引值</param>
-        public SolarTerm(double cursoryJulianDay, int index) : base(Names, index)
-        {
-            CursoryJulianDay = cursoryJulianDay;
         }
 
         /// <summary>
@@ -67,7 +65,6 @@ namespace tyme.solar
             {
                 w -= 365.2422;
             }
-
             CursoryJulianDay = ShouXingUtil.CalcQi(w + 15.2184 * offset);
         }
 
@@ -100,7 +97,9 @@ namespace tyme.solar
         /// <returns>推移后的节气</returns>
         public new SolarTerm Next(int n)
         {
-            return new SolarTerm(CursoryJulianDay + 15.2184 * n, NextIndex(n));
+            var size = Size;
+            var i = Index + n;
+            return FromIndex((Year * size + i) / size, IndexOf(i));
         }
 
         /// <summary>
