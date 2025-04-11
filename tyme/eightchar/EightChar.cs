@@ -53,23 +53,19 @@ namespace tyme.eightchar
         /// <param name="month">月干支</param>
         /// <param name="day">日干支</param>
         /// <param name="hour">时干支</param>
-        public EightChar(string year, string month, string day, string hour) : this(SixtyCycle.FromName(year),
-            SixtyCycle.FromName(month), SixtyCycle.FromName(day), SixtyCycle.FromName(hour))
+        public EightChar(string year, string month, string day, string hour) : this(SixtyCycle.FromName(year), SixtyCycle.FromName(month), SixtyCycle.FromName(day), SixtyCycle.FromName(hour))
         {
         }
 
         /// <summary>
         /// 胎元
         /// </summary>
-        public SixtyCycle FetalOrigin =>
-            SixtyCycle.FromName(Month.HeavenStem.Next(1).GetName() + Month.EarthBranch.Next(3).GetName());
+        public SixtyCycle FetalOrigin => SixtyCycle.FromName(Month.HeavenStem.Next(1).GetName() + Month.EarthBranch.Next(3).GetName());
 
         /// <summary>
         /// 胎息
         /// </summary>
-        public SixtyCycle FetalBreath => SixtyCycle.FromName(Day.HeavenStem.Next(5).GetName() +
-                                                             EarthBranch.FromIndex(13 - Day.EarthBranch.Index)
-                                                                 .GetName());
+        public SixtyCycle FetalBreath => SixtyCycle.FromName(Day.HeavenStem.Next(5).GetName() + EarthBranch.FromIndex(13 - Day.EarthBranch.Index).GetName());
 
         /// <summary>
         /// 命宫
@@ -81,8 +77,7 @@ namespace tyme.eightchar
                 var offset = Month.EarthBranch.Next(-1).Index + Hour.EarthBranch.Next(-1).Index;
                 offset = (offset >= 14 ? 26 : 14) - offset;
                 offset -= 1;
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() +
-                                           EarthBranch.FromIndex(2 + offset).GetName());
+                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() + EarthBranch.FromIndex(2 + offset).GetName());
             }
         }
 
@@ -93,17 +88,15 @@ namespace tyme.eightchar
         {
             get
             {
-                var offset = Month.EarthBranch.Index + Hour.EarthBranch.Index;
-                offset %= 12;
-                offset -= 1;
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() +
-                                           EarthBranch.FromIndex(2 + offset).GetName());
+                var offset = (Month.EarthBranch.Index + Hour.EarthBranch.Index - 1) % 12;
+                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() + EarthBranch.FromIndex(2 + offset).GetName());
             }
         }
 
         /// <summary>
         /// 建除十二值神
         /// </summary>
+        [Obsolete("该方法已过时，请使用SixtyCycleDay")]
         public Duty Duty => Duty.FromIndex(Day.EarthBranch.Index - Month.EarthBranch.Index);
 
         /// <summary>

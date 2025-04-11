@@ -1,4 +1,5 @@
-﻿using tyme.lunar;
+﻿using System;
+using tyme.lunar;
 using tyme.sixtycycle;
 
 namespace tyme.eightchar
@@ -43,12 +44,18 @@ namespace tyme.eightchar
         /// <summary>
         /// 年龄
         /// </summary>
-        public int Age => ChildLimit.EndTime.Year - ChildLimit.StartTime.Year + 1 + Index;
+        public int Age => ChildLimit.EndSixtyCycleYear.Year - ChildLimit.StartSixtyCycleYear.Year + 1 + Index;
 
         /// <summary>
         /// 农历年
         /// </summary>
+        [Obsolete("该方法已过时，请使用EndSixtyCycleYear")]
         public LunarYear LunarYear => ChildLimit.EndLunarYear.Next(Index);
+        
+        /// <summary>
+        /// 干支年
+        /// </summary>
+        public SixtyCycleYear SixtyCycleYear => ChildLimit.EndSixtyCycleYear.Next(Index);
 
         /// <summary>
         /// 干支

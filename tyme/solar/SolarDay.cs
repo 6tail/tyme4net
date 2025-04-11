@@ -21,11 +21,7 @@ namespace tyme.solar
         /// <summary>
         /// 名称
         /// </summary>
-        public static string[] Names =
-        {
-            "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日", "13日", "14日", "15日", "16日",
-            "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日", "28日", "29日", "30日", "31日"
-        };
+        public static string[] Names = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日", "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日", "28日", "29日", "30日", "31日" };
 
         /// <summary>
         /// 公历月
@@ -427,6 +423,15 @@ namespace tyme.solar
             }
 
             return LunarDay.FromYmd(m.Year, m.MonthWithLeap, days + 1);
+        }
+
+        /// <summary>
+        /// 干支日
+        /// </summary>
+        /// <returns>干支日</returns>
+        public SixtyCycleDay GetSixtyCycleDay()
+        {
+            return SixtyCycleDay.FromSolarDay(this);
         }
 
         /// <summary>

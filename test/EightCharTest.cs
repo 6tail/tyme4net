@@ -265,9 +265,9 @@ public class EightCharTest
         // 结束年龄
         Assert.Equal(16, decadeFortune.EndAge);
         // 开始年
-        Assert.Equal(1989, decadeFortune.StartLunarYear.Year);
+        Assert.Equal(1989, decadeFortune.StartSixtyCycleYear.Year);
         // 结束年
-        Assert.Equal(1998, decadeFortune.EndLunarYear.Year);
+        Assert.Equal(1998, decadeFortune.EndSixtyCycleYear.Year);
         // 干支
         Assert.Equal("乙卯", decadeFortune.GetName());
         // 下一大运
@@ -281,13 +281,13 @@ public class EightCharTest
         var fortune = childLimit.StartFortune;
         // 年龄
         Assert.Equal(7, fortune.Age);
-        // 农历年
-        Assert.Equal(1989, fortune.LunarYear.Year);
+        // 干支年
+        Assert.Equal(1989, fortune.SixtyCycleYear.Year);
         // 干支
         Assert.Equal("辛巳", fortune.GetName());
 
         // 流年
-        Assert.Equal("己巳", fortune.LunarYear.SixtyCycle.GetName());
+        Assert.Equal("己巳", fortune.SixtyCycleYear.SixtyCycle.GetName());
     }
 
     [Fact]
@@ -317,9 +317,9 @@ public class EightCharTest
         // 结束年龄
         Assert.Equal(19, decadeFortune.EndAge);
         // 开始年
-        Assert.Equal(2000, decadeFortune.StartLunarYear.Year);
+        Assert.Equal(2001, decadeFortune.StartSixtyCycleYear.Year);
         // 结束年
-        Assert.Equal(2009, decadeFortune.EndLunarYear.Year);
+        Assert.Equal(2010, decadeFortune.EndSixtyCycleYear.Year);
         // 干支
         Assert.Equal("庚子", decadeFortune.GetName());
         // 下一大运
@@ -329,8 +329,8 @@ public class EightCharTest
         var fortune = childLimit.StartFortune;
         // 年龄
         Assert.Equal(10, fortune.Age);
-        // 农历年
-        Assert.Equal(2000, fortune.LunarYear.Year);
+        // 干支年
+        Assert.Equal(2001, fortune.SixtyCycleYear.Year);
         // 干支
         Assert.Equal("戊申", fortune.GetName());
         // 小运推移
@@ -338,7 +338,7 @@ public class EightCharTest
         Assert.Equal("庚戌", fortune.Next(-2).GetName());
 
         // 流年
-        Assert.Equal("庚辰", fortune.LunarYear.SixtyCycle.GetName());
+        Assert.Equal("辛巳", fortune.SixtyCycleYear.SixtyCycle.GetName());
     }
 
     /// <summary>
@@ -354,28 +354,21 @@ public class EightCharTest
         var hour = eightChar.Hour;
 
         var me = day.HeavenStem;
-        _testOutputHelper.WriteLine(
-            $"主星：{me.GetTenStar(year.HeavenStem)} {me.GetTenStar(month.HeavenStem)} 日主 {me.GetTenStar(hour.HeavenStem)}");
+        _testOutputHelper.WriteLine($"主星：{me.GetTenStar(year.HeavenStem)} {me.GetTenStar(month.HeavenStem)} 日主 {me.GetTenStar(hour.HeavenStem)}");
         _testOutputHelper.WriteLine($"八字：{year} {month} {day} {hour}");
-        _testOutputHelper.WriteLine(
-            $"藏干：[{year.EarthBranch.HideHeavenStemMain} {year.EarthBranch.HideHeavenStemMiddle} {year.EarthBranch.HideHeavenStemResidual}] [{month.EarthBranch.HideHeavenStemMain} {month.EarthBranch.HideHeavenStemMiddle} {month.EarthBranch.HideHeavenStemResidual}] [{day.EarthBranch.HideHeavenStemMain} {day.EarthBranch.HideHeavenStemMiddle} {day.EarthBranch.HideHeavenStemResidual}] [{hour.EarthBranch.HideHeavenStemMain} {hour.EarthBranch.HideHeavenStemMiddle} {hour.EarthBranch.HideHeavenStemResidual}]");
-        _testOutputHelper.WriteLine(
-            $"副星：[{me.GetTenStar(year.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(year.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(year.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(month.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(month.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(month.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(day.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(day.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(day.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(hour.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(hour.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(hour.EarthBranch.HideHeavenStemResidual)}]");
-        _testOutputHelper.WriteLine(
-            $"五行：{year.HeavenStem.Element}{year.EarthBranch.Element} {month.HeavenStem.Element}{month.EarthBranch.Element} {day.HeavenStem.Element}{day.EarthBranch.Element} {hour.HeavenStem.Element}{hour.EarthBranch.Element}");
+        _testOutputHelper.WriteLine($"藏干：[{year.EarthBranch.HideHeavenStemMain} {year.EarthBranch.HideHeavenStemMiddle} {year.EarthBranch.HideHeavenStemResidual}] [{month.EarthBranch.HideHeavenStemMain} {month.EarthBranch.HideHeavenStemMiddle} {month.EarthBranch.HideHeavenStemResidual}] [{day.EarthBranch.HideHeavenStemMain} {day.EarthBranch.HideHeavenStemMiddle} {day.EarthBranch.HideHeavenStemResidual}] [{hour.EarthBranch.HideHeavenStemMain} {hour.EarthBranch.HideHeavenStemMiddle} {hour.EarthBranch.HideHeavenStemResidual}]");
+        _testOutputHelper.WriteLine($"副星：[{me.GetTenStar(year.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(year.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(year.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(month.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(month.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(month.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(day.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(day.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(day.EarthBranch.HideHeavenStemResidual)}] [{me.GetTenStar(hour.EarthBranch.HideHeavenStemMain)} {me.GetTenStar(hour.EarthBranch.HideHeavenStemMiddle)} {me.GetTenStar(hour.EarthBranch.HideHeavenStemResidual)}]");
+        _testOutputHelper.WriteLine($"五行：{year.HeavenStem.Element}{year.EarthBranch.Element} {month.HeavenStem.Element}{month.EarthBranch.Element} {day.HeavenStem.Element}{day.EarthBranch.Element} {hour.HeavenStem.Element}{hour.EarthBranch.Element}");
         _testOutputHelper.WriteLine($"纳音：{year.Sound} {month.Sound} {day.Sound} {hour.Sound}");
-        _testOutputHelper.WriteLine(
-            $"星运：{me.GetTerrain(year.EarthBranch)} {me.GetTerrain(month.EarthBranch)} {me.GetTerrain(day.EarthBranch)} {me.GetTerrain(hour.EarthBranch)}");
-        _testOutputHelper.WriteLine(
-            $"自坐：{year.HeavenStem.GetTerrain(year.EarthBranch)} {month.HeavenStem.GetTerrain(month.EarthBranch)} {day.HeavenStem.GetTerrain(day.EarthBranch)} {hour.HeavenStem.GetTerrain(hour.EarthBranch)}");
+        _testOutputHelper.WriteLine($"星运：{me.GetTerrain(year.EarthBranch)} {me.GetTerrain(month.EarthBranch)} {me.GetTerrain(day.EarthBranch)} {me.GetTerrain(hour.EarthBranch)}");
+        _testOutputHelper.WriteLine($"自坐：{year.HeavenStem.GetTerrain(year.EarthBranch)} {month.HeavenStem.GetTerrain(month.EarthBranch)} {day.HeavenStem.GetTerrain(day.EarthBranch)} {hour.HeavenStem.GetTerrain(hour.EarthBranch)}");
         _testOutputHelper.WriteLine($"纳音：{year.Sound} {month.Sound} {day.Sound} {hour.Sound}");
 
         var yearExtraEarthBranches = string.Join(",", year.ExtraEarthBranches.Select(o => o.ToString()));
         var monthExtraEarthBranches = string.Join(",", month.ExtraEarthBranches.Select(o => o.ToString()));
         var dayExtraEarthBranches = string.Join(",", day.ExtraEarthBranches.Select(o => o.ToString()));
         var hourExtraEarthBranches = string.Join(",", hour.ExtraEarthBranches.Select(o => o.ToString()));
-        _testOutputHelper.WriteLine(
-            $"空亡：{yearExtraEarthBranches} {monthExtraEarthBranches} {dayExtraEarthBranches} {hourExtraEarthBranches}");
+        _testOutputHelper.WriteLine($"空亡：{yearExtraEarthBranches} {monthExtraEarthBranches} {dayExtraEarthBranches} {hourExtraEarthBranches}");
         
         _testOutputHelper.WriteLine($"胎元：{eightChar.FetalOrigin}({eightChar.FetalOrigin.Sound})");
         _testOutputHelper.WriteLine($"胎息：{eightChar.FetalBreath}({eightChar.FetalBreath.Sound})");
@@ -420,16 +413,13 @@ public class EightCharTest
     [Fact]
     public void Test19()
     {
-        Assert.Equal("甲戌",
-            new EightChar(SixtyCycle.FromName("甲子"), SixtyCycle.FromName("壬申"), null, SixtyCycle.FromName("乙亥")).OwnSign
-                .GetName());
+        Assert.Equal("甲戌", new EightChar(SixtyCycle.FromName("甲子"), SixtyCycle.FromName("壬申"), null, SixtyCycle.FromName("乙亥")).OwnSign.GetName());
     }
 
     [Fact]
     public void Test20()
     {
-        var eightChar = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2024, 1, 29, 9, 33, 0), Gender.Man)
-            .EightChar;
+        var eightChar = ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2024, 1, 29, 9, 33, 0), Gender.Man).EightChar;
         Assert.Equal("癸亥", eightChar.OwnSign.GetName());
         Assert.Equal("己未", eightChar.BodySign.GetName());
     }
@@ -438,32 +428,25 @@ public class EightCharTest
     public void Test21()
     {
         Assert.Equal("庚子",
-            new EightChar(SixtyCycle.FromName("辛亥"), SixtyCycle.FromName("乙未"), null, SixtyCycle.FromName("甲辰"))
-                .BodySign.GetName());
+            new EightChar(SixtyCycle.FromName("辛亥"), SixtyCycle.FromName("乙未"), null, SixtyCycle.FromName("甲辰")).BodySign.GetName());
     }
 
     [Fact]
     public void Test22()
     {
-        Assert.Equal("丙寅",
-            ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1990, 1, 27, 0, 0, 0), Gender.Man).EightChar.BodySign
-                .GetName());
+        Assert.Equal("丙寅", ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1990, 1, 27, 0, 0, 0), Gender.Man).EightChar.BodySign.GetName());
     }
 
     [Fact]
     public void Test23()
     {
-        Assert.Equal("甲戌",
-            ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2019, 3, 7, 8, 0, 0), Gender.Man).EightChar.OwnSign
-                .GetName());
+        Assert.Equal("甲戌", ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2019, 3, 7, 8, 0, 0), Gender.Man).EightChar.OwnSign.GetName());
     }
 
     [Fact]
     public void Test24()
     {
-        Assert.Equal("丁丑",
-            ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2019, 3, 27, 2, 0, 0), Gender.Man).EightChar.OwnSign
-                .GetName());
+        Assert.Equal("丁丑", ChildLimit.FromSolarTime(SolarTime.FromYmdHms(2019, 3, 27, 2, 0, 0), Gender.Man).EightChar.OwnSign.GetName());
     }
 
     [Fact]
@@ -475,13 +458,13 @@ public class EightCharTest
     [Fact]
     public void Test26()
     {
-        Assert.Equal("己丑", SolarTime.FromYmdHms(1986, 5, 29, 13, 37, 0).GetLunarHour().EightChar.BodySign.GetName());
+        Assert.Equal("辛丑", SolarTime.FromYmdHms(1986, 5, 29, 13, 37, 0).GetLunarHour().EightChar.BodySign.GetName());
     }
 
     [Fact]
     public void Test27()
     {
-        Assert.Equal("乙丑", SolarTime.FromYmdHms(1994, 12, 6, 2, 0, 0).GetLunarHour().EightChar.BodySign.GetName());
+        Assert.Equal("丁丑", SolarTime.FromYmdHms(1994, 12, 6, 2, 0, 0).GetLunarHour().EightChar.BodySign.GetName());
     }
 
     [Fact]

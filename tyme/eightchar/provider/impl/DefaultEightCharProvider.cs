@@ -10,7 +10,7 @@ namespace tyme.eightchar.provider.impl
         /// <inheritdoc />
         public EightChar GetEightChar(LunarHour hour)
         {
-            return new EightChar(hour.YearSixtyCycle, hour.MonthSixtyCycle, hour.DaySixtyCycle, hour.SixtyCycle);
+            return hour.GetSixtyCycleHour().EightChar;
         }
     }
 }

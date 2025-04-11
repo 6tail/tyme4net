@@ -1,6 +1,7 @@
 ﻿using System;
 using tyme.jd;
 using tyme.lunar;
+using tyme.sixtycycle;
 
 namespace tyme.solar
 {
@@ -253,6 +254,15 @@ namespace tyme.solar
         {
             var d = SolarDay.GetLunarDay();
             return LunarHour.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
+        }
+
+        /// <summary>
+        /// 干支时辰
+        /// </summary>
+        /// <returns>干支时辰</returns>
+        public SixtyCycleHour GetSixtyCycleHour()
+        {
+            return SixtyCycleHour.FromSolarTime(this);
         }
     }
 }

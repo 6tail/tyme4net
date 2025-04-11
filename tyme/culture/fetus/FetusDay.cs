@@ -1,5 +1,6 @@
 ﻿using tyme.enums;
 using tyme.lunar;
+using tyme.sixtycycle;
 
 namespace tyme.culture.fetus
 {
@@ -31,17 +32,12 @@ namespace tyme.culture.fetus
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="lunarDay">农历日</param>
-        public FetusDay(LunarDay lunarDay)
+        /// <param name="sixtyCycle">干支</param>
+        public FetusDay(SixtyCycle sixtyCycle)
         {
-            var sixtyCycle = lunarDay.SixtyCycle;
             FetusHeavenStem = new FetusHeavenStem(sixtyCycle.HeavenStem.Index % 5);
             FetusEarthBranch = new FetusEarthBranch(sixtyCycle.EarthBranch.Index % 6);
-            var index = new[]
-            {
-                3, 3, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, -9, -9, -9, -9,
-                -9, -5, -5, -1, -1, -1, -3, -7, -7, -7, -7, -5, 7, 7, 7, 7, 7, 7, 2, 2, 2, 2, 2, 3, 3, 3, 3
-            }[sixtyCycle.Index];
+            var index = new[]{3, 3, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0, -9, -9, -9, -9, -9, -5, -5, -1, -1, -1, -3, -7, -7, -7, -7, -5, 7, 7, 7, 7, 7, 7, 2, 2, 2, 2, 2, 3, 3, 3, 3}[sixtyCycle.Index];
             Side = index < 0 ? Side.In : Side.Out;
             Direction = Direction.FromIndex(index);
         }
@@ -53,7 +49,17 @@ namespace tyme.culture.fetus
         /// <returns>逐日胎神</returns>
         public static FetusDay FromLunarDay(LunarDay lunarDay)
         {
-            return new FetusDay(lunarDay);
+            return new FetusDay(lunarDay.SixtyCycle);
+        }
+        
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="sixtyCycleDay">干支日</param>
+        /// <returns>逐日胎神</returns>
+        public static FetusDay FromSixtyCycleDay(SixtyCycleDay sixtyCycleDay)
+        {
+            return new FetusDay(sixtyCycleDay.SixtyCycle);
         }
 
         /// <summary>

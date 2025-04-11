@@ -1,7 +1,9 @@
-﻿using tyme.eightchar.provider;
+﻿using System;
+using tyme.eightchar.provider;
 using tyme.eightchar.provider.impl;
 using tyme.enums;
 using tyme.lunar;
+using tyme.sixtycycle;
 using tyme.solar;
 
 namespace tyme.eightchar
@@ -110,9 +112,14 @@ namespace tyme.eightchar
         public SolarTime EndTime => Info.EndTime;
 
         /// <summary>
-        /// 大运
+        /// 起运大运
         /// </summary>
         public DecadeFortune StartDecadeFortune => DecadeFortune.FromChildLimit(this, 0);
+        
+        /// <summary>
+        /// 所属大运
+        /// </summary>
+        public DecadeFortune DecadeFortune => DecadeFortune.FromChildLimit(this, -1);
 
         /// <summary>
         /// 小运
@@ -122,7 +129,34 @@ namespace tyme.eightchar
         /// <summary>
         /// 结束农历年
         /// </summary>
+        [Obsolete("该方法已过时，请使用EndSixtyCycleYear")]
         public LunarYear EndLunarYear =>  LunarYear.FromYear(StartTime.GetLunarHour().Year + EndTime.Year - StartTime.Year);
 
+        /// <summary>
+        /// 开始(即出生)干支年
+        /// </summary>
+        public SixtyCycleYear StartSixtyCycleYear =>  SixtyCycleYear.FromYear(StartTime.Year);
+        
+        /// <summary>
+        /// 结束(即起运)干支年
+        /// </summary>
+        public SixtyCycleYear EndSixtyCycleYear =>  SixtyCycleYear.FromYear(EndTime.Year);
+        
+        /// <summary>
+        /// 开始年龄
+        /// </summary>
+        public int StartAge => 1;
+
+        /// <summary>
+        /// 结束年龄
+        /// </summary>
+        public int EndAge
+        {
+            get
+            {
+                var n = EndSixtyCycleYear.Year - StartSixtyCycleYear.Year;
+                return Math.Max(n, 1);
+            }
+        }
     }
 }

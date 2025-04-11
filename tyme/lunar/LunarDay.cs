@@ -21,16 +21,22 @@ namespace tyme.lunar
         /// <summary>
         /// 名称
         /// </summary>
-        public static string[] Names =
-        {
-            "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八",
-            "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"
-        };
+        public static string[] Names = { "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十" };
 
         /// <summary>
         /// 农历月
         /// </summary>
         public LunarMonth LunarMonth { get; }
+
+        /// <summary>
+        /// 公历日（第一次使用时才会初始化）
+        /// </summary>
+        protected SolarDay SolarDay;
+
+        /// <summary>
+        /// 干支日（第一次使用时才会初始化）
+        /// </summary>
+        protected SixtyCycleDay SixtyCycleDay;
 
         /// <summary>
         /// 年
@@ -154,53 +160,14 @@ namespace tyme.lunar
         /// <summary>
         /// 当天的年干支（立春换）
         /// </summary>
-        public SixtyCycle YearSixtyCycle
-        {
-            get
-            {
-                var solarDay = GetSolarDay();
-                var solarYear = solarDay.Year;
-                var springSolarDay = SolarTerm.FromIndex(solarYear, 3).JulianDay.GetSolarDay();
-                var sixtyCycle = LunarMonth.LunarYear.SixtyCycle;
-                if (Year == solarYear)
-                {
-                    if (solarDay.IsBefore(springSolarDay))
-                    {
-                        sixtyCycle = sixtyCycle.Next(-1);
-                    }
-                }
-                else if (Year < solarYear)
-                {
-                    if (!solarDay.IsBefore(springSolarDay))
-                    {
-                        sixtyCycle = sixtyCycle.Next(1);
-                    }
-                }
-
-                return sixtyCycle;
-            }
-        }
+        [Obsolete("该方法已过时，请使用SixtyCycleHour")]
+        public SixtyCycle YearSixtyCycle => GetSixtyCycleDay().Year;
 
         /// <summary>
         /// 当天的月干支（节气换）
         /// </summary>
-        public SixtyCycle MonthSixtyCycle
-        {
-            get
-            {
-                var solarDay = GetSolarDay();
-                var year = solarDay.Year;
-                var term = solarDay.Term;
-                var index = term.Index - 3;
-                if (index < 0 && term.JulianDay.GetSolarDay()
-                        .IsAfter(SolarTerm.FromIndex(year, 3).JulianDay.GetSolarDay()))
-                {
-                    index += 24;
-                }
-
-                return LunarMonth.FromYm(year, 1).SixtyCycle.Next((int)Math.Floor(index * 1D / 2));
-            }
-        }
+        [Obsolete("该方法已过时，请使用SixtyCycleHour")]
+        public SixtyCycle MonthSixtyCycle => GetSixtyCycleDay().Month;
 
         /// <summary>
         /// 干支
@@ -210,21 +177,19 @@ namespace tyme.lunar
             get
             {
                 var offset = (int)LunarMonth.FirstJulianDay.Next(Day - 12).Day;
-                return SixtyCycle.FromName(HeavenStem.FromIndex(offset).GetName() +
-                                           EarthBranch.FromIndex(offset).GetName());
+                return SixtyCycle.FromName(HeavenStem.FromIndex(offset).GetName() + EarthBranch.FromIndex(offset).GetName());
             }
         }
 
         /// <summary>
         /// 建除十二值神
         /// </summary>
-        public Duty Duty => Duty.FromIndex(SixtyCycle.EarthBranch.Index - MonthSixtyCycle.EarthBranch.Index);
+        public Duty Duty => Duty.FromIndex(SixtyCycle.EarthBranch.Index - GetSixtyCycleDay().Month.EarthBranch.Index);
 
         /// <summary>
         /// 黄道黑道十二神
         /// </summary>
-        public TwelveStar TwelveStar =>
-            TwelveStar.FromIndex(SixtyCycle.EarthBranch.Index + (8 - MonthSixtyCycle.EarthBranch.Index % 6) * 2);
+        public TwelveStar TwelveStar => TwelveStar.FromIndex(SixtyCycle.EarthBranch.Index + (8 - GetSixtyCycleDay().Month.EarthBranch.Index % 6) * 2);
 
         /// <summary>
         /// 九星
@@ -271,9 +236,7 @@ namespace tyme.lunar
         /// <summary>
         /// 太岁方位
         /// </summary>
-        public Direction JupiterDirection => SixtyCycle.Index % 12 < 6
-            ? Element.FromIndex(SixtyCycle.Index / 12).GetDirection()
-            : LunarMonth.LunarYear.JupiterDirection;
+        public Direction JupiterDirection => SixtyCycle.Index % 12 < 6 ? Element.FromIndex(SixtyCycle.Index / 12).GetDirection() : LunarMonth.LunarYear.JupiterDirection;
 
         /// <summary>
         /// 逐日胎神
@@ -296,15 +259,22 @@ namespace tyme.lunar
         /// <returns>公历日</returns>
         public SolarDay GetSolarDay()
         {
-            return LunarMonth.FirstJulianDay.Next(Day - 1).GetSolarDay();
+            return SolarDay ?? (SolarDay = LunarMonth.FirstJulianDay.Next(Day - 1).GetSolarDay());
+        }
+
+        /// <summary>
+        /// 干支日
+        /// </summary>
+        /// <returns>干支日</returns>
+        public SixtyCycleDay GetSixtyCycleDay()
+        {
+            return SixtyCycleDay ?? (SixtyCycleDay = GetSolarDay().GetSixtyCycleDay());
         }
 
         /// <summary>
         /// 二十八宿
         /// </summary>
-        public TwentyEightStar TwentyEightStar => TwentyEightStar
-            .FromIndex(new[] { 10, 18, 26, 6, 14, 22, 2 }[GetSolarDay().Week.Index])
-            .Next(-7 * SixtyCycle.EarthBranch.Index);
+        public TwentyEightStar TwentyEightStar => TwentyEightStar.FromIndex(new[] { 10, 18, 26, 6, 14, 22, 2 }[GetSolarDay().Week.Index]).Next(-7 * SixtyCycle.EarthBranch.Index);
 
         /// <summary>
         /// 农历传统节日，如果当天不是农历传统节日，返回null
@@ -332,19 +302,19 @@ namespace tyme.lunar
         /// 神煞列表(吉神宜趋，凶神宜忌)
         /// </summary>
         /// <returns>神煞列表</returns>
-        public List<God> Gods => God.GetDayGods(MonthSixtyCycle, SixtyCycle);
+        public List<God> Gods => GetSixtyCycleDay().Gods;
 
         /// <summary>
         /// 宜
         /// </summary>
         /// <returns>宜忌列表</returns>
-        public List<Taboo> Recommends => Taboo.GetDayRecommends(MonthSixtyCycle, SixtyCycle);
+        public List<Taboo> Recommends => GetSixtyCycleDay().Recommends;
 
         /// <summary>
         /// 忌
         /// </summary>
         /// <returns>宜忌列表</returns>
-        public List<Taboo> Avoids => Taboo.GetDayAvoids(MonthSixtyCycle, SixtyCycle);
+        public List<Taboo> Avoids => GetSixtyCycleDay().Avoids;
 
         /// <summary>
         /// 小六壬

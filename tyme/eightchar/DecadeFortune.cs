@@ -1,4 +1,5 @@
-﻿using tyme.lunar;
+﻿using System;
+using tyme.lunar;
 using tyme.sixtycycle;
 
 namespace tyme.eightchar
@@ -43,7 +44,7 @@ namespace tyme.eightchar
         /// <summary>
         /// 开始年龄
         /// </summary>
-        public int StartAge => ChildLimit.EndTime.Year - ChildLimit.StartTime.Year + 1 + Index * 10;
+        public int StartAge => ChildLimit.EndSixtyCycleYear.Year - ChildLimit.StartSixtyCycleYear.Year + 1 + Index * 10;
 
         /// <summary>
         /// 结束年龄
@@ -53,24 +54,29 @@ namespace tyme.eightchar
         /// <summary>
         /// 开始农历年
         /// </summary>
+        [Obsolete("该方法已过时，请使用StartSixtyCycleYear")]
         public LunarYear StartLunarYear => ChildLimit.EndLunarYear.Next(Index * 10);
 
         /// <summary>
         /// 结束农历年
         /// </summary>
+        [Obsolete("该方法已过时，请使用EndSixtyCycleYear")]
         public LunarYear EndLunarYear => StartLunarYear.Next(9);
+        
+        /// <summary>
+        /// 开始干支年
+        /// </summary>
+        public SixtyCycleYear StartSixtyCycleYear => ChildLimit.EndSixtyCycleYear.Next(Index * 10);
+        
+        /// <summary>
+        /// 结束干支年
+        /// </summary>
+        public SixtyCycleYear EndSixtyCycleYear => StartSixtyCycleYear.Next(9);
 
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle
-        {
-            get
-            {
-                var n = Index + 1;
-                return ChildLimit.EightChar.Month.Next(ChildLimit.IsForward ? n : -n);
-            }
-        }
+        public SixtyCycle SixtyCycle => ChildLimit.EightChar.Month.Next(ChildLimit.IsForward ? Index + 1 : -Index - 1);
 
         /// <summary>
         /// 开始小运

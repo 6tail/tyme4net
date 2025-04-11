@@ -17,7 +17,7 @@ namespace tyme.lunar
     public class LunarMonth : AbstractTyme
     {
         private static object _lock = new object();
-        
+
         /// <summary>
         /// 缓存
         /// </summary>
@@ -262,7 +262,7 @@ namespace tyme.lunar
         }
 
         /// <summary>
-        /// 获取本月的农历周列表
+        /// 本月的农历周列表
         /// </summary>
         /// <param name="start">星期几作为一周的开始，1234560分别代表星期一至星期天</param>
         /// <returns>公历周列表</returns>
@@ -298,10 +298,7 @@ namespace tyme.lunar
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle =>
-            SixtyCycle.FromName(
-                HeavenStem.FromIndex((LunarYear.SixtyCycle.HeavenStem.Index + 1) * 2 + IndexInYear).GetName() +
-                EarthBranch.FromIndex(IndexInYear + 2).GetName());
+        public SixtyCycle SixtyCycle => SixtyCycle.FromName(HeavenStem.FromIndex((LunarYear.SixtyCycle.HeavenStem.Index + 1) * 2 + IndexInYear).GetName() + EarthBranch.FromIndex(IndexInYear + 2).GetName());
 
         /// <summary>
         /// 九星
@@ -311,9 +308,11 @@ namespace tyme.lunar
             get
             {
                 var index = SixtyCycle.EarthBranch.Index;
-                if (index < 2) {
+                if (index < 2)
+                {
                     index += 3;
                 }
+
                 return NineStar.FromIndex(27 - LunarYear.SixtyCycle.EarthBranch.Index % 3 * 3 - index);
             }
         }
@@ -334,7 +333,7 @@ namespace tyme.lunar
         /// 逐月胎神
         /// </summary>
         public FetusMonth Fetus => FetusMonth.FromLunarMonth(this);
-        
+
         /// <summary>
         /// 小六壬
         /// </summary>

@@ -21,7 +21,7 @@ namespace tyme.lunar
         /// 八字计算接口
         /// </summary>
         public static IEightCharProvider Provider = new DefaultEightCharProvider();
-        
+
         /// <summary>
         /// 农历日
         /// </summary>
@@ -56,6 +56,16 @@ namespace tyme.lunar
         /// 秒
         /// </summary>
         public int Second { get; }
+        
+        /// <summary>
+        /// 公历时刻（第一次使用时才会初始化）
+        /// </summary>
+        protected SolarTime SolarTime;
+
+        /// <summary>
+        /// 干支时辰（第一次使用时才会初始化）
+        /// </summary>
+        protected SixtyCycleHour SixtyCycleHour;
 
         /// <summary>
         /// 初始化
@@ -137,8 +147,9 @@ namespace tyme.lunar
         {
             if (n == 0)
             {
-                return FromYmdHms(Year,Month, Day, Hour, Minute, Second);
+                return FromYmdHms(Year, Month, Day, Hour, Minute, Second);
             }
+
             var h = Hour + n * 2;
             var diff = h < 0 ? -1 : 1;
             var hour = Math.Abs(h);
@@ -166,8 +177,7 @@ namespace tyme.lunar
                 return LunarDay.IsBefore(target.LunarDay);
             }
 
-            return Hour != target.Hour ? Hour < target.Hour :
-                Minute == target.Minute ? Second < target.Second : Minute < target.Minute;
+            return Hour != target.Hour ? Hour < target.Hour : Minute == target.Minute ? Second < target.Second : Minute < target.Minute;
         }
 
         /// <summary>
@@ -182,74 +192,26 @@ namespace tyme.lunar
                 return LunarDay.IsAfter(target.LunarDay);
             }
 
-            return Hour != target.Hour ? Hour > target.Hour :
-                Minute == target.Minute ? Second > target.Second : Minute > target.Minute;
+            return Hour != target.Hour ? Hour > target.Hour : Minute == target.Minute ? Second > target.Second : Minute > target.Minute;
         }
 
         /// <summary>
         /// 当时的年干支（立春换）
         /// </summary>
-        public SixtyCycle YearSixtyCycle
-        {
-            get
-            {
-                var solarTime = GetSolarTime();
-                var solarYear = LunarDay.GetSolarDay().Year;
-                var springSolarTime = SolarTerm.FromIndex(solarYear, 3).JulianDay.GetSolarTime();
-                var lunarYear = LunarDay.LunarMonth.LunarYear;
-                var year = lunarYear.Year;
-                var sixtyCycle = lunarYear.SixtyCycle;
-                if (year == solarYear)
-                {
-                    if (solarTime.IsBefore(springSolarTime))
-                    {
-                        sixtyCycle = sixtyCycle.Next(-1);
-                    }
-                }
-                else if (year < solarYear)
-                {
-                    if (!solarTime.IsBefore(springSolarTime))
-                    {
-                        sixtyCycle = sixtyCycle.Next(1);
-                    }
-                }
-
-                return sixtyCycle;
-            }
-        }
+        [Obsolete("该方法已过时，请使用SixtyCycleHour")]
+        public SixtyCycle YearSixtyCycle => GetSixtyCycleHour().Year;
 
         /// <summary>
         /// 当时的月干支（节气换）
         /// </summary>
-        public SixtyCycle MonthSixtyCycle
-        {
-            get
-            {
-                var solarTime = GetSolarTime();
-                var year = solarTime.Year;
-                var term = solarTime.Term;
-                var index = term.Index - 3;
-                if (index < 0 && term.JulianDay.GetSolarTime()
-                        .IsAfter(SolarTerm.FromIndex(year, 3).JulianDay.GetSolarTime()))
-                {
-                    index += 24;
-                }
-
-                return LunarMonth.FromYm(year, 1).SixtyCycle.Next((int)Math.Floor(index * 1D / 2));
-            }
-        }
+        [Obsolete("该方法已过时，请使用SixtyCycleHour")]
+        public SixtyCycle MonthSixtyCycle => GetSixtyCycleHour().Month;
 
         /// <summary>
         /// 当时的日干支（23:00开始算做第二天）
         /// </summary>
-        public SixtyCycle DaySixtyCycle
-        {
-            get
-            {
-                var d = LunarDay.SixtyCycle;
-                return Hour < 23 ? d : d.Next(1);
-            }
-        }
+        [Obsolete("该方法已过时，请使用SixtyCycleHour")]
+        public SixtyCycle DaySixtyCycle => GetSixtyCycleHour().Day;
 
         /// <summary>
         /// 干支
@@ -259,17 +221,19 @@ namespace tyme.lunar
             get
             {
                 var earthBranchIndex = IndexInDay % 12;
-                var heavenStemIndex = DaySixtyCycle.HeavenStem.Index % 5 * 2 + earthBranchIndex;
-                return SixtyCycle.FromName(HeavenStem.FromIndex(heavenStemIndex).GetName() +
-                                           EarthBranch.FromIndex(earthBranchIndex).GetName());
+                var d = LunarDay.SixtyCycle;
+                if (Hour >= 23) {
+                    d = d.Next(1);
+                }
+                var heavenStemIndex = d.HeavenStem.Index % 5 * 2 + earthBranchIndex;
+                return SixtyCycle.FromName(HeavenStem.FromIndex(heavenStemIndex).GetName() + EarthBranch.FromIndex(earthBranchIndex).GetName());
             }
         }
 
         /// <summary>
         /// 黄道黑道十二神
         /// </summary>
-        public TwelveStar TwelveStar =>
-            TwelveStar.FromIndex(SixtyCycle.EarthBranch.Index + (8 - DaySixtyCycle.EarthBranch.Index % 6) * 2);
+        public TwelveStar TwelveStar => TwelveStar.FromIndex(SixtyCycle.EarthBranch.Index + (8 - GetSixtyCycleHour().Day.EarthBranch.Index % 6) * 2);
 
         /// <summary>
         /// 九星
@@ -281,8 +245,7 @@ namespace tyme.lunar
                 var solar = LunarDay.GetSolarDay();
                 var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
                 var xiaZhi = dongZhi.Next(12);
-                var asc = !solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) &&
-                          solar.IsBefore(xiaZhi.JulianDay.GetSolarDay());
+                var asc = !solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) && solar.IsBefore(xiaZhi.JulianDay.GetSolarDay());
                 var start = new[] { 8, 5, 2 }[LunarDay.SixtyCycle.EarthBranch.Index % 3];
                 if (asc)
                 {
@@ -300,8 +263,13 @@ namespace tyme.lunar
         /// <returns>公历时刻</returns>
         public SolarTime GetSolarTime()
         {
-            var d = LunarDay.GetSolarDay();
-            return SolarTime.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
+            if (null == SolarTime)
+            {
+                var d = LunarDay.GetSolarDay();
+                SolarTime = SolarTime.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
+            }
+
+            return SolarTime;
         }
 
         /// <summary>
@@ -313,17 +281,26 @@ namespace tyme.lunar
         /// 宜
         /// </summary>
         /// <returns>宜忌列表</returns>
-        public List<Taboo> Recommends => Taboo.GetHourRecommends(DaySixtyCycle, SixtyCycle);
+        public List<Taboo> Recommends => Taboo.GetHourRecommends(GetSixtyCycleHour().Day, SixtyCycle);
 
         /// <summary>
         /// 忌
         /// </summary>
         /// <returns>宜忌列表</returns>
-        public List<Taboo> Avoids => Taboo.GetHourAvoids(DaySixtyCycle, SixtyCycle);
-        
+        public List<Taboo> Avoids => Taboo.GetHourAvoids(GetSixtyCycleHour().Day, SixtyCycle);
+
         /// <summary>
         /// 小六壬
         /// </summary>
         public MinorRen MinorRen => LunarDay.MinorRen.Next(IndexInDay);
+
+        /// <summary>
+        /// 干支时辰
+        /// </summary>
+        /// <returns>干支时辰</returns>
+        public SixtyCycleHour GetSixtyCycleHour()
+        {
+            return SixtyCycleHour ?? (SixtyCycleHour = GetSolarTime().GetSixtyCycleHour());
+        }
     }
 }
