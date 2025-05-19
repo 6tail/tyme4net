@@ -74,10 +74,19 @@ namespace tyme.eightchar
         {
             get
             {
-                var offset = Month.EarthBranch.Next(-1).Index + Hour.EarthBranch.Next(-1).Index;
+                var m = Month.EarthBranch.Index - 1;
+                if (m < 1)
+                {
+                    m += 12;
+                }
+                var h = Hour.EarthBranch.Index - 1;
+                if (h < 1)
+                {
+                    h += 12;
+                }
+                var offset = m + h;
                 offset = (offset >= 14 ? 26 : 14) - offset;
-                offset -= 1;
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() + EarthBranch.FromIndex(2 + offset).GetName());
+                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset - 1).GetName() + EarthBranch.FromIndex(offset + 1).GetName());
             }
         }
 
@@ -88,8 +97,18 @@ namespace tyme.eightchar
         {
             get
             {
-                var offset = (Month.EarthBranch.Index + Hour.EarthBranch.Index - 1) % 12;
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset).GetName() + EarthBranch.FromIndex(2 + offset).GetName());
+                var m = Month.EarthBranch.Index - 1;
+                if (m < 1)
+                {
+                    m += 12;
+                }
+                var h = Hour.EarthBranch.Index + 1;
+                var offset = m + h;
+                if (offset > 12)
+                {
+                    offset -= 12;
+                }
+                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset - 1).GetName() + EarthBranch.FromIndex(offset + 1).GetName());
             }
         }
 

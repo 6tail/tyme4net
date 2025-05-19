@@ -9,6 +9,7 @@ using tyme.festival;
 using tyme.holiday;
 using tyme.jd;
 using tyme.lunar;
+using tyme.rabbyung;
 using tyme.sixtycycle;
 
 namespace tyme.solar
@@ -432,6 +433,15 @@ namespace tyme.solar
         public SixtyCycleDay GetSixtyCycleDay()
         {
             return SixtyCycleDay.FromSolarDay(this);
+        }
+
+        /// <summary>
+        /// 转藏历日
+        /// </summary>
+        /// <returns>藏历日</returns>
+        public RabByungDay GetRabByungDay()
+        {
+            return RabByungDay.FromSolarDay(this);
         }
 
         /// <summary>

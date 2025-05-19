@@ -105,7 +105,7 @@ namespace tyme.lunar
         /// <summary>
         /// 推移
         /// </summary>
-        /// <param name="n">推移步数</param>
+        /// <param name="n">推移天数</param>
         /// <returns>推移后的农历日</returns>
         public new LunarDay Next(int n)
         {
