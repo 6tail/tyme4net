@@ -29,7 +29,8 @@ namespace tyme.culture.phenology
         /// <param name="index">索引值</param>
         public Phenology(int year, int index) : base(Names, index)
         {
-            Year = year;
+            var size = Size;
+            Year = (year * size + Index) / size;
         }
 
         /// <summary>
@@ -39,8 +40,7 @@ namespace tyme.culture.phenology
         /// <param name="name">名称</param>
         public Phenology(int year, string name) : base(Names, name)
         {
-            var size = Size;
-            Year = (year * size + Index) / size;
+            Year = year;
         }
 
         /// <summary>
