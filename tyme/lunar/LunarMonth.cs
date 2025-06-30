@@ -207,16 +207,12 @@ namespace tyme.lunar
 
             var m = IndexInYear + 1 + n;
             var y = LunarYear;
-            var leapMonth = y.LeapMonth;
             if (n > 0)
             {
-                var monthCount = leapMonth > 0 ? 13 : 12;
-                while (m > monthCount)
+                while (m > y.MonthCount)
                 {
-                    m -= monthCount;
+                    m -= y.MonthCount;
                     y = y.Next(1);
-                    leapMonth = y.LeapMonth;
-                    monthCount = leapMonth > 0 ? 13 : 12;
                 }
             }
             else
@@ -224,12 +220,12 @@ namespace tyme.lunar
                 while (m <= 0)
                 {
                     y = y.Next(-1);
-                    leapMonth = y.LeapMonth;
-                    m += leapMonth > 0 ? 13 : 12;
+                    m += y.MonthCount;
                 }
             }
 
             var leap = false;
+            var leapMonth = y.LeapMonth;
             if (leapMonth > 0)
             {
                 if (m == leapMonth + 1)

@@ -212,17 +212,23 @@ namespace tyme.solar
         {
             get
             {
-                var dayIndex = Subtract(Term.JulianDay.GetSolarDay());
+                var d = TermDay;
+                var dayIndex = d.DayIndex;
                 var index = dayIndex / 5;
                 if (index > 2)
                 {
                     index = 2;
                 }
 
-                dayIndex -= index * 5;
-                return new PhenologyDay(Phenology.FromIndex(Term.Index * 3 + index), dayIndex);
+                var term = d.SolarTerm;
+                return new PhenologyDay(Phenology.FromIndex(term.Year, term.Index * 3 + index), dayIndex - index * 5);
             }
         }
+
+        /// <summary>
+        /// 候
+        /// </summary>
+        public Phenology Phenology => PhenologyDay.Phenology;
 
         /// <summary>
         /// 三伏天

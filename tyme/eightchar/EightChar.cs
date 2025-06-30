@@ -97,13 +97,12 @@ namespace tyme.eightchar
         {
             get
             {
-                var m = Month.EarthBranch.Index - 1;
-                if (m < 1)
+                var offset = Month.EarthBranch.Index - 1;
+                if (offset < 1)
                 {
-                    m += 12;
+                    offset += 12;
                 }
-                var h = Hour.EarthBranch.Index + 1;
-                var offset = m + h;
+                offset += Hour.EarthBranch.Index + 1;
                 if (offset > 12)
                 {
                     offset -= 12;

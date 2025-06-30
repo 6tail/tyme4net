@@ -216,8 +216,8 @@ public class EightCharTest
         Assert.Equal(9, childLimit.MonthCount);
         Assert.Equal(2, childLimit.DayCount);
         Assert.Equal(10, childLimit.HourCount);
-        Assert.Equal(26, childLimit.MinuteCount);
-        Assert.Equal("2030年12月12日 07:17:00", childLimit.EndTime.ToString());
+        Assert.Equal(6, childLimit.MinuteCount);
+        Assert.Equal("2030年12月12日 06:57:00", childLimit.EndTime.ToString());
     }
 
     /// <summary>
@@ -231,8 +231,8 @@ public class EightCharTest
         Assert.Equal(9, childLimit.MonthCount);
         Assert.Equal(10, childLimit.DayCount);
         Assert.Equal(1, childLimit.HourCount);
-        Assert.Equal(42, childLimit.MinuteCount);
-        Assert.Equal("2020年3月21日 11:12:00", childLimit.EndTime.ToString());
+        Assert.Equal(52, childLimit.MinuteCount);
+        Assert.Equal("2020年3月21日 11:22:00", childLimit.EndTime.ToString());
     }
 
     /// <summary>

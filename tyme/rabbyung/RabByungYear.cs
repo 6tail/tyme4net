@@ -181,7 +181,7 @@ namespace tyme.rabbyung
         /// <summary>
         /// 月份数量
         /// </summary>
-        public int MonthCount => LeapMonth == 0 ? 12 : 13;
+        public int MonthCount => LeapMonth < 1 ? 12 : 13;
 
         /// <summary>
         /// 月份列表

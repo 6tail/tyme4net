@@ -114,7 +114,7 @@ namespace tyme.rabbyung
             IsLeap = leap;
             // 位于当年的索引
             var index = m - 1;
-            if (leap || (leapMonth > 0 && m > leapMonth))
+            if (leap || (0 < leapMonth && leapMonth < m))
             {
                 index += 1;
             }
@@ -212,16 +212,12 @@ namespace tyme.rabbyung
 
             var m = IndexInYear + 1 + n;
             var y = RabByungYear;
-            var leapMonth = y.LeapMonth;
             if (n > 0)
             {
-                var monthCount = leapMonth > 0 ? 13 : 12;
-                while (m > monthCount)
+                while (m > y.MonthCount)
                 {
-                    m -= monthCount;
+                    m -= y.MonthCount;
                     y = y.Next(1);
-                    leapMonth = y.LeapMonth;
-                    monthCount = leapMonth > 0 ? 13 : 12;
                 }
             }
             else
@@ -229,12 +225,12 @@ namespace tyme.rabbyung
                 while (m <= 0)
                 {
                     y = y.Next(-1);
-                    leapMonth = y.LeapMonth;
-                    m += leapMonth > 0 ? 13 : 12;
+                    m += y.MonthCount;
                 }
             }
 
             var leap = false;
+            var leapMonth = y.LeapMonth;
             if (leapMonth > 0)
             {
                 if (m == leapMonth + 1)
@@ -271,7 +267,7 @@ namespace tyme.rabbyung
                 var l = new List<RabByungDay>();
                 var missDays = MissDays;
                 var leapDays = LeapDays;
-                for (var i = 1; i <= 30; i++)
+                for (var i = 1; i < 31; i++)
                 {
                     if (missDays.Contains(i))
                     {

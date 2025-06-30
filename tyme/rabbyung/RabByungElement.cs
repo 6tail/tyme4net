@@ -27,7 +27,7 @@ namespace tyme.rabbyung
         /// 初始化
         /// </summary>
         /// <param name="index">索引值</param>
-        public static RabByungElement FromIndex(int index)
+        public new static RabByungElement FromIndex(int index)
         {
             return new RabByungElement(index);
         }
@@ -36,7 +36,7 @@ namespace tyme.rabbyung
         /// 初始化
         /// </summary>
         /// <param name="name">名称</param>
-        public static RabByungElement FromName(string name)
+        public new static RabByungElement FromName(string name)
         {
             return new RabByungElement(name);
         }
@@ -55,7 +55,7 @@ namespace tyme.rabbyung
         /// 我生者
         /// </summary>
         /// <returns>藏历五行</returns>
-        public RabByungElement GetReinforce()
+        public new RabByungElement GetReinforce()
         {
             return Next(1);
         }
@@ -64,7 +64,7 @@ namespace tyme.rabbyung
         /// 我克者
         /// </summary>
         /// <returns>藏历五行</returns>
-        public RabByungElement GetRestrain()
+        public new RabByungElement GetRestrain()
         {
             return Next(2);
         }
@@ -73,7 +73,7 @@ namespace tyme.rabbyung
         /// 生我者
         /// </summary>
         /// <returns>藏历五行</returns>
-        public RabByungElement GetReinforced()
+        public new RabByungElement GetReinforced()
         {
             return Next(-1);
         }
@@ -82,7 +82,7 @@ namespace tyme.rabbyung
         /// 克我者
         /// </summary>
         /// <returns>藏历五行</returns>
-        public RabByungElement GetRestrained()
+        public new RabByungElement GetRestrained()
         {
             return Next(-2);
         }

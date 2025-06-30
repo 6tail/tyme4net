@@ -1,4 +1,5 @@
 ﻿using System;
+using tyme.culture.phenology;
 using tyme.jd;
 using tyme.lunar;
 using tyme.sixtycycle;
@@ -199,21 +200,30 @@ namespace tyme.solar
         {
             get
             {
-                var y = Year;
-                var i = Month * 2;
-                if (i == 24)
-                {
-                    y += 1;
-                    i = 0;
-                }
-
-                var term = SolarTerm.FromIndex(y, i);
-                while (IsBefore(term.JulianDay.GetSolarTime()))
+                var term = SolarDay.Term;
+                if (IsBefore(term.JulianDay.GetSolarTime()))
                 {
                     term = term.Next(-1);
                 }
 
                 return term;
+            }
+        }
+        
+        /// <summary>
+        /// 候
+        /// </summary>
+        public Phenology Phenology
+        {
+            get
+            {
+                var p = SolarDay.Phenology;
+                if (IsBefore(p.JulianDay.GetSolarTime()))
+                {
+                    p = p.Next(-1);
+                }
+
+                return p;
             }
         }
 

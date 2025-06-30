@@ -61,8 +61,8 @@ namespace tyme.jd
 
             if (g)
             {
-                n = (int)(year * 1D / 100);
-                n = 2 - n + (int)(n * 1D / 4);
+                n = (int)(year * 0.01);
+                n = 2 - n + (int)(n * 0.25);
             }
 
             return FromJulianDay((int)(365.25 * (year + 4716)) + (int)(30.6001 * (month + 1)) + d + n - 1524.5);
@@ -108,25 +108,25 @@ namespace tyme.jd
             if (d >= 2299161)
             {
                 var c = (int)((d - 1867216.25) / 36524.25);
-                d += 1 + c - (int)(c * 1D / 4);
+                d += 1 + c - (int)(c * 0.25);
             }
 
             d += 1524;
             var year = (int)((d - 122.1) / 365.25);
             d -= (int)(365.25 * year);
-            var month = (int)(d * 1D / 30.601);
+            var month = (int)(d / 30.601);
             d -= (int)(30.601 * month);
             var day = d;
             if (month > 13)
             {
-                month -= 13;
-                year -= 4715;
+                month -= 12;
             }
             else
             {
-                month -= 1;
-                year -= 4716;
+                year -= 1;
             }
+            month -= 1;
+            year -= 4715;
 
             f *= 24;
             var hour = (int)f;
@@ -138,25 +138,7 @@ namespace tyme.jd
             f -= minute;
             f *= 60;
             var second = (int)Math.Round(f);
-            if (second > 59)
-            {
-                second -= 60;
-                minute++;
-            }
-
-            if (minute > 59)
-            {
-                minute -= 60;
-                hour++;
-            }
-
-            if (hour > 23)
-            {
-                hour -= 24;
-                day++;
-            }
-
-            return SolarTime.FromYmdHms(year, month, day, hour, minute, second);
+            return second < 60 ? SolarTime.FromYmdHms(year, month, day, hour, minute, second) : SolarTime.FromYmdHms(year, month, day, hour, minute, second - 60).Next(60);
         }
 
         /// <summary>

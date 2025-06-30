@@ -85,7 +85,7 @@ namespace tyme.lunar
         /// <summary>
         /// 月数
         /// </summary>
-        public int MonthCount => LeapMonth > 0 ? 13 : 12;
+        public int MonthCount => LeapMonth < 1 ? 12 : 13;
 
         /// <summary>
         /// 名称
