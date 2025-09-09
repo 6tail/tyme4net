@@ -225,8 +225,7 @@ namespace tyme.lunar
                 if (Hour >= 23) {
                     d = d.Next(1);
                 }
-                var heavenStemIndex = d.HeavenStem.Index % 5 * 2 + earthBranchIndex;
-                return SixtyCycle.FromName(HeavenStem.FromIndex(heavenStemIndex).GetName() + EarthBranch.FromIndex(earthBranchIndex).GetName());
+                return SixtyCycle.FromName(HeavenStem.FromIndex(d.HeavenStem.Index % 5 * 2 + earthBranchIndex).GetName() + EarthBranch.FromIndex(earthBranchIndex).GetName());
             }
         }
 
@@ -244,16 +243,15 @@ namespace tyme.lunar
             {
                 var solar = LunarDay.GetSolarDay();
                 var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
-                var xiaZhi = dongZhi.Next(12);
-                var asc = !solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) && solar.IsBefore(xiaZhi.JulianDay.GetSolarDay());
-                var start = new[] { 8, 5, 2 }[LunarDay.SixtyCycle.EarthBranch.Index % 3];
-                if (asc)
-                {
-                    start = 8 - start;
-                }
-
                 var earthBranchIndex = IndexInDay % 12;
-                return NineStar.FromIndex(start + (asc ? earthBranchIndex : -earthBranchIndex));
+                var index = new[] { 8, 5, 2 }[LunarDay.SixtyCycle.EarthBranch.Index % 3];
+                if (!solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) && solar.IsBefore(dongZhi.Next(12).JulianDay.GetSolarDay()))
+                {
+                    index = 8 + earthBranchIndex - index;
+                } else {
+                    index -= earthBranchIndex;
+                }
+                return NineStar.FromIndex(index);
             }
         }
 

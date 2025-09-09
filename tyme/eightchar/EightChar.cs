@@ -182,6 +182,9 @@ namespace tyme.eightchar
                         }
 
                         var time = SolarTime.FromYmdHms(solarDay.Year, solarDay.Month, solarDay.Day, hour, mi, s);
+                        if (d == 30) {
+                            time = time.Next(-3600);
+                        }
                         // 验证一下
                         if (time.GetLunarHour().EightChar.Equals(this))
                         {

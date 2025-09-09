@@ -377,8 +377,7 @@ namespace tyme.solar
                 start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(2));
 
                 // 小暑
-                var slightHeat = grainInEar.Next(2);
-                var end = slightHeat.JulianDay.GetSolarDay();
+                var end = grainInEar.Next(2).JulianDay.GetSolarDay();
                 // 小暑后的第1个未日
                 end = end.Next(end.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(7));
 

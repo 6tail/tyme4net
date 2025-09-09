@@ -75,7 +75,7 @@ namespace tyme.sixtycycle
             }
 
             SolarDay = solarDay;
-            SixtyCycleMonth = new SixtyCycleMonth(SixtyCycleYear.FromYear(lunarYear.Year), LunarMonth.FromYm(solarYear, 1).SixtyCycle.Next((int)Math.Floor(index * 1D / 2)));
+            SixtyCycleMonth = new SixtyCycleMonth(SixtyCycleYear.FromYear(lunarYear.Year), LunarMonth.FromYm(solarYear, 1).SixtyCycle.Next((int)Math.Floor(index * 0.5)));
             Day = lunarDay.SixtyCycle;
         }
 
@@ -151,11 +151,9 @@ namespace tyme.sixtycycle
             get
             {
                 var dongZhi = SolarTerm.FromIndex(SolarDay.Year, 0);
-                var xiaZhi = dongZhi.Next(12);
-                var dongZhi2 = dongZhi.Next(24);
                 var dongZhiSolar = dongZhi.JulianDay.GetSolarDay();
-                var xiaZhiSolar = xiaZhi.JulianDay.GetSolarDay();
-                var dongZhiSolar2 = dongZhi2.JulianDay.GetSolarDay();
+                var xiaZhiSolar = dongZhi.Next(12).JulianDay.GetSolarDay();
+                var dongZhiSolar2 = dongZhi.Next(24).JulianDay.GetSolarDay();
                 var dongZhiIndex = dongZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var xiaZhiIndex = xiaZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var dongZhiIndex2 = dongZhiSolar2.GetLunarDay().SixtyCycle.Index;

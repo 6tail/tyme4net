@@ -64,7 +64,7 @@ namespace tyme.sixtycycle
 
             var d = lunarDay.SixtyCycle;
             SolarTime = solarTime;
-            SixtyCycleDay = new SixtyCycleDay(solarTime.SolarDay, new SixtyCycleMonth(SixtyCycleYear.FromYear(lunarYear.Year), LunarMonth.FromYm(solarYear, 1).SixtyCycle.Next((int)Math.Floor(index * 1D / 2))), solarTime.Hour < 23 ? d : d.Next(1));
+            SixtyCycleDay = new SixtyCycleDay(solarTime.SolarDay, new SixtyCycleMonth(SixtyCycleYear.FromYear(lunarYear.Year), LunarMonth.FromYm(solarYear, 1).SixtyCycle.Next((int)Math.Floor(index * 0.5))), solarTime.Hour < 23 ? d : d.Next(1));
             Hour = lunarHour.SixtyCycle;
         }
 
@@ -145,17 +145,16 @@ namespace tyme.sixtycycle
             {
                 var solar = SolarTime.SolarDay;
                 var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
-                var xiaZhi = dongZhi.Next(12);
-                var asc = !solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) &&
-                          solar.IsBefore(xiaZhi.JulianDay.GetSolarDay());
-                var start = new[] { 8, 5, 2 }[Day.EarthBranch.Index % 3];
-                if (asc)
-                {
-                    start = 8 - start;
-                }
-
                 var earthBranchIndex = IndexInDay % 12;
-                return NineStar.FromIndex(start + (asc ? earthBranchIndex : -earthBranchIndex));
+                var index = new[] { 8, 5, 2 }[Day.EarthBranch.Index % 3];
+                if (!solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) && solar.IsBefore(dongZhi.Next(12).JulianDay.GetSolarDay()))
+                {
+                    index = 8 + earthBranchIndex - index;
+                } else {
+                    index -= earthBranchIndex;
+                }
+                
+                return NineStar.FromIndex(index);
             }
         }
 

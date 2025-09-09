@@ -30,7 +30,7 @@ namespace tyme.culture.phenology
         public Phenology(int year, int index) : base(Names, index)
         {
             var size = Size;
-            Year = (year * size + Index) / size;
+            Year = (year * size + index) / size;
         }
 
         /// <summary>

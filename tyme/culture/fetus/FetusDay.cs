@@ -93,7 +93,6 @@ namespace tyme.culture.fetus
 
             s += " ";
 
-            var directionName = Direction.GetName();
             if (Side.In == Side)
             {
                 s += "房";
@@ -101,6 +100,7 @@ namespace tyme.culture.fetus
 
             s += Side.GetName();
 
+            var directionName = Direction.GetName();
             if (Side.Out == Side && "北南西东".Contains(directionName))
             {
                 s += "正";

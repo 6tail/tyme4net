@@ -575,6 +575,7 @@ public class EightCharTest
 
         var expected = new List<string>
         {
+            "1904年3月6日 07:00:00",
             "1964年2月20日 08:00:00",
             "2024年2月5日 08:00:00"
         };
@@ -671,5 +672,15 @@ public class EightCharTest
         Assert.Equal(expected, actual);
 
         LunarHour.Provider = new DefaultEightCharProvider();
+    }
+    
+    [Fact]
+    public void Test47()
+    {
+        var solarTimes = new EightChar("壬申", "壬寅", "庚辰", "甲申").GetSolarTimes(1801, 2099);
+        var actual = solarTimes.Select(solarTime => solarTime.ToString()).ToList();
+
+        var expected = new List<string> { "1812年2月18日 16:00:00", "1992年3月5日 15:00:00", "2052年2月19日 16:00:00" };
+        Assert.Equal(expected, actual);
     }
 }

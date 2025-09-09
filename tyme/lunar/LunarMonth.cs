@@ -101,11 +101,11 @@ namespace tyme.lunar
             }
 
             // 冬至
-            var dongZhi = SolarTerm.FromIndex(year, 0);
+            var dongZhiJd = SolarTerm.FromIndex(year, 0).CursoryJulianDay;
 
             // 冬至前的初一，今年首朔的日月黄经差
-            var w = ShouXingUtil.CalcShuo(dongZhi.CursoryJulianDay);
-            if (w > dongZhi.CursoryJulianDay)
+            var w = ShouXingUtil.CalcShuo(dongZhiJd);
+            if (w > dongZhiJd)
             {
                 w -= 29.53;
             }
@@ -321,7 +321,7 @@ namespace tyme.lunar
             get
             {
                 var n = new[] { 7, -1, 1, 3 }[SixtyCycle.EarthBranch.Next(-2).Index % 4];
-                return n == -1 ? SixtyCycle.HeavenStem.Direction : Direction.FromIndex(n);
+                return n != -1 ? Direction.FromIndex(n) : SixtyCycle.HeavenStem.Direction;
             }
         }
 

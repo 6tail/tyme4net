@@ -102,31 +102,31 @@ namespace tyme.jd
         /// <returns>公历时刻</returns>
         public SolarTime GetSolarTime()
         {
-            var d = (int)(Day + 0.5);
-            var f = Day + 0.5 - d;
+            var n = (int)(Day + 0.5);
+            var f = Day + 0.5 - n;
 
-            if (d >= 2299161)
+            if (n >= 2299161)
             {
-                var c = (int)((d - 1867216.25) / 36524.25);
-                d += 1 + c - (int)(c * 0.25);
+                var c = (int)((n - 1867216.25) / 36524.25);
+                n += 1 + c - (int)(c * 0.25);
             }
 
-            d += 1524;
-            var year = (int)((d - 122.1) / 365.25);
-            d -= (int)(365.25 * year);
-            var month = (int)(d / 30.601);
-            d -= (int)(30.601 * month);
-            var day = d;
-            if (month > 13)
+            n += 1524;
+            var y = (int)((n - 122.1) / 365.25);
+            n -= (int)(365.25 * y);
+            var m = (int)(n / 30.601);
+            n -= (int)(30.601 * m);
+            var d = n;
+            if (m > 13)
             {
-                month -= 12;
+                m -= 12;
             }
             else
             {
-                year -= 1;
+                y -= 1;
             }
-            month -= 1;
-            year -= 4715;
+            m -= 1;
+            y -= 4715;
 
             f *= 24;
             var hour = (int)f;
@@ -138,7 +138,7 @@ namespace tyme.jd
             f -= minute;
             f *= 60;
             var second = (int)Math.Round(f);
-            return second < 60 ? SolarTime.FromYmdHms(year, month, day, hour, minute, second) : SolarTime.FromYmdHms(year, month, day, hour, minute, second - 60).Next(60);
+            return second < 60 ? SolarTime.FromYmdHms(y, m, d, hour, minute, second) : SolarTime.FromYmdHms(y, m, d, hour, minute, second - 60).Next(60);
         }
 
         /// <summary>
