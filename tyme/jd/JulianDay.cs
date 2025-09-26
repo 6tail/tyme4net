@@ -102,21 +102,20 @@ namespace tyme.jd
         /// <returns>公历时刻</returns>
         public SolarTime GetSolarTime()
         {
-            var n = (int)(Day + 0.5);
-            var f = Day + 0.5 - n;
+            var d = (int)(Day + 0.5);
+            var f = Day + 0.5 - d;
 
-            if (n >= 2299161)
+            if (d >= 2299161)
             {
-                var c = (int)((n - 1867216.25) / 36524.25);
-                n += 1 + c - (int)(c * 0.25);
+                var c = (int)((d - 1867216.25) / 36524.25);
+                d += 1 + c - (int)(c * 0.25);
             }
 
-            n += 1524;
-            var y = (int)((n - 122.1) / 365.25);
-            n -= (int)(365.25 * y);
-            var m = (int)(n / 30.601);
-            n -= (int)(30.601 * m);
-            var d = n;
+            d += 1524;
+            var y = (int)((d - 122.1) / 365.25);
+            d -= (int)(365.25 * y);
+            var m = (int)(d / 30.601);
+            d -= (int)(30.601 * m);
             if (m > 13)
             {
                 m -= 12;

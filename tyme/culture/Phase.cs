@@ -1,4 +1,10 @@
-﻿namespace tyme.culture
+﻿using System;
+using tyme.jd;
+using tyme.lunar;
+using tyme.solar;
+using tyme.util;
+
+namespace tyme.culture
 {
     /// <summary>
     /// 月相
@@ -10,42 +16,64 @@
         /// </summary>
         public static string[] Names =
         {
-            "朔月", "既朔月", "蛾眉新月", "蛾眉新月", "蛾眉月", "夕月", "上弦月", "上弦月", "九夜月", "宵月", "宵月", "宵月", "渐盈凸月", "小望月", "望月", "既望月",
-            "立待月", "居待月", "寝待月", "更待月", "渐亏凸月", "下弦月", "下弦月", "有明月", "有明月", "蛾眉残月", "蛾眉残月", "残月", "晓月", "晦月"
+            "新月", "蛾眉月", "上弦月", "盈凸月", "满月", "亏凸月", "下弦月", "残月"
         };
 
         /// <summary>
+        /// 农历月
+        /// </summary>
+        public int LunarYear { get; }
+
+        /// <summary>
+        /// 农历日
+        /// </summary>
+        public int LunarMonth { get; }
+
+        /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="lunarYear">农历年</param>
+        /// <param name="lunarMonth">农历月</param>
         /// <param name="index">索引值</param>
-        public Phase(int index) : base(Names, index)
+        public Phase(int lunarYear, int lunarMonth, int index) : base(Names, index)
         {
+            var m = lunar.LunarMonth.FromYm(lunarYear, lunarMonth).Next(index / Size);
+            LunarYear = m.Year;
+            LunarMonth = m.Month;
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="lunarYear">农历年</param>
+        /// <param name="lunarMonth">农历月</param>
         /// <param name="name">名称</param>
-        public Phase(string name) : base(Names, name)
+        public Phase(int lunarYear, int lunarMonth, string name) : base(Names, name)
         {
+            LunarYear = lunarYear;
+            LunarMonth = lunarMonth;
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="lunarYear">农历年</param>
+        /// <param name="lunarMonth">农历月</param>
         /// <param name="index">索引值</param>
-        public static Phase FromIndex(int index)
+        public static Phase FromIndex(int lunarYear, int lunarMonth, int index)
         {
-            return new Phase(index);
+            return new Phase(lunarYear, lunarMonth, index);
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
+        /// <param name="lunarYear">农历年</param>
+        /// <param name="lunarMonth">农历月</param>
         /// <param name="name">名称</param>
-        public static Phase FromName(string name)
+        public static Phase FromName(int lunarYear, int lunarMonth, string name)
         {
-            return new Phase(name);
+            return new Phase(lunarYear, lunarMonth, name);
         }
 
         /// <summary>
@@ -55,7 +83,71 @@
         /// <returns>推移后的月相</returns>
         public new Phase Next(int n)
         {
-            return FromIndex(NextIndex(n));
+            var size = Size;
+            var i = Index + n;
+            if (i < 0)
+            {
+                i -= size;
+            }
+
+            i /= size;
+            var m = lunar.LunarMonth.FromYm(LunarYear, LunarMonth);
+            if (i != 0)
+            {
+                m = m.Next(i);
+            }
+
+            return FromIndex(m.Year, m.Month, NextIndex(n));
+        }
+
+        /// <summary>
+        /// 公历起始时刻
+        /// </summary>
+        /// <returns>公历时刻</returns>
+        protected SolarTime GetStartSolarTime()
+        {
+            var n = (int)Math.Floor((LunarYear - 2000) * 365.2422 / 29.53058886);
+            var i = 0;
+            var d = LunarDay.FromYmd(LunarYear, LunarMonth, 1).GetSolarDay();
+            double t;
+            while (true)
+            {
+                t = ShouXingUtil.MsaLonT((n + i) * ShouXingUtil.Pi2) * 36525;
+                if (!JulianDay.FromJulianDay(t + JulianDay.J2000 + ShouXingUtil.OneThird - ShouXingUtil.DtT(t)).GetSolarDay().IsBefore(d))
+                {
+                    break;
+                }
+
+                i++;
+            }
+
+            int[] r = { 0, 90, 180, 270 };
+            t = ShouXingUtil.MsaLonT((n + i + r[Index / 2] / 360D) * ShouXingUtil.Pi2) * 36525;
+            return JulianDay.FromJulianDay(t + JulianDay.J2000 + ShouXingUtil.OneThird - ShouXingUtil.DtT(t)).GetSolarTime();
+        }
+
+        /// <summary>
+        /// 公历时刻
+        /// </summary>
+        public SolarTime SolarTime
+        {
+            get
+            {
+                var t = GetStartSolarTime();
+                return Index % 2 == 1 ? t.Next(1) : t;
+            }
+        }
+
+        /// <summary>
+        /// 公历日
+        /// </summary>
+        public SolarDay SolarDay
+        {
+            get
+            {
+                var d = GetStartSolarTime().SolarDay;
+                return Index % 2 == 1 ? d.Next(1) : d;
+            }
         }
     }
 }

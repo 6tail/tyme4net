@@ -294,7 +294,7 @@ namespace tyme.lunar
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle => SixtyCycle.FromName(HeavenStem.FromIndex((LunarYear.SixtyCycle.HeavenStem.Index + 1) * 2 + IndexInYear).GetName() + EarthBranch.FromIndex(IndexInYear + 2).GetName());
+        public SixtyCycle SixtyCycle => SixtyCycle.FromName(HeavenStem.FromIndex(LunarYear.SixtyCycle.HeavenStem.Index * 2 + Month + 1).GetName() + EarthBranch.FromIndex(Month + 1).GetName());
 
         /// <summary>
         /// 九星

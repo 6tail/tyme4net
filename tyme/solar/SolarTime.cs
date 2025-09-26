@@ -1,4 +1,5 @@
 ﻿using System;
+using tyme.culture;
 using tyme.culture.phenology;
 using tyme.jd;
 using tyme.lunar;
@@ -273,6 +274,23 @@ namespace tyme.solar
         public SixtyCycleHour GetSixtyCycleHour()
         {
             return SixtyCycleHour.FromSolarTime(this);
+        }
+        
+        /// <summary>
+        /// 月相
+        /// </summary>
+        public Phase Phase {
+            get
+            {
+                var month = GetLunarHour().LunarDay.LunarMonth.Next(1);
+                var p = Phase.FromIndex(month.Year, month.Month, 0);
+                while (p.SolarTime.IsAfter(this))
+                {
+                    p = p.Next(-1);
+                }
+
+                return p;
+            }
         }
     }
 }

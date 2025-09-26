@@ -45,7 +45,7 @@ public class PhenologyTest
         var jd = p.JulianDay;
         Assert.Equal("麋角解", p.GetName());
         Assert.Equal("2025年12月26日", jd.GetSolarDay().ToString());
-        Assert.Equal("2025年12月26日 20:49:39", jd.GetSolarTime().ToString());
+        Assert.Equal("2025年12月26日 20:49:56", jd.GetSolarTime().ToString());
     }
     
     [Fact]
@@ -55,13 +55,13 @@ public class PhenologyTest
         var jd = p.JulianDay;
         Assert.Equal("麋角解", p.GetName());
         Assert.Equal("2025年12月26日", jd.GetSolarDay().ToString());
-        Assert.Equal("2025年12月26日 20:49:39", jd.GetSolarTime().ToString());
+        Assert.Equal("2025年12月26日 20:49:56", jd.GetSolarTime().ToString());
     }
     
     [Fact]
     public void Test4()
     {
         Assert.Equal("蚯蚓结", SolarTime.FromYmdHms(2025, 12, 26, 20, 49, 38).Phenology.GetName());
-        Assert.Equal("麋角解", SolarTime.FromYmdHms(2025, 12, 26, 20, 49, 39).Phenology.GetName());
+        Assert.Equal("麋角解", SolarTime.FromYmdHms(2025, 12, 26, 20, 49, 56).Phenology.GetName());
     }
 }

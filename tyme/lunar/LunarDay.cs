@@ -240,11 +240,31 @@ namespace tyme.lunar
         /// 逐日胎神
         /// </summary>
         public FetusDay FetusDay => FetusDay.FromLunarDay(this);
+        
+        /// <summary>
+        /// 月相第几天
+        /// </summary>
+        public PhaseDay PhaseDay {
+            get
+            {
+                var today = GetSolarDay();
+                var m = LunarMonth.Next(1);
+                var p = Phase.FromIndex(m.Year, m.Month, 0);
+                var d = p.SolarDay;
+                while (d.IsAfter(today))
+                {
+                    p = p.Next(-1);
+                    d = p.SolarDay;
+                }
+
+                return new PhaseDay(p, today.Subtract(d));
+            }
+        }
 
         /// <summary>
         /// 月相
         /// </summary>
-        public Phase Phase => Phase.FromIndex(Day - 1);
+        public Phase Phase => PhaseDay.Phase;
 
         /// <summary>
         /// 六曜

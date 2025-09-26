@@ -458,5 +458,29 @@ namespace tyme.solar
         /// 公历现代节日，如果当天不是公历现代节日，返回null
         /// </summary>
         public SolarFestival Festival => SolarFestival.FromYmd(Year, Month, Day);
+        
+        /// <summary>
+        /// 月相第几天
+        /// </summary>
+        public PhaseDay PhaseDay {
+            get
+            {
+                var month = GetLunarDay().LunarMonth.Next(1);
+                var p = Phase.FromIndex(month.Year, month.Month, 0);
+                var d = p.SolarDay;
+                while (d.IsAfter(this))
+                {
+                    p = p.Next(-1);
+                    d = p.SolarDay;
+                }
+
+                return new PhaseDay(p, Subtract(d));
+            }
+        }
+
+        /// <summary>
+        /// 月相
+        /// </summary>
+        public Phase Phase => PhaseDay.Phase;
     }
 }
