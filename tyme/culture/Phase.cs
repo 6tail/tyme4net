@@ -39,7 +39,7 @@ namespace tyme.culture
         {
             var m = lunar.LunarMonth.FromYm(lunarYear, lunarMonth).Next(index / Size);
             LunarYear = m.Year;
-            LunarMonth = m.Month;
+            LunarMonth = m.MonthWithLeap;
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace tyme.culture
                 m = m.Next(i);
             }
 
-            return FromIndex(m.Year, m.Month, NextIndex(n));
+            return FromIndex(m.Year, m.MonthWithLeap, NextIndex(n));
         }
 
         /// <summary>
@@ -108,12 +108,13 @@ namespace tyme.culture
         {
             var n = (int)Math.Floor((LunarYear - 2000) * 365.2422 / 29.53058886);
             var i = 0;
+            var jd = JulianDay.J2000 + ShouXingUtil.OneThird;
             var d = LunarDay.FromYmd(LunarYear, LunarMonth, 1).GetSolarDay();
             double t;
             while (true)
             {
                 t = ShouXingUtil.MsaLonT((n + i) * ShouXingUtil.Pi2) * 36525;
-                if (!JulianDay.FromJulianDay(t + JulianDay.J2000 + ShouXingUtil.OneThird - ShouXingUtil.DtT(t)).GetSolarDay().IsBefore(d))
+                if (!JulianDay.FromJulianDay(jd + t  - ShouXingUtil.DtT(t)).GetSolarDay().IsBefore(d))
                 {
                     break;
                 }
@@ -123,7 +124,7 @@ namespace tyme.culture
 
             int[] r = { 0, 90, 180, 270 };
             t = ShouXingUtil.MsaLonT((n + i + r[Index / 2] / 360D) * ShouXingUtil.Pi2) * 36525;
-            return JulianDay.FromJulianDay(t + JulianDay.J2000 + ShouXingUtil.OneThird - ShouXingUtil.DtT(t)).GetSolarTime();
+            return JulianDay.FromJulianDay(jd + t - ShouXingUtil.DtT(t)).GetSolarTime();
         }
 
         /// <summary>

@@ -249,7 +249,7 @@ namespace tyme.lunar
             {
                 var today = GetSolarDay();
                 var m = LunarMonth.Next(1);
-                var p = Phase.FromIndex(m.Year, m.Month, 0);
+                var p = Phase.FromIndex(m.Year, m.MonthWithLeap, 0);
                 var d = p.SolarDay;
                 while (d.IsAfter(today))
                 {

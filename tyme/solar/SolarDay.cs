@@ -466,7 +466,7 @@ namespace tyme.solar
             get
             {
                 var month = GetLunarDay().LunarMonth.Next(1);
-                var p = Phase.FromIndex(month.Year, month.Month, 0);
+                var p = Phase.FromIndex(month.Year, month.MonthWithLeap, 0);
                 var d = p.SolarDay;
                 while (d.IsAfter(this))
                 {

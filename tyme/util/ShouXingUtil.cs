@@ -812,8 +812,7 @@ namespace tyme.util
 
             v /= Xl0[0];
             var t2 = t * t;
-            v += (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t2 * t) / SecondPerRad;
-            return v;
+            return v + (-0.0728 - 2.7702 * t - 1.1019 * t2 - 0.0996 * t2 * t) / SecondPerRad;
         }
 
         /// <summary>
@@ -874,8 +873,7 @@ namespace tyme.util
                 v += c * tn;
             }
 
-            v /= SecondPerRad;
-            return v;
+            return v / SecondPerRad;
         }
 
         /// <summary>
@@ -886,9 +884,7 @@ namespace tyme.util
         public static double GxcSunLon(double t)
         {
             var t2 = t * t;
-            var v = -0.043126 + 628.301955 * t - 0.000002732 * t2;
-            var e = 0.016708634 - 0.000042037 * t - 0.0000001267 * t2;
-            return -20.49552 * (1 + e * Math.Cos(v)) / SecondPerRad;
+            return -20.49552 * (1 + (0.016708634 - 0.000042037 * t - 0.0000001267 * t2) * Math.Cos(-0.043126 + 628.301955 * t - 0.000002732 * t2)) / SecondPerRad;
         }
 
         /// <summary>
@@ -899,8 +895,7 @@ namespace tyme.util
         public static double Ev(double t)
         {
             var f = 628.307585 * t;
-            return 628.332 + 21 * Math.Sin(1.527 + f) + 0.44 * Math.Sin(1.48 + f * 2) + 0.129 * Math.Sin(5.82 + f) * t +
-                   0.00055 * Math.Sin(4.21 + f) * t * t;
+            return 628.332 + 21 * Math.Sin(1.527 + f) + 0.44 * Math.Sin(1.48 + f * 2) + 0.129 * Math.Sin(5.82 + f) * t + 0.00055 * Math.Sin(4.21 + f) * t * t;
         }
 
         /// <summary>
@@ -978,13 +973,7 @@ namespace tyme.util
         public static double Mv(double t)
         {
             var v = 8399.71 - 914 * Math.Sin(0.7848 + 8328.691425 * t + 0.0001523 * t * t);
-            v -= 179 * Math.Sin(2.543 + 15542.7543 * t) + 160 * Math.Sin(0.1874 + 7214.0629 * t) +
-                 62 * Math.Sin(3.14 + 16657.3828 * t) + 34 * Math.Sin(4.827 + 16866.9323 * t) +
-                 22 * Math.Sin(4.9 + 23871.4457 * t) + 12 * Math.Sin(2.59 + 14914.4523 * t) +
-                 7 * Math.Sin(0.23 + 6585.7609 * t) + 5 * Math.Sin(0.9 + 25195.624 * t) +
-                 5 * Math.Sin(2.32 - 7700.3895 * t) + 5 * Math.Sin(3.88 + 8956.9934 * t) +
-                 5 * Math.Sin(0.49 + 7771.3771 * t);
-            return v;
+            return v - (179 * Math.Sin(2.543 + 15542.7543 * t) + 160 * Math.Sin(0.1874 + 7214.0629 * t) + 62 * Math.Sin(3.14 + 16657.3828 * t) + 34 * Math.Sin(4.827 + 16866.9323 * t) + 22 * Math.Sin(4.9 + 23871.4457 * t) + 12 * Math.Sin(2.59 + 14914.4523 * t) + 7 * Math.Sin(0.23 + 6585.7609 * t) + 5 * Math.Sin(0.9 + 25195.624 * t) + 5 * Math.Sin(2.32 - 7700.3895 * t) + 5 * Math.Sin(3.88 + 8956.9934 * t) + 5 * Math.Sin(0.49 + 7771.3771 * t));
         }
 
         /// <summary>
@@ -998,9 +987,7 @@ namespace tyme.util
             var t = (w - 1.75347 - Math.PI) / v;
             v = Ev(t);
             t += (w - SaLon(t, 10)) / v;
-            v = Ev(t);
-            t += (w - SaLon(t, -1)) / v;
-            return t;
+            return t + (w - SaLon(t, -1)) / Ev(t);
         }
 
         /// <summary>
@@ -1027,8 +1014,7 @@ namespace tyme.util
             t += (w - MsaLon(t, 3, 3)) / v;
             v = Mv(t) - Ev(t);
             t += (w - MsaLon(t, 20, 10)) / v;
-            t += (w - MsaLon(t, -1, 60)) / v;
-            return t;
+            return t + (w - MsaLon(t, -1, 60)) / v;
         }
 
         /// <summary>
@@ -1042,8 +1028,7 @@ namespace tyme.util
             var t = (w - 1.75347 - Math.PI) / v;
             t -= (0.000005297 * t * t + 0.0334166 * Math.Cos(4.669257 + 628.307585 * t) +
                   0.0002061 * Math.Cos(2.67823 + 628.307585 * t) * t) / v;
-            t += (w - ELon(t, 8) - Math.PI + (20.5 + 17.2 * Math.Sin(2.1824 - 33.75705 * t)) / SecondPerRad) / v;
-            return t;
+            return t + (w - ELon(t, 8) - Math.PI + (20.5 + 17.2 * Math.Sin(2.1824 - 33.75705 * t)) / SecondPerRad) / v;
         }
 
         /// <summary>
@@ -1056,17 +1041,11 @@ namespace tyme.util
             var v = 7771.37714500204;
             var t = (w + 1.08472) / v;
             var t2 = t * t;
-            t -= (-0.00003309 * t2 + 0.10976 * Math.Cos(0.784758 + 8328.6914246 * t + 0.000152292 * t2) +
-                  0.02224 * Math.Cos(0.18740 + 7214.0628654 * t - 0.00021848 * t2) -
-                  0.03342 * Math.Cos(4.669257 + 628.307585 * t)) / v;
+            t -= (-0.00003309 * t2 + 0.10976 * Math.Cos(0.784758 + 8328.6914246 * t + 0.000152292 * t2) + 0.02224 * Math.Cos(0.18740 + 7214.0628654 * t - 0.00021848 * t2) - 0.03342 * Math.Cos(4.669257 + 628.307585 * t)) / v;
             t2 = t * t;
-            var l = MLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2 +
-                0.0334166 * Math.Cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.Cos(2.67823 + 628.307585 * t) * t +
-                0.000349 * Math.Cos(4.6261 + 1256.61517 * t) - 20.5 / SecondPerRad);
-            v = 7771.38 - 914 * Math.Sin(0.7848 + 8328.691425 * t + 0.0001523 * t2) -
-                179 * Math.Sin(2.543 + 15542.7543 * t) - 160 * Math.Sin(0.1874 + 7214.0629 * t);
-            t += (w - l) / v;
-            return t;
+            var l = MLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2 + 0.0334166 * Math.Cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.Cos(2.67823 + 628.307585 * t) * t + 0.000349 * Math.Cos(4.6261 + 1256.61517 * t) - 20.5 / SecondPerRad);
+            v = 7771.38 - 914 * Math.Sin(0.7848 + 8328.691425 * t + 0.0001523 * t2) - 179 * Math.Sin(2.543 + 15542.7543 * t) - 160 * Math.Sin(0.1874 + 7214.0629 * t);
+            return t + (w - l) / v;
         }
 
         /// <summary>
@@ -1114,12 +1093,8 @@ namespace tyme.util
         {
             var v = 628.3319653318;
             var t = (w - 4.895062166) / v;
-            t -= (53 * t * t + 334116 * Math.Cos(4.67 + 628.307585 * t) + 2061 * Math.Cos(2.678 + 628.3076 * t) * t) /
-                 v / 10000000;
-            var n = 48950621.66 + 6283319653.318 * t + 53 * t * t + 334166 * Math.Cos(4.669257 + 628.307585 * t) +
-                    3489 * Math.Cos(4.6261 + 1256.61517 * t) + 2060.6 * Math.Cos(2.67823 + 628.307585 * t) * t -
-                    994 -
-                    834 * Math.Sin(2.1824 - 33.75705 * t);
+            t -= (53 * t * t + 334116 * Math.Cos(4.67 + 628.307585 * t) + 2061 * Math.Cos(2.678 + 628.3076 * t) * t) / v / 10000000;
+            var n = 48950621.66 + 6283319653.318 * t + 53 * t * t + 334166 * Math.Cos(4.669257 + 628.307585 * t) + 3489 * Math.Cos(4.6261 + 1256.61517 * t) + 2060.6 * Math.Cos(2.67823 + 628.307585 * t) * t - 994 - 834 * Math.Sin(2.1824 - 33.75705 * t);
             t -= (n / 10000000 - w) / 628.332 + (32 * (t + 1.8) * (t + 1.8) - 20) / SecondPerDay / 36525;
             return t * 36525 + OneThird;
         }
@@ -1133,9 +1108,7 @@ namespace tyme.util
         {
             var v = 7771.37714500204;
             var t = (w + 1.08472) / v;
-            t -= (-0.0000331 * t * t + 0.10976 * Math.Cos(0.785 + 8328.6914 * t) +
-                     0.02224 * Math.Cos(0.187 + 7214.0629 * t) - 0.03342 * Math.Cos(4.669 + 628.3076 * t)) / v +
-                 (32 * (t + 1.8) * (t + 1.8) - 20) / SecondPerDay / 36525;
+            t -= (-0.0000331 * t * t + 0.10976 * Math.Cos(0.785 + 8328.6914 * t) + 0.02224 * Math.Cos(0.187 + 7214.0629 * t) - 0.03342 * Math.Cos(4.669 + 628.3076 * t)) / v + (32 * (t + 1.8) * (t + 1.8) - 20) / SecondPerDay / 36525;
             return t * 36525 + OneThird;
         }
 

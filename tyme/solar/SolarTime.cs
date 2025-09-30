@@ -283,7 +283,7 @@ namespace tyme.solar
             get
             {
                 var month = GetLunarHour().LunarDay.LunarMonth.Next(1);
-                var p = Phase.FromIndex(month.Year, month.Month, 0);
+                var p = Phase.FromIndex(month.Year, month.MonthWithLeap, 0);
                 while (p.SolarTime.IsAfter(this))
                 {
                     p = p.Next(-1);
