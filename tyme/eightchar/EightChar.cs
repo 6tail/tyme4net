@@ -12,19 +12,9 @@ namespace tyme.eightchar
     public class EightChar : AbstractCulture
     {
         /// <summary>
-        /// 年柱
+        /// 三柱
         /// </summary>
-        public SixtyCycle Year { get; }
-
-        /// <summary>
-        /// 月柱
-        /// </summary>
-        public SixtyCycle Month { get; }
-
-        /// <summary>
-        /// 日柱
-        /// </summary>
-        public SixtyCycle Day { get; }
+        public ThreePillars ThreePillars { get; }
 
         /// <summary>
         /// 时柱
@@ -40,9 +30,7 @@ namespace tyme.eightchar
         /// <param name="hour">时柱</param>
         public EightChar(SixtyCycle year, SixtyCycle month, SixtyCycle day, SixtyCycle hour)
         {
-            Year = year;
-            Month = month;
-            Day = day;
+            ThreePillars = new ThreePillars(year, month, day);
             Hour = hour;
         }
 
@@ -205,7 +193,22 @@ namespace tyme.eightchar
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{Year} {Month} {Day} {Hour}";
+            return $"{ThreePillars} {Hour}";
         }
+
+        /// <summary>
+        /// 年柱
+        /// </summary>
+        public SixtyCycle Year => ThreePillars.Year;
+        
+        /// <summary>
+        /// 月柱
+        /// </summary>
+        public SixtyCycle Month => ThreePillars.Month;
+        
+        /// <summary>
+        /// 日柱
+        /// </summary>
+        public SixtyCycle Day => ThreePillars.Day;
     }
 }

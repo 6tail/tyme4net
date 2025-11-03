@@ -1152,8 +1152,7 @@ namespace tyme.util
             else if (jd >= f2)
             {
                 d = Math.Floor(ShuoLow(Math.Floor((jd + pc - 2451551) / 29.5306) * Pi2) + 0.5);
-                var from = (int)((jd - f2) / 29.5306);
-                var n = Sb.Substring(from, 1);
+                var n = Sb.Substring((int)((jd - f2) / 29.5306), 1);
                 switch (n)
                 {
                     case "1":
@@ -1208,8 +1207,7 @@ namespace tyme.util
             else if (jd >= f2)
             {
                 d = Math.Floor(QiLow(Math.Floor((jd + pc - 2451259) / 365.2422 * 24) * Math.PI / 12) + 0.5);
-                var from = (int)((jd - f2) / 365.2422 * 24);
-                var n = Qb.Substring(from, 1);
+                var n = Qb.Substring((int)((jd - f2) / 365.2422 * 24), 1);
                 switch (n)
                 {
                     case "1":

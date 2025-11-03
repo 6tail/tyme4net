@@ -95,7 +95,7 @@ namespace tyme.festival
                         data);
                 case 1:
                     var solarTerm = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                    return new LunarFestival(FestivalType.Term, solarTerm.JulianDay.GetSolarDay().GetLunarDay(),
+                    return new LunarFestival(FestivalType.Term, solarTerm.GetSolarDay().GetLunarDay(),
                         solarTerm, data);
                 case 2:
                     return new LunarFestival(FestivalType.Eve, LunarDay.FromYmd(year + 1, 1, 1).Next(-1), null, data);
@@ -124,7 +124,7 @@ namespace tyme.festival
             {
                 var data = match.Value;
                 var solarTerm = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                var d = solarTerm.JulianDay.GetSolarDay().GetLunarDay();
+                var d = solarTerm.GetSolarDay().GetLunarDay();
                 if (d.Year == year && d.Month == month && d.Day == day)
                 {
                     return new LunarFestival(FestivalType.Term, d, solarTerm, data);

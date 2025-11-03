@@ -200,9 +200,9 @@ namespace tyme.lunar
             {
                 var solar = GetSolarDay();
                 var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
-                var dongZhiSolar = dongZhi.JulianDay.GetSolarDay();
-                var xiaZhiSolar = dongZhi.Next(12).JulianDay.GetSolarDay();
-                var dongZhiSolar2 = dongZhi.Next(24).JulianDay.GetSolarDay();
+                var dongZhiSolar = dongZhi.GetSolarDay();
+                var xiaZhiSolar = dongZhi.Next(12).GetSolarDay();
+                var dongZhiSolar2 = dongZhi.Next(24).GetSolarDay();
                 var dongZhiIndex = dongZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var xiaZhiIndex = xiaZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var dongZhiIndex2 = dongZhiSolar2.GetLunarDay().SixtyCycle.Index;
@@ -240,11 +240,12 @@ namespace tyme.lunar
         /// 逐日胎神
         /// </summary>
         public FetusDay FetusDay => FetusDay.FromLunarDay(this);
-        
+
         /// <summary>
         /// 月相第几天
         /// </summary>
-        public PhaseDay PhaseDay {
+        public PhaseDay PhaseDay
+        {
             get
             {
                 var today = GetSolarDay();
@@ -338,5 +339,10 @@ namespace tyme.lunar
         /// 小六壬
         /// </summary>
         public MinorRen MinorRen => LunarMonth.MinorRen.Next(Day - 1);
+
+        /// <summary>
+        /// 三柱
+        /// </summary>
+        public ThreePillars ThreePillars => GetSixtyCycleDay().ThreePillars;
     }
 }

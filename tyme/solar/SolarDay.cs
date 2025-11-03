@@ -183,11 +183,11 @@ namespace tyme.solar
                 }
 
                 var term = SolarTerm.FromIndex(y, i);
-                var d = term.JulianDay.GetSolarDay();
+                var d = term.GetSolarDay();
                 while (IsBefore(d))
                 {
                     term = term.Next(-1);
-                    d = term.JulianDay.GetSolarDay();
+                    d = term.GetSolarDay();
                 }
 
                 return new SolarTermDay(term, Subtract(d));
@@ -201,8 +201,7 @@ namespace tyme.solar
         /// <returns>公历周</returns>
         public SolarWeek GetSolarWeek(int start)
         {
-            return SolarWeek.FromYm(Year, Month,
-                (int)Math.Ceiling((Day + FromYmd(Year, Month, 1).Week.Next(-start).Index) / 7D) - 1, start);
+            return SolarWeek.FromYm(Year, Month, (int)Math.Ceiling((Day + FromYmd(Year, Month, 1).Week.Next(-start).Index) / 7D) - 1, start);
         }
 
         /// <summary>
@@ -240,7 +239,7 @@ namespace tyme.solar
                 // 夏至
                 var xiaZhi = SolarTerm.FromIndex(Year, 12);
                 // 第1个庚日
-                var start = xiaZhi.JulianDay.GetSolarDay();
+                var start = xiaZhi.GetSolarDay();
                 // 第3个庚日，即初伏第1天
                 start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(6) + 20);
                 var days = Subtract(start);
@@ -267,7 +266,7 @@ namespace tyme.solar
                 start = start.Next(10);
                 days = Subtract(start);
                 // 立秋
-                if (xiaZhi.Next(3).JulianDay.GetSolarDay().IsAfter(start))
+                if (xiaZhi.Next(3).GetSolarDay().IsAfter(start))
                 {
                     if (days < 10)
                     {
@@ -290,10 +289,10 @@ namespace tyme.solar
             get
             {
                 var year = Year;
-                var start = SolarTerm.FromIndex(year + 1, 0).JulianDay.GetSolarDay();
+                var start = SolarTerm.FromIndex(year + 1, 0).GetSolarDay();
                 if (IsBefore(start))
                 {
-                    start = SolarTerm.FromIndex(year, 0).JulianDay.GetSolarDay();
+                    start = SolarTerm.FromIndex(year, 0).GetSolarDay();
                 }
 
                 var end = start.Next(81);
@@ -321,7 +320,7 @@ namespace tyme.solar
                     term = term.Next(-1);
                 }
 
-                var dayIndex = Subtract(term.JulianDay.GetSolarDay());
+                var dayIndex = Subtract(term.GetSolarDay());
                 var startIndex = (term.Index - 1) * 3;
                 var data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95".Substring(startIndex, 6);
                 var days = 0;
@@ -372,12 +371,12 @@ namespace tyme.solar
             {
                 // 芒种
                 var grainInEar = SolarTerm.FromIndex(Year, 11);
-                var start = grainInEar.JulianDay.GetSolarDay();
+                var start = grainInEar.GetSolarDay();
                 // 芒种后的第1个丙日
                 start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(2));
 
                 // 小暑
-                var end = grainInEar.Next(2).JulianDay.GetSolarDay();
+                var end = grainInEar.Next(2).GetSolarDay();
                 // 小暑后的第1个未日
                 end = end.Next(end.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(7));
 
@@ -386,9 +385,7 @@ namespace tyme.solar
                     return null;
                 }
 
-                return Equals(end)
-                    ? new PlumRainDay(PlumRain.FromIndex(1), 0)
-                    : new PlumRainDay(PlumRain.FromIndex(0), Subtract(start));
+                return Equals(end) ? new PlumRainDay(PlumRain.FromIndex(1), 0) : new PlumRainDay(PlumRain.FromIndex(0), Subtract(start));
             }
         }
 
@@ -458,11 +455,12 @@ namespace tyme.solar
         /// 公历现代节日，如果当天不是公历现代节日，返回null
         /// </summary>
         public SolarFestival Festival => SolarFestival.FromYmd(Year, Month, Day);
-        
+
         /// <summary>
         /// 月相第几天
         /// </summary>
-        public PhaseDay PhaseDay {
+        public PhaseDay PhaseDay
+        {
             get
             {
                 var month = GetLunarDay().LunarMonth.Next(1);

@@ -49,7 +49,7 @@ namespace tyme.sixtycycle
         public SixtyCycleDay(SolarDay solarDay)
         {
             var solarYear = solarDay.Year;
-            var springSolarDay = SolarTerm.FromIndex(solarYear, 3).JulianDay.GetSolarDay();
+            var springSolarDay = SolarTerm.FromIndex(solarYear, 3).GetSolarDay();
             var lunarDay = solarDay.GetLunarDay();
             var lunarYear = lunarDay.LunarMonth.LunarYear;
             if (lunarYear.Year == solarYear)
@@ -69,7 +69,7 @@ namespace tyme.sixtycycle
 
             var term = solarDay.Term;
             int index = term.Index - 3;
-            if (index < 0 && term.JulianDay.GetSolarDay().IsAfter(springSolarDay))
+            if (index < 0 && term.GetSolarDay().IsAfter(springSolarDay))
             {
                 index += 24;
             }
@@ -151,9 +151,9 @@ namespace tyme.sixtycycle
             get
             {
                 var dongZhi = SolarTerm.FromIndex(SolarDay.Year, 0);
-                var dongZhiSolar = dongZhi.JulianDay.GetSolarDay();
-                var xiaZhiSolar = dongZhi.Next(12).JulianDay.GetSolarDay();
-                var dongZhiSolar2 = dongZhi.Next(24).JulianDay.GetSolarDay();
+                var dongZhiSolar = dongZhi.GetSolarDay();
+                var xiaZhiSolar = dongZhi.Next(12).GetSolarDay();
+                var dongZhiSolar2 = dongZhi.Next(24).GetSolarDay();
                 var dongZhiIndex = dongZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var xiaZhiIndex = xiaZhiSolar.GetLunarDay().SixtyCycle.Index;
                 var dongZhiIndex2 = dongZhiSolar2.GetLunarDay().SixtyCycle.Index;
@@ -230,5 +230,10 @@ namespace tyme.sixtycycle
         /// </summary>
         /// <returns>宜忌列表</returns>
         public List<Taboo> Avoids => Taboo.GetDayAvoids(Month, Day);
+
+        /// <summary>
+        /// 三柱
+        /// </summary>
+        public ThreePillars ThreePillars => new ThreePillars(Year, Month, SixtyCycle);
     }
 }

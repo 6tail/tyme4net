@@ -50,4 +50,22 @@ public class ElementTest
     {
         Assert.Equal(Element.FromName("火"), Element.FromName("土").GetReinforced());
     }
+
+    /// <summary>
+    /// ==
+    /// </summary>
+    [Fact]
+    public void Test5()
+    {
+        Assert.True(Element.FromName("火") == Element.FromIndex(1));
+    }
+
+    /// <summary>
+    /// !=
+    /// </summary>
+    [Fact]
+    public void Test6()
+    {
+        Assert.True(Element.FromName("火") != Element.FromName("土"));
+    }
 }

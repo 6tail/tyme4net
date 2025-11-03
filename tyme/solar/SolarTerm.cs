@@ -14,17 +14,16 @@ namespace tyme.solar
         /// </summary>
         public static string[] Names =
         {
-            "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露",
-            "秋分", "寒露", "霜降", "立冬", "小雪", "大雪"
+            "冬至", "小寒", "大寒", "立春", "雨水", "惊蛰", "春分", "清明", "谷雨", "立夏", "小满", "芒种", "夏至", "小暑", "大暑", "立秋", "处暑", "白露", "秋分", "寒露", "霜降", "立冬", "小雪", "大雪"
         };
-        
+
         /// <summary>
         /// 年
         /// </summary>
         public int Year { get; }
 
         /// <summary>
-        /// 粗略的儒略日
+        /// 儒略日（用于日历，只精确到日中午12:00）
         /// </summary>
         public double CursoryJulianDay { get; set; }
 
@@ -65,6 +64,7 @@ namespace tyme.solar
             {
                 w -= 365.2422;
             }
+
             CursoryJulianDay = ShouXingUtil.CalcQi(w + 15.2184 * offset);
         }
 
@@ -113,9 +113,17 @@ namespace tyme.solar
         public bool IsQi => Index % 2 == 0;
 
         /// <summary>
-        /// 儒略日
+        /// 儒略日（精确到秒）
         /// </summary>
-        public JulianDay JulianDay =>
-            JulianDay.FromJulianDay(ShouXingUtil.QiAccurate2(CursoryJulianDay) + JulianDay.J2000);
+        public JulianDay JulianDay => JulianDay.FromJulianDay(ShouXingUtil.QiAccurate2(CursoryJulianDay) + JulianDay.J2000);
+
+        /// <summary>
+        /// 公历日（用于日历）
+        /// </summary>
+        /// <returns>公历日</returns>
+        public SolarDay GetSolarDay()
+        {
+            return JulianDay.FromJulianDay(CursoryJulianDay + JulianDay.J2000).GetSolarDay();
+        }
     }
 }

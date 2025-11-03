@@ -40,6 +40,33 @@
         }
 
         /// <summary>
+        /// 重载 == 运算符
+        /// </summary>
+        /// <param name="left">传统文化抽象1</param>
+        /// <param name="right">传统文化抽象2</param>
+        /// <returns>true/false</returns>
+        public static bool operator ==(AbstractCulture left, AbstractCulture right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        /// <summary>
+        /// 重载 != 运算符
+        /// </summary>
+        /// <param name="left">传统文化抽象1</param>
+        /// <param name="right">传统文化抽象2</param>
+        /// <returns>true/false</returns>
+        public static bool operator !=(AbstractCulture left, AbstractCulture right)
+        {
+            return !(left == right);
+        }
+
+        /// <summary>
         /// 计算索引值
         /// </summary>
         /// <param name="index">索引值</param>

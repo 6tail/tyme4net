@@ -16,24 +16,28 @@ public class SolarTermTest
         Assert.Equal(0, dongZhi.Index);
         // 公历日
         Assert.Equal("2022年12月22日", dongZhi.JulianDay.GetSolarDay().ToString());
+        Assert.Equal("2022年12月22日", dongZhi.GetSolarDay().ToString());
 
         // 冬至顺推23次，就是大雪 2023-12-07 17:32:55
         SolarTerm daXue = dongZhi.Next(23);
         Assert.Equal("大雪", daXue.GetName());
         Assert.Equal(23, daXue.Index);
         Assert.Equal("2023年12月7日", daXue.JulianDay.GetSolarDay().ToString());
+        Assert.Equal("2023年12月7日", daXue.GetSolarDay().ToString());
 
         // 冬至逆推2次，就是上一年的小雪 2022-11-22 16:20:28
         SolarTerm xiaoXue = dongZhi.Next(-2);
         Assert.Equal("小雪", xiaoXue.GetName());
         Assert.Equal(22, xiaoXue.Index);
         Assert.Equal("2022年11月22日", xiaoXue.JulianDay.GetSolarDay().ToString());
+        Assert.Equal("2022年11月22日", xiaoXue.GetSolarDay().ToString());
 
         // 冬至顺推24次，就是下一个冬至 2023-12-22 11:27:20
         SolarTerm dongZhi2 = dongZhi.Next(24);
         Assert.Equal("冬至", dongZhi2.GetName());
         Assert.Equal(0, dongZhi2.Index);
         Assert.Equal("2023年12月22日", dongZhi2.JulianDay.GetSolarDay().ToString());
+        Assert.Equal("2023年12月22日", dongZhi2.GetSolarDay().ToString());
     }
 
     [Fact]
@@ -55,6 +59,7 @@ public class SolarTermTest
         Assert.Equal(23, jq.Index);
         // 公历
         Assert.Equal("2023年12月7日", jq.JulianDay.GetSolarDay().ToString());
+        Assert.Equal("2023年12月7日", jq.GetSolarDay().ToString());
         // 农历
         Assert.Equal("农历癸卯年十月廿五", jq.JulianDay.GetSolarDay().GetLunarDay().ToString());
         // 推移
@@ -79,5 +84,13 @@ public class SolarTermTest
         Assert.Equal("大雪第15天", SolarDay.FromYmd(2023, 12, 21).TermDay.ToString());
 
         Assert.Equal("冬至第1天", SolarDay.FromYmd(2023, 12, 22).TermDay.ToString());
+    }
+    
+    [Fact]
+    public void Test6()
+    {
+        Assert.Equal("1034年10月1日", SolarTerm.FromName(1034, "寒露").GetSolarDay().ToString());
+        Assert.Equal("1034年10月3日", SolarTerm.FromName(1034, "寒露").JulianDay.GetSolarDay().ToString());
+        Assert.Equal("1034年10月3日 06:02:28", SolarTerm.FromName(1034, "寒露").JulianDay.GetSolarTime().ToString());
     }
 }

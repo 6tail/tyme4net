@@ -78,7 +78,7 @@ namespace tyme.sixtycycle
         /// <summary>
         /// 首日（节令当天）
         /// </summary>
-        public SixtyCycleDay FirstDay => SixtyCycleDay.FromSolarDay(SolarTerm.FromIndex(SixtyCycleYear.Year, 3 + IndexInYear * 2).JulianDay.GetSolarDay());
+        public SixtyCycleDay FirstDay => SixtyCycleDay.FromSolarDay(SolarTerm.FromIndex(SixtyCycleYear.Year, 3 + IndexInYear * 2).GetSolarDay());
 
         /// <summary>
         /// 本月的干支日列表

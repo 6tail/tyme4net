@@ -427,8 +427,7 @@ public class EightCharTest
     [Fact]
     public void Test21()
     {
-        Assert.Equal("庚子",
-            new EightChar(SixtyCycle.FromName("辛亥"), SixtyCycle.FromName("乙未"), null, SixtyCycle.FromName("甲辰")).BodySign.GetName());
+        Assert.Equal("庚子", new EightChar(SixtyCycle.FromName("辛亥"), SixtyCycle.FromName("乙未"), null, SixtyCycle.FromName("甲辰")).BodySign.GetName());
     }
 
     [Fact]
@@ -682,5 +681,11 @@ public class EightCharTest
 
         var expected = new List<string> { "1812年2月18日 16:00:00", "1992年3月5日 15:00:00", "2052年2月19日 16:00:00" };
         Assert.Equal(expected, actual);
+    }
+    
+    [Fact]
+    public void Test51()
+    {
+        Assert.Equal("甲戌 癸酉 甲戌 甲戌", SolarTime.FromYmdHms(1034, 10, 2, 20, 0, 0).GetLunarHour().EightChar.ToString());
     }
 }
