@@ -4,48 +4,35 @@ using tyme.culture.phenology;
 using tyme.jd;
 using tyme.lunar;
 using tyme.sixtycycle;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历时刻
     /// </summary>
-    public class SolarTime : AbstractTyme
+    public class SolarTime : SecondUnit
     {
         /// <summary>
         /// 公历日
         /// </summary>
-        public SolarDay SolarDay { get; }
+        public SolarDay SolarDay => SolarDay.FromYmd(Year, Month, Day);
         
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => SolarDay.Year;
-
-        /// <summary>
-        /// 月
-        /// </summary>
-        public int Month => SolarDay.Month;
-
-        /// <summary>
-        /// 日
-        /// </summary>
-        public int Day => SolarDay.Day;
-
-        /// <summary>
-        /// 时
-        /// </summary>
-        public int Hour { get; }
-
-        /// <summary>
-        /// 分
-        /// </summary>
-        public int Minute { get; }
-
-        /// <summary>
-        /// 秒
-        /// </summary>
-        public int Second { get; }
+        /// <param name="year">年</param>
+        /// <param name="month">月</param>
+        /// <param name="day">日</param>
+        /// <param name="hour">时</param>
+        /// <param name="minute">分</param>
+        /// <param name="second">秒</param>
+        /// <exception cref="ArgumentException"></exception>
+        public static void Validate(int year, int month, int day, int hour, int minute, int second)
+        {
+            SecondUnit.Validate(hour, minute, second);
+            SolarDay.Validate(year, month, day);
+        }
 
         /// <summary>
         /// 初始化
@@ -59,22 +46,10 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarTime(int year, int month, int day, int hour, int minute, int second)
         {
-            if (hour < 0 || hour > 23)
-            {
-                throw new ArgumentException($"illegal hour: {hour}");
-            }
-
-            if (minute < 0 || minute > 59)
-            {
-                throw new ArgumentException($"illegal minute: {minute}");
-            }
-
-            if (second < 0 || second > 59)
-            {
-                throw new ArgumentException($"illegal second: {second}");
-            }
-
-            SolarDay = SolarDay.FromYmd(year, month, day);
+            Validate(year, month, day, hour, minute, second);
+            Year = year;
+            Month = month;
+            Day = day;
             Hour = hour;
             Minute = minute;
             Second = second;
@@ -90,6 +65,7 @@ namespace tyme.solar
         /// <param name="minute">分</param>
         /// <param name="second">秒</param>
         /// <returns>公历时刻</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarTime FromYmdHms(int year, int month, int day, int hour, int minute, int second)
         {
             return new SolarTime(year, month, day, hour, minute, second);

@@ -34,7 +34,7 @@ namespace tyme.sixtycycle
         /// 从年初始化
         /// </summary>
         /// <param name="year">年，支持-1到9999年</param>
-        /// <returns>农历年</returns>
+        /// <returns>干支年</returns>
         public static SixtyCycleYear FromYear(int year)
         {
             return new SixtyCycleYear(year);

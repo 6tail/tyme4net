@@ -11,13 +11,14 @@ using tyme.jd;
 using tyme.lunar;
 using tyme.rabbyung;
 using tyme.sixtycycle;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历日
     /// </summary>
-    public class SolarDay : AbstractTyme
+    public class SolarDay : DayUnit
     {
         /// <summary>
         /// 名称
@@ -27,22 +28,33 @@ namespace tyme.solar
         /// <summary>
         /// 公历月
         /// </summary>
-        public SolarMonth SolarMonth { get; }
-
+        public SolarMonth SolarMonth => SolarMonth.FromYm(Year, Month);
+        
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => SolarMonth.Year;
-
-        /// <summary>
-        /// 月
-        /// </summary>
-        public int Month => SolarMonth.Month;
-
-        /// <summary>
-        /// 日
-        /// </summary>
-        public int Day { get; }
+        /// <param name="year">公历年</param>
+        /// <param name="month">月</param>
+        /// <param name="day">日</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month, int day)
+        {
+            if (day < 1)
+            {
+                throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
+            }
+            if (1582 == year && 10 == month)
+            {
+                if ((day > 4 && day < 15) || day > 31)
+                {
+                    throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
+                }
+            }
+            else if (day > SolarMonth.FromYm(year, month).DayCount)
+            {
+                throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -53,25 +65,9 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarDay(int year, int month, int day)
         {
-            if (day < 1)
-            {
-                throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
-            }
-
-            var m = SolarMonth.FromYm(year, month);
-            if (1582 == year && 10 == month)
-            {
-                if ((day > 4 && day < 15) || day > 31)
-                {
-                    throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
-                }
-            }
-            else if (day > m.DayCount)
-            {
-                throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
-            }
-
-            SolarMonth = m;
+            Validate(year, month, day);
+            Year = year;
+            Month = month;
             Day = day;
         }
 
@@ -82,6 +78,7 @@ namespace tyme.solar
         /// <param name="month">公历月</param>
         /// <param name="day">公历日</param>
         /// <returns>公历日</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarDay FromYmd(int year, int month, int day)
         {
             return new SolarDay(year, month, day);

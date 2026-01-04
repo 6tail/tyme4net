@@ -69,12 +69,11 @@ namespace tyme.festival
         /// <param name="year">公历年</param>
         /// <param name="index">索引值</param>
         /// <returns>公历现代节日</returns>
-        /// <exception cref="ArgumentException"></exception>
         public static SolarFestival FromIndex(int year, int index)
         {
             if (index < 0 || index >= Names.Length)
             {
-                throw new ArgumentException($"illegal index: {index}");
+                return null;
             }
 
             var matcher = Regex.Match(Data, $@"@{index:D2}\d+");

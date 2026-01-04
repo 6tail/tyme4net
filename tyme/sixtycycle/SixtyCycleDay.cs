@@ -68,7 +68,7 @@ namespace tyme.sixtycycle
             }
 
             var term = solarDay.Term;
-            int index = term.Index - 3;
+            var index = term.Index - 3;
             if (index < 0 && term.GetSolarDay().IsAfter(springSolarDay))
             {
                 index += 24;
@@ -140,8 +140,7 @@ namespace tyme.sixtycycle
         /// <summary>
         /// 黄道黑道十二神
         /// </summary>
-        public TwelveStar TwelveStar =>
-            TwelveStar.FromIndex(Day.EarthBranch.Index + (8 - Month.EarthBranch.Index % 6) * 2);
+        public TwelveStar TwelveStar => TwelveStar.FromIndex(Day.EarthBranch.Index + (8 - Month.EarthBranch.Index % 6) * 2);
 
         /// <summary>
         /// 九星

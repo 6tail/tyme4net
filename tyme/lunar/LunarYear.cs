@@ -4,23 +4,19 @@ using System.Linq;
 using tyme.culture;
 using tyme.culture.star.nine;
 using tyme.sixtycycle;
+using tyme.unit;
 
 namespace tyme.lunar
 {
     /// <summary>
     /// 农历年
     /// </summary>
-    public class LunarYear : AbstractTyme
+    public class LunarYear : YearUnit
     {
         /// <summary>
         /// 缓存{闰月:年}
         /// </summary>
         protected static List<List<int>> Leap { get; } = new List<List<int>>();
-
-        /// <summary>
-        /// 年
-        /// </summary>
-        public int Year { get; }
 
         static LunarYear()
         {
@@ -63,6 +59,19 @@ namespace tyme.lunar
                 Leap.Add(l);
             }
         }
+        
+        /// <summary>
+        /// 验证
+        /// </summary>
+        /// <param name="year">农历年</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year)
+        {
+            if (year < -1 || year > 9999)
+            {
+                throw new ArgumentException($"illegal lunar year: {year}");
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -71,10 +80,7 @@ namespace tyme.lunar
         /// <exception cref="ArgumentException"></exception>
         public LunarYear(int year)
         {
-            if (year < -1 || year > 9999)
-            {
-                throw new ArgumentException($"illegal lunar year: {year}");
-            }
+            Validate(year);
 
             Year = year;
         }
@@ -84,6 +90,7 @@ namespace tyme.lunar
         /// </summary>
         /// <param name="year">年，支持-1到9999年</param>
         /// <returns>农历年</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static LunarYear FromYear(int year)
         {
             return new LunarYear(year);

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using tyme.culture;
+using tyme.unit;
 
 namespace tyme.lunar
 {
     /// <summary>
     /// 农历周
     /// </summary>
-    public class LunarWeek : AbstractTyme
+    public class LunarWeek : WeekUnit
     {
         /// <summary>
         /// 名称
@@ -17,27 +17,25 @@ namespace tyme.lunar
         /// <summary>
         /// 农历
         /// </summary>
-        public LunarMonth LunarMonth { get; }
-
+        public LunarMonth LunarMonth => LunarMonth.FromYm(Year, Month);
+        
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => LunarMonth.Year;
-
-        /// <summary>
-        /// 月，闰月为负
-        /// </summary>
-        public int Month => LunarMonth.MonthWithLeap;
-
-        /// <summary>
-        /// 索引，0-5
-        /// </summary>
-        public int Index { get; }
-
-        /// <summary>
-        /// 起始星期
-        /// </summary>
-        public Week Start { get; }
+        /// <param name="year">公历年</param>
+        /// <param name="month">月</param>
+        /// <param name="index">索引值，0-5</param>
+        /// <param name="start">起始星期，1234560分别代表星期一至星期天</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month, int index, int start)
+        {
+            WeekUnit.Validate(index, start);
+            var m = LunarMonth.FromYm(year, month);
+            if (index >= m.GetWeekCount(start))
+            {
+                throw new ArgumentException($"illegal lunar week index: {index} in month: {m}");
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -49,25 +47,11 @@ namespace tyme.lunar
         /// <exception cref="ArgumentException"></exception>
         public LunarWeek(int year, int month, int index, int start)
         {
-            if (index < 0 || index > 5)
-            {
-                throw new ArgumentException($"illegal lunar week index: {index}");
-            }
-
-            if (start < 0 || start > 6)
-            {
-                throw new ArgumentException($"illegal lunar week start: {start}");
-            }
-
-            var m = LunarMonth.FromYm(year, month);
-            if (index >= m.GetWeekCount(start))
-            {
-                throw new ArgumentException($"illegal lunar week index: {index} in month: {m}");
-            }
-
-            LunarMonth = m;
+            Validate(year, month, index, start);
+            Year = year;
+            Month = month;
             Index = index;
-            Start = Week.FromIndex(start);
+            Start = start;
         }
 
         /// <summary>
@@ -78,6 +62,7 @@ namespace tyme.lunar
         /// <param name="index">索引值</param>
         /// <param name="start">起始星期，1234560分别代表星期一至星期天</param>
         /// <returns>农历周</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static LunarWeek FromYm(int year, int month, int index, int start)
         {
             return new LunarWeek(year, month, index, start);
@@ -110,41 +95,41 @@ namespace tyme.lunar
         {
             if (n == 0)
             {
-                return FromYm(Year, Month, Index, Start.Index);
+                return FromYm(Year, Month, Index, Start);
             }
 
             var d = Index + n;
             var m = LunarMonth;
             if (n > 0)
             {
-                var weekCount = m.GetWeekCount(Start.Index);
+                var weekCount = m.GetWeekCount(Start);
                 while (d >= weekCount)
                 {
                     d -= weekCount;
                     m = m.Next(1);
-                    if (!LunarDay.FromYmd(m.Year, m.MonthWithLeap, 1).Week.Equals(Start))
+                    if (m.FirstDay.Week.Index != Start)
                     {
                         d += 1;
                     }
 
-                    weekCount = m.GetWeekCount(Start.Index);
+                    weekCount = m.GetWeekCount(Start);
                 }
             }
             else
             {
                 while (d < 0)
                 {
-                    if (!LunarDay.FromYmd(m.Year, m.MonthWithLeap, 1).Week.Equals(Start))
+                    if (m.FirstDay.Week.Index != Start)
                     {
                         d -= 1;
                     }
 
                     m = m.Next(-1);
-                    d += m.GetWeekCount(Start.Index);
+                    d += m.GetWeekCount(Start);
                 }
             }
 
-            return FromYm(m.Year, m.MonthWithLeap, d, Start.Index);
+            return FromYm(m.Year, m.MonthWithLeap, d, Start);
         }
 
         /// <summary>
@@ -155,7 +140,7 @@ namespace tyme.lunar
             get
             {
                 var firstDay = LunarDay.FromYmd(Year, Month, 1);
-                return firstDay.Next(Index * 7 - IndexOf(firstDay.Week.Index - Start.Index, 7));
+                return firstDay.Next(Index * 7 - IndexOf(firstDay.Week.Index - Start, 7));
             }
         }
 

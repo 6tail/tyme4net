@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历季度
     /// </summary>
-    public class SolarSeason : AbstractTyme
+    public class SolarSeason : YearUnit
     {
         /// <summary>
         /// 名称
@@ -16,17 +17,28 @@ namespace tyme.solar
         /// <summary>
         /// 公历年
         /// </summary>
-        public SolarYear SolarYear { get; }
-
-        /// <summary>
-        /// 年
-        /// </summary>
-        public int Year => SolarYear.Year;
+        public SolarYear SolarYear => SolarYear.FromYear(Year);
 
         /// <summary>
         /// 索引，0-3
         /// </summary>
         public int Index { get; }
+        
+        /// <summary>
+        /// 验证
+        /// </summary>
+        /// <param name="year">公历年</param>
+        /// <param name="index">索引值，0-3</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int index)
+        {
+            if (index < 0 || index > 3)
+            {
+                throw new ArgumentException($"illegal solar season index: {index}");
+            }
+
+            SolarYear.Validate(year);
+        }
 
         /// <summary>
         /// 初始化
@@ -36,11 +48,8 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarSeason(int year, int index)
         {
-            if (index < 0 || index > 3)
-            {
-                throw new ArgumentException($"illegal solar season index: {index}");
-            }
-            SolarYear = SolarYear.FromYear(year);
+            Validate(year, index);
+            Year = year;
             Index = index;
         }
 
@@ -50,6 +59,7 @@ namespace tyme.solar
         /// <param name="year">公历年</param>
         /// <param name="index">索引值，0-3</param>
         /// <returns>公历季度</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarSeason FromIndex(int year, int index)
         {
             return new SolarSeason(year, index);

@@ -10,13 +10,14 @@ using tyme.culture.star.twentyeight;
 using tyme.festival;
 using tyme.sixtycycle;
 using tyme.solar;
+using tyme.unit;
 
 namespace tyme.lunar
 {
     /// <summary>
     /// 农历日
     /// </summary>
-    public class LunarDay : AbstractTyme
+    public class LunarDay : DayUnit
     {
         /// <summary>
         /// 名称
@@ -26,33 +27,28 @@ namespace tyme.lunar
         /// <summary>
         /// 农历月
         /// </summary>
-        public LunarMonth LunarMonth { get; }
+        public LunarMonth LunarMonth => LunarMonth.FromYm(Year, Month);
 
         /// <summary>
-        /// 公历日（第一次使用时才会初始化）
+        /// 验证
         /// </summary>
-        protected SolarDay SolarDay;
-
-        /// <summary>
-        /// 干支日（第一次使用时才会初始化）
-        /// </summary>
-        protected SixtyCycleDay SixtyCycleDay;
-
-        /// <summary>
-        /// 年
-        /// </summary>
-        public int Year => LunarMonth.Year;
-
-        /// <summary>
-        /// 月，闰月为负
-        /// </summary>
-        public int Month => LunarMonth.MonthWithLeap;
-
-        /// <summary>
-        /// 日
-        /// </summary>
-        public int Day { get; }
-
+        /// <param name="year">公历年</param>
+        /// <param name="month">月</param>
+        /// <param name="day">日</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month, int day)
+        {
+            if (day < 1)
+            {
+                throw new ArgumentException($"illegal lunar day {day}");
+            }
+            var m = LunarMonth.FromYm(year, month);
+            if (day > m.DayCount)
+            {
+                throw new ArgumentException($"illegal day {day} in {m}");
+            }
+        }
+        
         /// <summary>
         /// 初始化
         /// </summary>
@@ -62,13 +58,9 @@ namespace tyme.lunar
         /// <exception cref="ArgumentException"></exception>
         public LunarDay(int year, int month, int day)
         {
-            var m = LunarMonth.FromYm(year, month);
-            if (day < 1 || day > m.DayCount)
-            {
-                throw new ArgumentException($"illegal day {day} in {m}");
-            }
-
-            LunarMonth = m;
+            Validate(year, month, day);
+            Year = year;
+            Month = month;
             Day = day;
         }
 
@@ -79,6 +71,7 @@ namespace tyme.lunar
         /// <param name="month">农历月</param>
         /// <param name="day">农历日</param>
         /// <returns>农历日</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static LunarDay FromYmd(int year, int month, int day)
         {
             return new LunarDay(year, month, day);
@@ -278,7 +271,7 @@ namespace tyme.lunar
         /// <returns>公历日</returns>
         public SolarDay GetSolarDay()
         {
-            return SolarDay ?? (SolarDay = LunarMonth.FirstJulianDay.Next(Day - 1).GetSolarDay());
+            return LunarMonth.FirstJulianDay.Next(Day - 1).GetSolarDay();
         }
 
         /// <summary>
@@ -287,7 +280,7 @@ namespace tyme.lunar
         /// <returns>干支日</returns>
         public SixtyCycleDay GetSixtyCycleDay()
         {
-            return SixtyCycleDay ?? (SixtyCycleDay = GetSolarDay().GetSixtyCycleDay());
+            return GetSolarDay().GetSixtyCycleDay();
         }
 
         /// <summary>

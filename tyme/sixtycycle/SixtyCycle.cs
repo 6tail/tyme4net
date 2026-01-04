@@ -79,7 +79,7 @@ namespace tyme.sixtycycle
         public Sound Sound => Sound.FromIndex(Index / 2);
 
         /// <summary>
-        /// 纳音
+        /// 彭祖百忌
         /// </summary>
         public PengZu PengZu => PengZu.FromSixtyCycle(this);
 

@@ -98,7 +98,7 @@ namespace tyme.culture
         public string Silkworm => $"{ByEarthBranch(9)}姑看蚕";
 
         /// <summary>
-        /// 几猪屠共
+        /// 几屠共猪
         /// </summary>
         public string Pig => $"{ByEarthBranch(11)}屠共猪";
 

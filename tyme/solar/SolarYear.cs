@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历年
     /// </summary>
-    public class SolarYear : AbstractTyme
+    public class SolarYear : YearUnit
     {
+
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year { get; }
+        /// <param name="year">公历年</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year)
+        {
+            if (year < 1 || year > 9999)
+            {
+                throw new ArgumentException($"illegal solar year: {year}");
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -20,11 +30,7 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarYear(int year)
         {
-            if (year < 1 || year > 9999)
-            {
-                throw new ArgumentException($"illegal solar year: {year}");
-            }
-
+            Validate(year);
             Year = year;
         }
 
@@ -33,6 +39,7 @@ namespace tyme.solar
         /// </summary>
         /// <param name="year">年，支持1到9999年</param>
         /// <returns>公历年</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarYear FromYear(int year)
         {
             return new SolarYear(year);

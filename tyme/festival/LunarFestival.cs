@@ -75,7 +75,7 @@ namespace tyme.festival
         {
             if (index < 0 || index >= Names.Length)
             {
-                throw new ArgumentException($"illegal index: {index}");
+                return null;
             }
 
             var matcher = Regex.Match(Data, $@"@{index:D2}\d+");

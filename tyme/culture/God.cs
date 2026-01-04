@@ -103,7 +103,7 @@ namespace tyme.culture
         public static List<God> GetDayGods(SixtyCycle month, SixtyCycle day)
         {
             var l = new List<God>();
-            var matcher = Regex.Match(DayGods[month.EarthBranch.Next(-2).Index], $@";{day.Index:X2}(.[^;]*)");
+            var matcher = Regex.Match(DayGods[month.EarthBranch.Next(-2).Index], $";{day.Index:X2}(.[^;]*)");
             if (matcher.Success)
             {
                 var data = matcher.Groups[1].Value;

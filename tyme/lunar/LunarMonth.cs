@@ -7,6 +7,7 @@ using tyme.culture.star.nine;
 using tyme.jd;
 using tyme.sixtycycle;
 using tyme.solar;
+using tyme.unit;
 using tyme.util;
 
 namespace tyme.lunar
@@ -14,15 +15,8 @@ namespace tyme.lunar
     /// <summary>
     /// 农历月
     /// </summary>
-    public class LunarMonth : AbstractTyme
+    public class LunarMonth : MonthUnit
     {
-        private static object _lock = new object();
-
-        /// <summary>
-        /// 缓存
-        /// </summary>
-        private static readonly Dictionary<string, object[]> Cache = new Dictionary<string, object[]>();
-
         /// <summary>
         /// 名称
         /// </summary>
@@ -31,114 +25,43 @@ namespace tyme.lunar
         /// <summary>
         /// 农历年
         /// </summary>
-        public LunarYear LunarYear { get; }
-
-        /// <summary>
-        /// 年
-        /// </summary>
-        public int Year => LunarYear.Year;
-
-        /// <summary>
-        /// 月
-        /// </summary>
-        public int Month { get; }
+        public LunarYear LunarYear => LunarYear.FromYear(Year);
 
         /// <summary>
         /// 是否闰月
         /// </summary>
         public bool IsLeap { get; }
-
+        
         /// <summary>
-        /// 天数(大月30天，小月29天)
+        /// 验证
         /// </summary>
-        public int DayCount { get; }
-
-        /// <summary>
-        /// 位于当年的索引，0-12
-        /// </summary>
-        public int IndexInYear { get; }
-
-        /// <summary>
-        /// 初一的儒略日
-        /// </summary>
-        public JulianDay FirstJulianDay { get; }
-
-        /// <summary>
-        /// 从缓存初始化
-        /// </summary>
-        /// <param name="cache">缓存[农历年(int)，农历月(int,闰月为负)，天数(int)，位于当年的索引(int)，初一的儒略日(double)]</param>
-        protected LunarMonth(object[] cache)
+        /// <param name="year">农历年</param>
+        /// <param name="month">农历月，闰月为负</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month)
         {
-            var m = (int)cache[1];
-            LunarYear = LunarYear.FromYear((int)cache[0]);
-            Month = Math.Abs(m);
-            IsLeap = m < 0;
-            DayCount = (int)cache[2];
-            IndexInYear = (int)cache[3];
-            FirstJulianDay = JulianDay.FromJulianDay((double)cache[4]);
+            if (month == 0 || month > 12 || month < -12)
+            {
+                throw new ArgumentException($"illegal lunar month: {month}");
+            }
+            if (month < 0 && -month != LunarYear.FromYear(year).LeapMonth)
+            {
+                throw new ArgumentException($"illegal leap month {-month} in lunar year {year}");
+            }
         }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="year">农历年</param>
-        /// <param name="month">农历月</param>
+        /// <param name="month">农历月，闰月为负</param>
         /// <exception cref="ArgumentException"></exception>
         public LunarMonth(int year, int month)
         {
-            var currentYear = LunarYear.FromYear(year);
-            var currentLeapMonth = currentYear.LeapMonth;
-            if (month == 0 || month > 12 || month < -12)
-            {
-                throw new ArgumentException($"illegal lunar month: {month}");
-            }
-
-            var leap = month < 0;
-            var m = Math.Abs(month);
-            if (leap && m != currentLeapMonth)
-            {
-                throw new ArgumentException($"illegal leap month {m} in lunar year {year}");
-            }
-
-            // 冬至
-            var dongZhiJd = SolarTerm.FromIndex(year, 0).CursoryJulianDay;
-
-            // 冬至前的初一，今年首朔的日月黄经差
-            var w = ShouXingUtil.CalcShuo(dongZhiJd);
-            if (w > dongZhiJd)
-            {
-                w -= 29.53;
-            }
-
-            // 正常情况正月初一为第3个朔日，但有些特殊的
-            var offset = 2;
-            if (year > 8 && year < 24)
-            {
-                offset = 1;
-            }
-            else if (LunarYear.FromYear(year - 1).LeapMonth > 10 && year != 239 && year != 240)
-            {
-                offset = 3;
-            }
-
-            // 位于当年的索引
-            var index = m - 1;
-            if (leap || (currentLeapMonth > 0 && m > currentLeapMonth))
-            {
-                index += 1;
-            }
-
-            IndexInYear = index;
-
-            // 本月初一
-            w += 29.5306 * (offset + index);
-            var firstDay = ShouXingUtil.CalcShuo(w);
-            FirstJulianDay = JulianDay.FromJulianDay(JulianDay.J2000 + firstDay);
-            // 本月天数 = 下月初一 - 本月初一
-            DayCount = (int)(ShouXingUtil.CalcShuo(w + 29.5306) - firstDay);
-            LunarYear = currentYear;
-            Month = m;
-            IsLeap = leap;
+            Validate(year, month);
+            Year = year;
+            Month = Math.Abs(month);
+            IsLeap = month < 0;
         }
 
         /// <summary>
@@ -149,26 +72,72 @@ namespace tyme.lunar
         /// <returns>农历月</returns>
         public static LunarMonth FromYm(int year, int month)
         {
-            lock (_lock)
-            {
-                var key = $"{year}{month}";
-                if (Cache.TryGetValue(key, out var c))
-                {
-                    return new LunarMonth(c);
-                }
+            return new LunarMonth(year, month);
+        }
+        
+        /// <summary>
+        /// 初一的儒略日
+        /// </summary>
+        /// <returns>初一的儒略日</returns>
+        protected double GetNewMoon() {
+            // 冬至
+            var dongZhiJd = SolarTerm.FromIndex(Year, 0).CursoryJulianDay;
 
-                var m = new LunarMonth(year, month);
-                Cache[key] = new object[]
-                {
-                    m.Year,
-                    m.MonthWithLeap,
-                    m.DayCount,
-                    m.IndexInYear,
-                    m.FirstJulianDay.Day
-                };
-                return m;
+            // 冬至前的初一，今年首朔的日月黄经差
+            var w = ShouXingUtil.CalcShuo(dongZhiJd);
+            if (w > dongZhiJd) {
+                w -= 29.53;
+            }
+
+            // 正常情况正月初一为第3个朔日，但有些特殊的
+            var offset = 2;
+            if (Year > 8 && Year < 24) {
+                offset = 1;
+            } else if (LunarYear.FromYear(Year - 1).LeapMonth > 10 && Year != 239 && Year != 240) {
+                offset = 3;
+            }
+
+            // 本月初一
+            return w + 29.5306 * (offset + IndexInYear);
+        }
+
+        /// <summary>
+        /// 位于当年的索引(0-12)
+        /// </summary>
+        public int IndexInYear
+        {
+            get
+            {
+                var index = Month - 1;
+                if (IsLeap) {
+                    index += 1;
+                } else {
+                    var leapMonth = LunarYear.FromYear(Year).LeapMonth;
+                    if (leapMonth > 0 && Month > leapMonth) {
+                        index += 1;
+                    }
+                }
+                return index;
             }
         }
+
+        /// <summary>
+        /// 天数(大月30天，小月29天)
+        /// </summary>
+        public int DayCount
+        {
+            get
+            {
+                var w = GetNewMoon();
+                // 本月天数 = 下月初一 - 本月初一
+                return (int) (ShouXingUtil.CalcShuo(w + 29.5306) - ShouXingUtil.CalcShuo(w));
+            }
+        }
+        
+        /// <summary>
+        /// 初一的儒略日
+        /// </summary>
+        public JulianDay FirstJulianDay => JulianDay.FromJulianDay(JulianDay.J2000 + ShouXingUtil.CalcShuo(GetNewMoon()));
 
         /// <summary>
         /// 月，当月为闰月时，返回负数
@@ -290,6 +259,11 @@ namespace tyme.lunar
                 return l;
             }
         }
+        
+        /// <summary>
+        /// 初一
+        /// </summary>
+        public LunarDay FirstDay => LunarDay.FromYmd(Year, MonthWithLeap, 1);
 
         /// <summary>
         /// 干支

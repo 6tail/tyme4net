@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using tyme.culture;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历周
     /// </summary>
-    public class SolarWeek : AbstractTyme
+    public class SolarWeek : WeekUnit
     {
         /// <summary>
         /// 名称
@@ -17,27 +17,25 @@ namespace tyme.solar
         /// <summary>
         /// 公历月
         /// </summary>
-        public SolarMonth SolarMonth { get; }
+        public SolarMonth SolarMonth => SolarMonth.FromYm(Year, Month);
         
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => SolarMonth.Year;
-
-        /// <summary>
-        /// 月
-        /// </summary>
-        public int Month => SolarMonth.Month;
-
-        /// <summary>
-        /// 索引，0-5
-        /// </summary>
-        public int Index { get; }
-
-        /// <summary>
-        /// 起始星期
-        /// </summary>
-        public Week Start { get; }
+        /// <param name="year">公历年</param>
+        /// <param name="month">月</param>
+        /// <param name="index">索引值，0-5</param>
+        /// <param name="start">起始星期，1234560分别代表星期一至星期天</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month, int index, int start)
+        {
+            WeekUnit.Validate(index, start);
+            var m = SolarMonth.FromYm(year, month);
+            if (index >= m.GetWeekCount(start))
+            {
+                throw new ArgumentException($"illegal solar week index: {index} in month: {m}");
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -49,25 +47,11 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarWeek(int year, int month, int index, int start)
         {
-            if (index < 0 || index > 5)
-            {
-                throw new ArgumentException($"illegal solar week index: {index}");
-            }
-
-            if (start < 0 || start > 6)
-            {
-                throw new ArgumentException($"illegal solar week start: {start}");
-            }
-
-            var m = SolarMonth.FromYm(year, month);
-            if (index >= m.GetWeekCount(start))
-            {
-                throw new ArgumentException($"illegal solar week index: {index} in month: {m}");
-            }
-
-            SolarMonth = m;
+            Validate(year, month, index, start);
+            Year = year;
+            Month = month;
             Index = index;
-            Start = Week.FromIndex(start);
+            Start = start;
         }
 
         /// <summary>
@@ -78,6 +62,7 @@ namespace tyme.solar
         /// <param name="index">索引值，0-5</param>
         /// <param name="start">起始星期，1234560分别代表星期一至星期天</param>
         /// <returns>公历周</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarWeek FromYm(int year, int month, int index, int start)
         {
             return new SolarWeek(year, month, index, start);
@@ -93,7 +78,7 @@ namespace tyme.solar
                 var i = 0;
                 var firstDay = FirstDay;
                 // 今年第1周
-                var w = FromYm(Year, 1, 0, Start.Index);
+                var w = FromYm(Year, 1, 0, Start);
                 while (!w.FirstDay.Equals(firstDay))
                 {
                     w = w.Next(1);
@@ -134,31 +119,31 @@ namespace tyme.solar
             if (n > 0)
             {
                 d += n;
-                var weekCount = m.GetWeekCount(Start.Index);
+                var weekCount = m.GetWeekCount(Start);
                 while (d >= weekCount)
                 {
                     d -= weekCount;
                     m = m.Next(1);
-                    if (!SolarDay.FromYmd(m.Year, m.Month, 1).Week.Equals(Start))
+                    if (m.FirstDay.Week.Index != Start)
                     {
                         d += 1;
                     }
-                    weekCount = m.GetWeekCount(Start.Index);
+                    weekCount = m.GetWeekCount(Start);
                 }
             }
             else if (n < 0)
             {
                 d += n;
                 while (d < 0) {
-                    if (!SolarDay.FromYmd(m.Year, m.Month, 1).Week.Equals(Start)) {
+                    if (m.FirstDay.Week.Index != Start) {
                         d -= 1;
                     }
                     m = m.Next(-1);
-                    d += m.GetWeekCount(Start.Index);
+                    d += m.GetWeekCount(Start);
                 }
                 
             }
-            return FromYm(m.Year, m.Month, d, Start.Index);
+            return FromYm(m.Year, m.Month, d, Start);
         }
 
         /// <summary>
@@ -169,7 +154,7 @@ namespace tyme.solar
             get
             {
                 var firstDay = SolarDay.FromYmd(Year, Month, 1);
-                return firstDay.Next(Index * 7 - IndexOf(firstDay.Week.Index - Start.Index, 7));
+                return firstDay.Next(Index * 7 - IndexOf(firstDay.Week.Index - Start, 7));
             }
         }
 

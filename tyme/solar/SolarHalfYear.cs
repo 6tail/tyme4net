@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历半年
     /// </summary>
-    public class SolarHalfYear : AbstractTyme
+    public class SolarHalfYear : YearUnit
     {
         /// <summary>
         /// 名称
@@ -16,17 +17,28 @@ namespace tyme.solar
         /// <summary>
         /// 公历年
         /// </summary>
-        public SolarYear SolarYear { get; }
+        public SolarYear SolarYear => SolarYear.FromYear(Year);
         
-        /// <summary>
-        /// 年
-        /// </summary>
-        public int Year => SolarYear.Year;
-
         /// <summary>
         /// 索引，0-1
         /// </summary>
         public int Index { get; }
+        
+        /// <summary>
+        /// 验证
+        /// </summary>
+        /// <param name="year">公历年</param>
+        /// <param name="index">索引值，0-1</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int index)
+        {
+            if (index < 0 || index > 1)
+            {
+                throw new ArgumentException($"illegal solar half year index: {index}");
+            }
+
+            SolarYear.Validate(year);
+        }
 
         /// <summary>
         /// 初始化
@@ -36,11 +48,8 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarHalfYear(int year, int index)
         {
-            if (index < 0 || index > 1)
-            {
-                throw new ArgumentException($"illegal solar half year index: {index}");
-            }
-            SolarYear = SolarYear.FromYear(year);
+            Validate(year, index);
+            Year = year;
             Index = index;
         }
 
@@ -50,6 +59,7 @@ namespace tyme.solar
         /// <param name="year">公历年</param>
         /// <param name="index">索引值，0-1</param>
         /// <returns>公历半年</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarHalfYear FromIndex(int year, int index)
         {
             return new SolarHalfYear(year, index);

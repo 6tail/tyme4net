@@ -9,13 +9,14 @@ using tyme.eightchar.provider;
 using tyme.eightchar.provider.impl;
 using tyme.sixtycycle;
 using tyme.solar;
+using tyme.unit;
 
 namespace tyme.lunar
 {
     /// <summary>
     /// 农历时辰
     /// </summary>
-    public class LunarHour : AbstractTyme
+    public class LunarHour : SecondUnit
     {
         /// <summary>
         /// 八字计算接口
@@ -25,47 +26,23 @@ namespace tyme.lunar
         /// <summary>
         /// 农历日
         /// </summary>
-        public LunarDay LunarDay { get; }
+        public LunarDay LunarDay => LunarDay.FromYmd(Year, Month, Day);
 
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => LunarDay.Year;
-
-        /// <summary>
-        /// 月，闰月为负
-        /// </summary>
-        public int Month => LunarDay.Month;
-
-        /// <summary>
-        /// 日
-        /// </summary>
-        public int Day => LunarDay.Day;
-
-        /// <summary>
-        /// 时
-        /// </summary>
-        public int Hour { get; }
-
-        /// <summary>
-        /// 分
-        /// </summary>
-        public int Minute { get; }
-
-        /// <summary>
-        /// 秒
-        /// </summary>
-        public int Second { get; }
-        
-        /// <summary>
-        /// 公历时刻（第一次使用时才会初始化）
-        /// </summary>
-        protected SolarTime SolarTime;
-
-        /// <summary>
-        /// 干支时辰（第一次使用时才会初始化）
-        /// </summary>
-        protected SixtyCycleHour SixtyCycleHour;
+        /// <param name="year">农历年</param>
+        /// <param name="month">农历月，闰月为负</param>
+        /// <param name="day">农历日</param>
+        /// <param name="hour">时</param>
+        /// <param name="minute">分</param>
+        /// <param name="second">秒</param>
+        /// <exception cref="ArgumentException"></exception>
+        public static void Validate(int year, int month, int day, int hour, int minute, int second)
+        {
+            SecondUnit.Validate(hour, minute, second);
+            LunarDay.Validate(year, month, day);
+        }
 
         /// <summary>
         /// 初始化
@@ -79,22 +56,10 @@ namespace tyme.lunar
         /// <exception cref="ArgumentException"></exception>
         public LunarHour(int year, int month, int day, int hour, int minute, int second)
         {
-            if (hour < 0 || hour > 23)
-            {
-                throw new ArgumentException($"illegal hour: {hour}");
-            }
-
-            if (minute < 0 || minute > 59)
-            {
-                throw new ArgumentException($"illegal minute: {minute}");
-            }
-
-            if (second < 0 || second > 59)
-            {
-                throw new ArgumentException($"illegal second: {second}");
-            }
-
-            LunarDay = LunarDay.FromYmd(year, month, day);
+            Validate(year, month, day, hour, minute, second);
+            Year = year;
+            Month = month;
+            Day = day;
             Hour = hour;
             Minute = minute;
             Second = second;
@@ -109,7 +74,8 @@ namespace tyme.lunar
         /// <param name="hour">时</param>
         /// <param name="minute">分</param>
         /// <param name="second">秒</param>
-        /// <returns></returns>
+        /// <returns>农历时辰</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static LunarHour FromYmdHms(int year, int month, int day, int hour, int minute, int second)
         {
             return new LunarHour(year, month, day, hour, minute, second);
@@ -261,13 +227,8 @@ namespace tyme.lunar
         /// <returns>公历时刻</returns>
         public SolarTime GetSolarTime()
         {
-            if (null == SolarTime)
-            {
-                var d = LunarDay.GetSolarDay();
-                SolarTime = SolarTime.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
-            }
-
-            return SolarTime;
+            var d = LunarDay.GetSolarDay();
+            return SolarTime.FromYmdHms(d.Year, d.Month, d.Day, Hour, Minute, Second);
         }
 
         /// <summary>
@@ -298,7 +259,7 @@ namespace tyme.lunar
         /// <returns>干支时辰</returns>
         public SixtyCycleHour GetSixtyCycleHour()
         {
-            return SixtyCycleHour ?? (SixtyCycleHour = GetSolarTime().GetSixtyCycleHour());
+            return GetSolarTime().GetSixtyCycleHour();
         }
     }
 }

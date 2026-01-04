@@ -688,4 +688,17 @@ public class EightCharTest
     {
         Assert.Equal("甲戌 癸酉 甲戌 甲戌", SolarTime.FromYmdHms(1034, 10, 2, 20, 0, 0).GetLunarHour().EightChar.ToString());
     }
+    
+    [Fact]
+    public void Test52()
+    {
+        Assert.Equal("辛酉 丙申 丙戌 戊子",  SolarTime.FromYmdHms(1981, 9, 5, 0, 0, 0).GetLunarHour().EightChar.ToString());
+    }
+    
+    [Fact]
+    public void Test54()
+    {
+        Assert.Equal("戊寅 癸亥 庚申 甲申",  ChildLimit.FromSolarTime(SolarTime.FromYmdHms(198, 11, 26, 15, 13, 59), Gender.Man).EightChar.ToString());
+        Assert.Equal("庚申 己丑 甲辰 壬申",  ChildLimit.FromSolarTime(SolarTime.FromYmdHms(1981, 1, 26, 15, 13, 59), Gender.Man).EightChar.ToString());
+    }
 }

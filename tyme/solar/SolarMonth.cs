@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using tyme.unit;
 
 namespace tyme.solar
 {
     /// <summary>
     /// 公历月
     /// </summary>
-    public class SolarMonth : AbstractTyme
+    public class SolarMonth : MonthUnit
     {
         /// <summary>
         /// 名称
@@ -21,17 +22,23 @@ namespace tyme.solar
         /// <summary>
         /// 公历年
         /// </summary>
-        public SolarYear SolarYear { get; }
-
+        public SolarYear SolarYear => SolarYear.FromYear(Year);
+        
         /// <summary>
-        /// 年
+        /// 验证
         /// </summary>
-        public int Year => SolarYear.Year;
+        /// <param name="year">公历年</param>
+        /// <param name="month">月</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year, int month)
+        {
+            if (month < 1 || month > 12)
+            {
+                throw new ArgumentException($"illegal solar month: {month}");
+            }
 
-        /// <summary>
-        /// 月
-        /// </summary>
-        public int Month { get; }
+            SolarYear.Validate(year);
+        }
 
         /// <summary>
         /// 初始化
@@ -41,12 +48,8 @@ namespace tyme.solar
         /// <exception cref="ArgumentException"></exception>
         public SolarMonth(int year, int month)
         {
-            if (month < 1 || month > 12)
-            {
-                throw new ArgumentException($"illegal solar month: {month}");
-            }
-
-            SolarYear = SolarYear.FromYear(year);
+            Validate(year, month);
+            Year = year;
             Month = month;
         }
 
@@ -56,6 +59,7 @@ namespace tyme.solar
         /// <param name="year">公历年</param>
         /// <param name="month">公历月</param>
         /// <returns>公历月</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static SolarMonth FromYm(int year, int month)
         {
             return new SolarMonth(year, month);
@@ -166,5 +170,10 @@ namespace tyme.solar
                 return l;
             }
         }
+        
+        /// <summary>
+        /// 本月第1天
+        /// </summary>
+        public SolarDay FirstDay => SolarDay.FromYmd(Year, Month, 1);
     }
 }
