@@ -93,4 +93,29 @@ public class SolarTermTest
         Assert.Equal("1034年10月3日", SolarTerm.FromName(1034, "寒露").JulianDay.GetSolarDay().ToString());
         Assert.Equal("1034年10月3日 06:02:28", SolarTerm.FromName(1034, "寒露").JulianDay.GetSolarTime().ToString());
     }
+    
+    [Fact]
+    public void Test7()
+    {
+        // 公历2026年1月13日
+        var solarDay = SolarDay.FromYmd(2026, 1, 13);
+        
+        // 节气
+        var term = solarDay.Term;
+        
+        // 节气的公历日
+        var termSolarDay = term.GetSolarDay();
+
+        // 下一个节气
+        var nextTerm = term.Next(1);
+        
+        // 下一个节气的公历日
+        var nextTermSolarDay = nextTerm.GetSolarDay();
+        
+        Assert.Equal("2026年1月13日", solarDay.ToString());
+        Assert.Equal("小寒", term.ToString());
+        Assert.Equal("2026年1月5日", termSolarDay.ToString());
+        Assert.Equal("大寒", nextTerm.ToString());
+        Assert.Equal("2026年1月20日", nextTermSolarDay.ToString());
+    }
 }

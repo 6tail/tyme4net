@@ -179,7 +179,7 @@ namespace tyme.solar
                     i = 0;
                 }
 
-                var term = SolarTerm.FromIndex(y, i);
+                var term = SolarTerm.FromIndex(y, i + 1);
                 var d = term.GetSolarDay();
                 while (IsBefore(d))
                 {

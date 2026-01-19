@@ -48,35 +48,12 @@ namespace tyme.sixtycycle
         /// <param name="solarDay">公历日</param>
         public SixtyCycleDay(SolarDay solarDay)
         {
-            var solarYear = solarDay.Year;
-            var springSolarDay = SolarTerm.FromIndex(solarYear, 3).GetSolarDay();
-            var lunarDay = solarDay.GetLunarDay();
-            var lunarYear = lunarDay.LunarMonth.LunarYear;
-            if (lunarYear.Year == solarYear)
-            {
-                if (solarDay.IsBefore(springSolarDay))
-                {
-                    lunarYear = lunarYear.Next(-1);
-                }
-            }
-            else if (lunarYear.Year < solarYear)
-            {
-                if (!solarDay.IsBefore(springSolarDay))
-                {
-                    lunarYear = lunarYear.Next(1);
-                }
-            }
-
             var term = solarDay.Term;
-            var index = term.Index - 3;
-            if (index < 0 && term.GetSolarDay().IsAfter(springSolarDay))
-            {
-                index += 24;
-            }
-
+            var index = term.Index;
+            var offset = index < 3 ? index == 0 ? -2 : -1 : (index - 3) / 2;
             SolarDay = solarDay;
-            SixtyCycleMonth = new SixtyCycleMonth(SixtyCycleYear.FromYear(lunarYear.Year), LunarMonth.FromYm(solarYear, 1).SixtyCycle.Next((int)Math.Floor(index * 0.5)));
-            Day = lunarDay.SixtyCycle;
+            SixtyCycleMonth = SixtyCycleYear.FromYear(term.Year).FirstMonth.Next(offset);
+            Day = SixtyCycle.FromIndex(solarDay.Subtract(SolarDay.FromYmd(2000, 1, 7)));
         }
 
         /// <summary>
