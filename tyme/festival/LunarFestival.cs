@@ -14,14 +14,12 @@ namespace tyme.festival
         /// <summary>
         /// 名称
         /// </summary>
-        public static string[] Names =
-            { "春节", "元宵节", "龙头节", "上巳节", "清明节", "端午节", "七夕节", "中元节", "中秋节", "重阳节", "冬至节", "腊八节", "除夕" };
+        public static string[] Names = { "春节", "元宵节", "龙头节", "上巳节", "清明节", "端午节", "七夕节", "中元节", "中秋节", "重阳节", "冬至节", "腊八节", "除夕" };
 
         /// <summary>
         /// 数据
         /// </summary>
-        public static string Data =
-            "@0000101@0100115@0200202@0300303@04107@0500505@0600707@0700715@0800815@0900909@10124@1101208@122";
+        public static string Data = "@0000101@0100115@0200202@0300303@04107@0500505@0600707@0700715@0800815@0900909@10124@1101208@122";
 
         /// <summary>
         /// 类型
@@ -119,29 +117,35 @@ namespace tyme.festival
                 return new LunarFestival(FestivalType.Day, LunarDay.FromYmd(year, month, day), null, matcher.Value);
             }
 
+            var lunarDay = LunarDay.FromYmd(year, month, day);
+            var solarDay = lunarDay.GetSolarDay();
             var matches = Regex.Matches(Data, @"@\d{2}1\d{2}");
             foreach (Match match in matches)
             {
                 var data = match.Value;
-                var solarTerm = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                var d = solarTerm.GetSolarDay().GetLunarDay();
-                if (d.Year == year && d.Month == month && d.Day == day)
+                var term = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
+                var termDay = term.GetSolarDay();
+                if (termDay.Year == solarDay.Year && termDay.Month == solarDay.Month && termDay.Day == solarDay.Day)
                 {
-                    return new LunarFestival(FestivalType.Term, d, solarTerm, data);
+                    return new LunarFestival(FestivalType.Term, lunarDay, term, data);
                 }
             }
 
-            matcher = Regex.Match(Data, @"@\d{2}2");
-            if (!matcher.Success)
+            if (month == 12 && day > 28)
             {
-                return null;
-            }
+                matcher = Regex.Match(Data, @"@\d{2}2");
+                if (!matcher.Success)
+                {
+                    return null;
+                }
 
-            var lunarDay = LunarDay.FromYmd(year, month, day);
-            var nextDay = lunarDay.Next(1);
-            return nextDay.Month == 1 && nextDay.Day == 1
-                ? new LunarFestival(FestivalType.Eve, lunarDay, null, matcher.Value)
-                : null;
+                var nextDay = lunarDay.Next(1);
+                if (nextDay.Month == 1 && nextDay.Day == 1)
+                {
+                    return new LunarFestival(FestivalType.Eve, lunarDay, null, matcher.Value);
+                }
+            }
+            return null;
         }
 
         /// <summary>
