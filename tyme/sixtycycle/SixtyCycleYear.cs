@@ -82,14 +82,7 @@ namespace tyme.sixtycycle
         /// <summary>
         /// 首月（五虎遁：甲己之年丙作首，乙庚之岁戊为头，丙辛必定寻庚起，丁壬壬位顺行流，若问戊癸何方发，甲寅之上好追求。）
         /// </summary>
-        public SixtyCycleMonth FirstMonth
-        {
-            get
-            {
-                var h = HeavenStem.FromIndex((SixtyCycle.HeavenStem.Index + 1) * 2);
-                return new SixtyCycleMonth(this, SixtyCycle.FromName($"{h.GetName()}寅"));
-            }
-        }
+        public SixtyCycleMonth FirstMonth => new SixtyCycleMonth(this, SixtyCycle.FromIndex(Year * 12 - 46));
 
         /// <summary>
         /// 月份列表

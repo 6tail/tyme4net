@@ -5,6 +5,7 @@ using tyme.culture.nine;
 using tyme.culture.phenology;
 using tyme.culture.plumrain;
 using tyme.enums;
+using tyme.evt;
 using tyme.festival;
 using tyme.holiday;
 using tyme.jd;
@@ -29,7 +30,7 @@ namespace tyme.solar
         /// 公历月
         /// </summary>
         public SolarMonth SolarMonth => SolarMonth.FromYm(Year, Month);
-        
+
         /// <summary>
         /// 验证
         /// </summary>
@@ -43,6 +44,7 @@ namespace tyme.solar
             {
                 throw new ArgumentException($"illegal solar day: {year}-{month}-{day}");
             }
+
             if (1582 == year && 10 == month)
             {
                 if ((day > 4 && day < 15) || day > 31)
@@ -233,48 +235,23 @@ namespace tyme.solar
         {
             get
             {
-                // 夏至
-                var xiaZhi = SolarTerm.FromIndex(Year, 12);
-                // 第1个庚日
-                var start = xiaZhi.GetSolarDay();
-                // 第3个庚日，即初伏第1天
-                start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(6) + 20);
-                var days = Subtract(start);
-                // 初伏以前
-                if (days < 0)
+                // 初伏，夏至后第3个庚日
+                var d0 = Event.Builder().TermHeavenStem(12, 6, 20).Build().GetSolarDay(Year);
+                // 中伏，夏至后第4个庚日
+                var d1 = Event.Builder().TermHeavenStem(12, 6, 30).Build().GetSolarDay(Year);
+                // 末伏，立秋后第1个庚日
+                var d2 = Event.Builder().TermHeavenStem(15, 6, 0).Build().GetSolarDay(Year);
+                if (IsBefore(d0) || IsAfter(d2.Next(9)))
                 {
                     return null;
                 }
 
-                if (days < 10)
+                if (!IsBefore(d2))
                 {
-                    return new DogDay(Dog.FromIndex(0), days);
+                    return new DogDay(Dog.FromIndex(2), Subtract(d2));
                 }
 
-                // 第4个庚日，中伏第1天
-                start = start.Next(10);
-                days = Subtract(start);
-                if (days < 10)
-                {
-                    return new DogDay(Dog.FromIndex(1), days);
-                }
-
-                // 第5个庚日，中伏第11天或末伏第1天
-                start = start.Next(10);
-                days = Subtract(start);
-                // 立秋
-                if (xiaZhi.Next(3).GetSolarDay().IsAfter(start))
-                {
-                    if (days < 10)
-                    {
-                        return new DogDay(Dog.FromIndex(1), days + 10);
-                    }
-
-                    start = start.Next(10);
-                    days = Subtract(start);
-                }
-
-                return days < 10 ? new DogDay(Dog.FromIndex(2), days) : null;
+                return IsBefore(d1) ? new DogDay(Dog.FromIndex(0), Subtract(d0)) : new DogDay(Dog.FromIndex(1), Subtract(d1));
             }
         }
 
@@ -366,17 +343,10 @@ namespace tyme.solar
         {
             get
             {
-                // 芒种
-                var grainInEar = SolarTerm.FromIndex(Year, 11);
-                var start = grainInEar.GetSolarDay();
-                // 芒种后的第1个丙日
-                start = start.Next(start.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(2));
-
-                // 小暑
-                var end = grainInEar.Next(2).GetSolarDay();
-                // 小暑后的第1个未日
-                end = end.Next(end.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(7));
-
+                // 入梅，芒种后第1个丙日
+                var start = Event.Builder().TermHeavenStem(11, 2, 0).Build().GetSolarDay(Year);
+                // 出梅，小暑后第1个未日
+                var end = Event.Builder().TermEarthBranch(13, 7, 0).Build().GetSolarDay(Year);
                 if (IsBefore(start) || IsAfter(end))
                 {
                     return null;

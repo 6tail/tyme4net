@@ -93,11 +93,6 @@ namespace tyme.lunar
         /// <returns>推移后的农历周</returns>
         public new LunarWeek Next(int n)
         {
-            if (n == 0)
-            {
-                return FromYm(Year, Month, Index, Start);
-            }
-
             var d = Index + n;
             var m = LunarMonth;
             if (n > 0)

@@ -18,24 +18,54 @@ namespace tyme.rabbyung
         public int RabByungIndex { get; }
 
         /// <summary>
-        /// 干支
+        /// 五行索引，从0开始
         /// </summary>
-        public SixtyCycle SixtyCycle { get; }
+        public int ElementIndex { get; }
+
+        /// <summary>
+        /// 生肖索引，从0开始
+        /// </summary>
+        public int ZodiacIndex { get; }
+
+        /// <summary>
+        /// 验证
+        /// </summary>
+        /// <param name="year">公历年</param>
+        /// <exception cref="ArgumentException">参数异常</exception>
+        public static void Validate(int year)
+        {
+            if (year < 1027 || year > 9999)
+            {
+                throw new ArgumentException($"illegal rab-byung year: {year}");
+            }
+        }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="rabByungIndex">饶迥(胜生周)序号，从0开始</param>
-        /// <param name="sixtyCycle">干支</param>
-        public RabByungYear(int rabByungIndex, SixtyCycle sixtyCycle)
+        /// <param name="elementIndex">五行索引，从0开始</param>
+        /// <param name="zodiacIndex">生肖索引，从0开始</param>
+        public RabByungYear(int rabByungIndex, int elementIndex, int zodiacIndex)
         {
             if (rabByungIndex < 0 || rabByungIndex > 150)
             {
                 throw new ArgumentException($"illegal rab-byung index: {rabByungIndex}");
             }
 
+            if (elementIndex < 0 || elementIndex >= culture.Element.Names.Length)
+            {
+                throw new ArgumentException($"illegal element index: {elementIndex}");
+            }
+
+            if (zodiacIndex < 0 || zodiacIndex >= Zodiac.Names.Length)
+            {
+                throw new ArgumentException($"illegal zodiac index: {zodiacIndex}");
+            }
+
             RabByungIndex = rabByungIndex;
-            SixtyCycle = sixtyCycle;
+            ElementIndex = elementIndex;
+            ZodiacIndex = zodiacIndex;
         }
 
         /// <summary>
@@ -45,7 +75,7 @@ namespace tyme.rabbyung
         /// <param name="sixtyCycle">干支</param>
         public static RabByungYear FromSixtyCycle(int rabByungIndex, SixtyCycle sixtyCycle)
         {
-            return new RabByungYear(rabByungIndex, sixtyCycle);
+            return new RabByungYear(rabByungIndex, sixtyCycle.HeavenStem.Element.Index, sixtyCycle.EarthBranch.GetZodiac().Index);
         }
 
         /// <summary>
@@ -56,16 +86,7 @@ namespace tyme.rabbyung
         /// <param name="zodiac">生肖</param>
         public static RabByungYear FromElementZodiac(int rabByungIndex, RabByungElement element, Zodiac zodiac)
         {
-            for (var i = 0; i < 60; i++)
-            {
-                var sixtyCycle = SixtyCycle.FromIndex(i);
-                if (sixtyCycle.EarthBranch.GetZodiac().Equals(zodiac) && sixtyCycle.HeavenStem.Element.Index == element.Index)
-                {
-                    return new RabByungYear(rabByungIndex, sixtyCycle);
-                }
-            }
-
-            throw new ArgumentException($"illegal rab-byung element {element}, zodiac {zodiac}");
+            return new RabByungYear(rabByungIndex, element.Index, zodiac.Index);
         }
 
         /// <summary>
@@ -74,21 +95,24 @@ namespace tyme.rabbyung
         /// <param name="year">年</param>
         public static RabByungYear FromYear(int year)
         {
-            return new RabByungYear((year - 1024) / 60, SixtyCycle.FromIndex(year - 4));
+            Validate(year);
+            return FromSixtyCycle((year - 1024) / 60, SixtyCycle.FromIndex(year - 4));
         }
 
         /// <summary>
         /// 生肖
         /// </summary>
-        public Zodiac GetZodiac()
-        {
-            return SixtyCycle.EarthBranch.GetZodiac();
-        }
+        public Zodiac Zodiac => Zodiac.FromIndex(ZodiacIndex);
 
         /// <summary>
         /// 五行
         /// </summary>
-        public RabByungElement Element => RabByungElement.FromIndex(SixtyCycle.HeavenStem.Element.Index);
+        public RabByungElement Element => RabByungElement.FromIndex(ElementIndex);
+
+        /// <summary>
+        /// 干支
+        /// </summary>
+        public SixtyCycle SixtyCycle => SixtyCycle.FromIndex(6 * (ElementIndex * 2 + ZodiacIndex % 2) - 5 * ZodiacIndex);
 
         /// <summary>
         /// 名称
@@ -123,7 +147,7 @@ namespace tyme.rabbyung
                 letter = letter.Substring(1);
             }
 
-            return $"第{letter}饶迥{Element}{GetZodiac()}年";
+            return $"第{letter}饶迥{Element}{Zodiac}年";
         }
 
         /// <summary>
@@ -150,14 +174,20 @@ namespace tyme.rabbyung
             {
                 var y = 1;
                 var m = 4;
-                var t = 0;
+                var t = 1;
                 var currentYear = Year;
                 while (y < currentYear)
                 {
-                    var i = m - 1 + (t % 2 == 0 ? 33 : 32);
-                    y = (y * 12 + i) / 12;
-                    m = i % 12 + 1;
-                    t++;
+                    var i = m + 31 + t;
+                    y += 2;
+                    m = i - 23;
+                    if (i > 35)
+                    {
+                        y += 1;
+                        m -= 12;
+                    }
+
+                    t = 1 - t;
                 }
 
                 return y == currentYear ? m : 0;
@@ -171,12 +201,12 @@ namespace tyme.rabbyung
         public SolarYear GetSolarYear()
         {
             return SolarYear.FromYear(Year);
-        } 
+        }
 
         /// <summary>
         /// 首月
         /// </summary>
-        public RabByungMonth FirstMonth => new RabByungMonth(this, 1);
+        public RabByungMonth FirstMonth => new RabByungMonth(Year, 1);
 
         /// <summary>
         /// 月份数量
@@ -191,13 +221,14 @@ namespace tyme.rabbyung
             get
             {
                 var l = new List<RabByungMonth>();
+                var y = Year;
                 var leapMonth = LeapMonth;
                 for (var i = 1; i < 13; i++)
                 {
-                    l.Add(new RabByungMonth(this, i));
+                    l.Add(new RabByungMonth(y, i));
                     if (i == leapMonth)
                     {
-                        l.Add(new RabByungMonth(this, -i));
+                        l.Add(new RabByungMonth(y, -i));
                     }
                 }
 

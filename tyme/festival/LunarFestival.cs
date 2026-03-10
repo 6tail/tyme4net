@@ -88,13 +88,10 @@ namespace tyme.festival
             switch (type)
             {
                 case 0:
-                    return new LunarFestival(FestivalType.Day,
-                        LunarDay.FromYmd(year, int.Parse(data.Substring(4, 2)), int.Parse(data.Substring(6))), null,
-                        data);
+                    return new LunarFestival(FestivalType.Day, LunarDay.FromYmd(year, int.Parse(data.Substring(4, 2)), int.Parse(data.Substring(6))), null, data);
                 case 1:
-                    var solarTerm = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                    return new LunarFestival(FestivalType.Term, solarTerm.GetSolarDay().GetLunarDay(),
-                        solarTerm, data);
+                    var term = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
+                    return new LunarFestival(FestivalType.Term, term.GetSolarDay().GetLunarDay(), term, data);
                 case 2:
                     return new LunarFestival(FestivalType.Eve, LunarDay.FromYmd(year + 1, 1, 1).Next(-1), null, data);
                 default:
@@ -131,7 +128,7 @@ namespace tyme.festival
                 }
             }
 
-            if (month == 12 && day > 28)
+            if (Math.Abs(month) == 12 && day > 28)
             {
                 matcher = Regex.Match(Data, @"@\d{2}2");
                 if (!matcher.Success)
@@ -139,12 +136,12 @@ namespace tyme.festival
                     return null;
                 }
 
-                var nextDay = lunarDay.Next(1);
-                if (nextDay.Month == 1 && nextDay.Day == 1)
+                if (lunarDay.Next(1).Year != year)
                 {
                     return new LunarFestival(FestivalType.Eve, lunarDay, null, matcher.Value);
                 }
             }
+
             return null;
         }
 

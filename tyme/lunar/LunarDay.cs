@@ -42,13 +42,14 @@ namespace tyme.lunar
             {
                 throw new ArgumentException($"illegal lunar day {day}");
             }
+
             var m = LunarMonth.FromYm(year, month);
             if (day > m.DayCount)
             {
                 throw new ArgumentException($"illegal day {day} in {m}");
             }
         }
-        
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -119,7 +120,8 @@ namespace tyme.lunar
 
             if (Month != target.Month)
             {
-                return Math.Abs(Month) < Math.Abs(target.Month);
+                var t = Math.Abs(target.Month);
+                return Month == t || Math.Abs(Month) < t;
             }
 
             return Day < target.Day;
@@ -139,7 +141,8 @@ namespace tyme.lunar
 
             if (Month != target.Month)
             {
-                return Math.Abs(Month) >= Math.Abs(target.Month);
+                var t = Math.Abs(Month);
+                return t == target.Month || t > Math.Abs(target.Month);
             }
 
             return Day > target.Day;
@@ -165,14 +168,7 @@ namespace tyme.lunar
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle
-        {
-            get
-            {
-                var offset = (int)LunarMonth.FirstJulianDay.Next(Day - 12).Day;
-                return SixtyCycle.FromName(HeavenStem.FromIndex(offset).GetName() + EarthBranch.FromIndex(offset).GetName());
-            }
-        }
+        public SixtyCycle SixtyCycle => SixtyCycle.FromIndex((int)LunarMonth.FirstJulianDay.Next(Day - 12).Day);
 
         /// <summary>
         /// 建除十二值神
@@ -191,36 +187,31 @@ namespace tyme.lunar
         {
             get
             {
-                var solar = GetSolarDay();
-                var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
-                var dongZhiSolar = dongZhi.GetSolarDay();
-                var xiaZhiSolar = dongZhi.Next(12).GetSolarDay();
-                var dongZhiSolar2 = dongZhi.Next(24).GetSolarDay();
-                var dongZhiIndex = dongZhiSolar.GetLunarDay().SixtyCycle.Index;
-                var xiaZhiIndex = xiaZhiSolar.GetLunarDay().SixtyCycle.Index;
-                var dongZhiIndex2 = dongZhiSolar2.GetLunarDay().SixtyCycle.Index;
-                var solarShunBai = dongZhiSolar.Next(dongZhiIndex > 29 ? 60 - dongZhiIndex : -dongZhiIndex);
-                var solarShunBai2 = dongZhiSolar2.Next(dongZhiIndex2 > 29 ? 60 - dongZhiIndex2 : -dongZhiIndex2);
-                var solarNiZi = xiaZhiSolar.Next(xiaZhiIndex > 29 ? 60 - xiaZhiIndex : -xiaZhiIndex);
-                var offset = 0;
-                if (!solar.IsBefore(solarShunBai) && solar.IsBefore(solarNiZi))
+                var d = GetSolarDay();
+                var y = d.Year;
+                var winterSolstice = SolarTerm.FromIndex(y, 0).GetSolarDay();
+                var summerSolstice = SolarTerm.FromIndex(y, 12).GetSolarDay();
+                var nextWinterSolstice = SolarTerm.FromIndex(y + 1, 0).GetSolarDay();
+                // 距冬至最近的甲子日
+                var w = winterSolstice.Next(winterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 距夏至最近的甲子日
+                var s = summerSolstice.Next(summerSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 距下个冬至最近的甲子日
+                var n = nextWinterSolstice.Next(nextWinterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 43210012345678876543210012345
+                //      w        s        n
+                //     冬至     夏至      冬至
+                if (d.IsBefore(w))
                 {
-                    offset = solar.Subtract(solarShunBai);
-                }
-                else if (!solar.IsBefore(solarNiZi) && solar.IsBefore(solarShunBai2))
-                {
-                    offset = 8 - solar.Subtract(solarNiZi);
-                }
-                else if (!solar.IsBefore(solarShunBai2))
-                {
-                    offset = solar.Subtract(solarShunBai2);
-                }
-                else if (solar.IsBefore(solarShunBai))
-                {
-                    offset = 8 + solarShunBai.Subtract(solar);
+                    return NineStar.FromIndex(w.Subtract(d) - 1);
                 }
 
-                return NineStar.FromIndex(offset);
+                if (d.IsBefore(s))
+                {
+                    return NineStar.FromIndex(d.Subtract(w));
+                }
+
+                return NineStar.FromIndex(d.IsBefore(n) ? n.Subtract(d) - 1 : d.Subtract(n));
             }
         }
 

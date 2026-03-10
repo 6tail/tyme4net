@@ -182,11 +182,14 @@ namespace tyme.lunar
             get
             {
                 var l = new List<LunarMonth>(13);
-                var m = FirstMonth;
-                while (m.Year == Year)
+                var leapMonth = LeapMonth;
+                for (var i =  1; i < 13; i++)
                 {
-                    l.Add(m);
-                    m = m.Next(1);
+                    l.Add(LunarMonth.FromYm(Year, i));
+                    if (i == leapMonth)
+                    {
+                        l.Add(LunarMonth.FromYm(Year, -i));
+                    }
                 }
 
                 return l;

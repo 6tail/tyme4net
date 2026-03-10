@@ -48,56 +48,22 @@ namespace tyme.eightchar
         /// <summary>
         /// 胎元
         /// </summary>
-        public SixtyCycle FetalOrigin => SixtyCycle.FromName(Month.HeavenStem.Next(1).GetName() + Month.EarthBranch.Next(3).GetName());
+        public SixtyCycle FetalOrigin => SixtyCycle.FromIndex(Month.HeavenStem.Next(1).Index * 6 - Month.EarthBranch.Next(3).Index * 5);
 
         /// <summary>
         /// 胎息
         /// </summary>
-        public SixtyCycle FetalBreath => SixtyCycle.FromName(Day.HeavenStem.Next(5).GetName() + EarthBranch.FromIndex(13 - Day.EarthBranch.Index).GetName());
+        public SixtyCycle FetalBreath => SixtyCycle.FromIndex(Day.HeavenStem.Next(5).Index * 6 + Day.EarthBranch.Index * 5 - 65);
 
         /// <summary>
         /// 命宫
         /// </summary>
-        public SixtyCycle OwnSign
-        {
-            get
-            {
-                var m = Month.EarthBranch.Index - 1;
-                if (m < 1)
-                {
-                    m += 12;
-                }
-                var h = Hour.EarthBranch.Index - 1;
-                if (h < 1)
-                {
-                    h += 12;
-                }
-                var offset = m + h;
-                offset = (offset >= 14 ? 26 : 14) - offset;
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset - 1).GetName() + EarthBranch.FromIndex(offset + 1).GetName());
-            }
-        }
+        public SixtyCycle OwnSign => SixtyCycle.FromIndex(Year.HeavenStem.Index * 12 + (27 - Month.EarthBranch.Index - Hour.EarthBranch.Index) % 12 + 2);
 
         /// <summary>
         /// 身宫
         /// </summary>
-        public SixtyCycle BodySign
-        {
-            get
-            {
-                var offset = Month.EarthBranch.Index - 1;
-                if (offset < 1)
-                {
-                    offset += 12;
-                }
-                offset += Hour.EarthBranch.Index + 1;
-                if (offset > 12)
-                {
-                    offset -= 12;
-                }
-                return SixtyCycle.FromName(HeavenStem.FromIndex((Year.HeavenStem.Index + 1) * 2 + offset - 1).GetName() + EarthBranch.FromIndex(offset + 1).GetName());
-            }
-        }
+        public SixtyCycle BodySign => SixtyCycle.FromIndex(Year.HeavenStem.Index * 12 + (11 + Month.EarthBranch.Index + Hour.EarthBranch.Index) % 12 + 2);
 
         /// <summary>
         /// 建除十二值神
@@ -170,9 +136,11 @@ namespace tyme.eightchar
                         }
 
                         var time = SolarTime.FromYmdHms(solarDay.Year, solarDay.Month, solarDay.Day, hour, mi, s);
-                        if (d == 30) {
+                        if (d == 30)
+                        {
                             time = time.Next(-3600);
                         }
+
                         // 验证一下
                         if (time.GetLunarHour().EightChar.Equals(this))
                         {
@@ -200,12 +168,12 @@ namespace tyme.eightchar
         /// 年柱
         /// </summary>
         public SixtyCycle Year => ThreePillars.Year;
-        
+
         /// <summary>
         /// 月柱
         /// </summary>
         public SixtyCycle Month => ThreePillars.Month;
-        
+
         /// <summary>
         /// 日柱
         /// </summary>

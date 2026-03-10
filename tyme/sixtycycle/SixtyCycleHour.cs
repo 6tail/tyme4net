@@ -146,7 +146,7 @@ namespace tyme.sixtycycle
                 var solar = SolarTime.SolarDay;
                 var dongZhi = SolarTerm.FromIndex(solar.Year, 0);
                 var earthBranchIndex = IndexInDay % 12;
-                var index = new[] { 8, 5, 2 }[Day.EarthBranch.Index % 3];
+                var index = 8 - 3 * (Day.EarthBranch.Index % 3);
                 if (!solar.IsBefore(dongZhi.JulianDay.GetSolarDay()) && solar.IsBefore(dongZhi.Next(12).JulianDay.GetSolarDay()))
                 {
                     index = 8 + earthBranchIndex - index;

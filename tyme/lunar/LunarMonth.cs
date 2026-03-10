@@ -31,7 +31,7 @@ namespace tyme.lunar
         /// 是否闰月
         /// </summary>
         public bool IsLeap { get; }
-        
+
         /// <summary>
         /// 验证
         /// </summary>
@@ -44,6 +44,7 @@ namespace tyme.lunar
             {
                 throw new ArgumentException($"illegal lunar month: {month}");
             }
+
             if (month < 0 && -month != LunarYear.FromYear(year).LeapMonth)
             {
                 throw new ArgumentException($"illegal leap month {-month} in lunar year {year}");
@@ -74,26 +75,31 @@ namespace tyme.lunar
         {
             return new LunarMonth(year, month);
         }
-        
+
         /// <summary>
         /// 初一的儒略日
         /// </summary>
         /// <returns>初一的儒略日</returns>
-        protected double GetNewMoon() {
+        protected double GetNewMoon()
+        {
             // 冬至
             var dongZhiJd = SolarTerm.FromIndex(Year, 0).CursoryJulianDay;
 
             // 冬至前的初一，今年首朔的日月黄经差
             var w = ShouXingUtil.CalcShuo(dongZhiJd);
-            if (w > dongZhiJd) {
+            if (w > dongZhiJd)
+            {
                 w -= 29.53;
             }
 
             // 正常情况正月初一为第3个朔日，但有些特殊的
             var offset = 2;
-            if (Year > 8 && Year < 24) {
+            if (Year > 8 && Year < 24)
+            {
                 offset = 1;
-            } else if (LunarYear.FromYear(Year - 1).LeapMonth > 10 && Year != 239 && Year != 240) {
+            }
+            else if (LunarYear.FromYear(Year - 1).LeapMonth > 10 && Year != 239 && Year != 240)
+            {
                 offset = 3;
             }
 
@@ -109,14 +115,19 @@ namespace tyme.lunar
             get
             {
                 var index = Month - 1;
-                if (IsLeap) {
+                if (IsLeap)
+                {
                     index += 1;
-                } else {
+                }
+                else
+                {
                     var leapMonth = LunarYear.FromYear(Year).LeapMonth;
-                    if (leapMonth > 0 && Month > leapMonth) {
+                    if (leapMonth > 0 && Month > leapMonth)
+                    {
                         index += 1;
                     }
                 }
+
                 return index;
             }
         }
@@ -130,10 +141,10 @@ namespace tyme.lunar
             {
                 var w = GetNewMoon();
                 // 本月天数 = 下月初一 - 本月初一
-                return (int) (ShouXingUtil.CalcShuo(w + 29.5306) - ShouXingUtil.CalcShuo(w));
+                return (int)(ShouXingUtil.CalcShuo(w + 29.5306) - ShouXingUtil.CalcShuo(w));
             }
         }
-        
+
         /// <summary>
         /// 初一的儒略日
         /// </summary>
@@ -259,7 +270,7 @@ namespace tyme.lunar
                 return l;
             }
         }
-        
+
         /// <summary>
         /// 初一
         /// </summary>
@@ -268,7 +279,7 @@ namespace tyme.lunar
         /// <summary>
         /// 干支
         /// </summary>
-        public SixtyCycle SixtyCycle => SixtyCycle.FromName(HeavenStem.FromIndex(LunarYear.SixtyCycle.HeavenStem.Index * 2 + Month + 1).GetName() + EarthBranch.FromIndex(Month + 1).GetName());
+        public SixtyCycle SixtyCycle => SixtyCycle.FromIndex(Year * 12 + Month - 47);
 
         /// <summary>
         /// 九星

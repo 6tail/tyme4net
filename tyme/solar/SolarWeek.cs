@@ -18,7 +18,7 @@ namespace tyme.solar
         /// 公历月
         /// </summary>
         public SolarMonth SolarMonth => SolarMonth.FromYm(Year, Month);
-        
+
         /// <summary>
         /// 验证
         /// </summary>
@@ -114,11 +114,10 @@ namespace tyme.solar
         /// <returns>推移后的公历周</returns>
         public new SolarWeek Next(int n)
         {
-            var d = Index;
+            var d = Index + n;
             var m = SolarMonth;
             if (n > 0)
             {
-                d += n;
                 var weekCount = m.GetWeekCount(Start);
                 while (d >= weekCount)
                 {
@@ -128,21 +127,24 @@ namespace tyme.solar
                     {
                         d += 1;
                     }
+
                     weekCount = m.GetWeekCount(Start);
                 }
             }
             else if (n < 0)
             {
-                d += n;
-                while (d < 0) {
-                    if (m.FirstDay.Week.Index != Start) {
+                while (d < 0)
+                {
+                    if (m.FirstDay.Week.Index != Start)
+                    {
                         d -= 1;
                     }
+
                     m = m.Next(-1);
                     d += m.GetWeekCount(Start);
                 }
-                
             }
+
             return FromYm(m.Year, m.Month, d, Start);
         }
 
@@ -184,7 +186,7 @@ namespace tyme.solar
         {
             return o is SolarWeek week && FirstDay.Equals(week.FirstDay);
         }
-        
+
         /// <summary>
         /// HashCode
         /// </summary>

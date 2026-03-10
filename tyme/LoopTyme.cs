@@ -93,13 +93,36 @@ namespace tyme
         }
 
         /// <summary>
-        /// 到目标索引的步数
+        /// 到目标索引的步数（从左往右顺序）
         /// </summary>
         /// <param name="targetIndex">目标索引</param>
-        /// <returns>步数</returns>
+        /// <returns>步数（>=0）</returns>
         public int StepsTo(int targetIndex)
         {
             return IndexOf(targetIndex - Index);
+        }
+
+        /// <summary>
+        /// 到目标索引的步数（从右往左逆序）
+        /// </summary>
+        /// <param name="targetIndex">目标索引</param>
+        /// <returns>步数（&lt;=0）</returns>
+        public int StepsBackTo(int targetIndex)
+        {
+            var n = Size;
+            return -((Index - targetIndex + n) % n);
+        }
+
+        /// <summary>
+        /// 到目标索引的最少步数
+        /// </summary>
+        /// <param name="targetIndex">目标索引</param>
+        /// <returns>步数（从左往右顺序>=0，从右往左逆序&lt;=0）</returns>
+        public int StepsCloseTo(int targetIndex)
+        {
+            var d1 = StepsTo(targetIndex);
+            var d2 = StepsBackTo(targetIndex);
+            return d1 <= Math.Abs(d2) ? d1 : d2;
         }
     }
 }
