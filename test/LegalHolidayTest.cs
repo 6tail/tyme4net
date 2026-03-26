@@ -58,7 +58,7 @@ public class LegalHolidayTest
     {
         var d = LegalHoliday.FromYmd(2001, 12, 29);
         Assert.NotNull(d);
-        Assert.Equal("2001年12月29日 元旦节(班)", d.ToString());
+        Assert.Equal("2001年12月29日 元旦(班)", d.ToString());
         Assert.Null(d.Next(-1));
     }
 

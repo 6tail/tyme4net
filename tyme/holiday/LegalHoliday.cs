@@ -12,7 +12,7 @@ namespace tyme.holiday
         /// <summary>
         /// 名称
         /// </summary>
-        public static string[] Names = { "元旦节", "春节", "清明节", "劳动节", "端午节", "中秋节", "国庆节", "国庆中秋", "抗战胜利日" };
+        public static string[] Names = { "元旦", "春节", "清明节", "劳动节", "端午节", "中秋节", "国庆节", "国庆中秋", "抗战胜利日" };
 
         /// <summary>
         /// 数据

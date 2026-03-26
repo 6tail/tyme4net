@@ -35,8 +35,8 @@ public class SolarFestivalTest
     {
         var f = SolarFestival.FromIndex(2023, 0);
         Assert.NotNull(f);
-        Assert.Equal("2024年5月1日 五一劳动节", f.Next(13).ToString());
-        Assert.Equal("2022年8月1日 八一建军节", f.Next(-3).ToString());
+        Assert.Equal("2024年5月1日 劳动节", f.Next(13).ToString());
+        Assert.Equal("2022年8月1日 建军节", f.Next(-3).ToString());
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class SolarFestivalTest
     {
         var f = SolarFestival.FromIndex(2023, 0);
         Assert.NotNull(f);
-        Assert.Equal("2022年3月8日 三八妇女节", f.Next(-9).ToString());
+        Assert.Equal("2022年3月8日 妇女节", f.Next(-9).ToString());
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class SolarFestivalTest
     {
         var f = SolarDay.FromYmd(2021, 5, 4).Festival;
         Assert.NotNull(f);
-        Assert.Equal("2021年5月4日 五四青年节", f.ToString());
+        Assert.Equal("2021年5月4日 青年节", f.ToString());
     }
 
     [Fact]
