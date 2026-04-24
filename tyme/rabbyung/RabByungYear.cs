@@ -36,7 +36,7 @@ namespace tyme.rabbyung
         {
             if (year < 1027 || year > 9999)
             {
-                throw new ArgumentException($"illegal rab-byung year: {year}");
+                throw new ArgumentException("illegal rab-byung year: " + year);
             }
         }
 
@@ -50,17 +50,17 @@ namespace tyme.rabbyung
         {
             if (rabByungIndex < 0 || rabByungIndex > 150)
             {
-                throw new ArgumentException($"illegal rab-byung index: {rabByungIndex}");
+                throw new ArgumentException("illegal rab-byung index: " + rabByungIndex);
             }
 
-            if (elementIndex < 0 || elementIndex >= culture.Element.Names.Length)
+            if (elementIndex < 0 || elementIndex >= RabByungElement.Names.Length)
             {
-                throw new ArgumentException($"illegal element index: {elementIndex}");
+                throw new ArgumentException("illegal element index: " + elementIndex);
             }
 
             if (zodiacIndex < 0 || zodiacIndex >= Zodiac.Names.Length)
             {
-                throw new ArgumentException($"illegal zodiac index: {zodiacIndex}");
+                throw new ArgumentException("illegal zodiac index: " + zodiacIndex);
             }
 
             RabByungIndex = rabByungIndex;

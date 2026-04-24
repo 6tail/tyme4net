@@ -60,7 +60,7 @@ namespace tyme.culture
         /// <summary>
         /// 几鼠偷粮
         /// </summary>
-        public string Mouse => $"{ByEarthBranch(0)}鼠偷粮";
+        public string Mouse => ByEarthBranch(0) + "鼠偷粮";
 
         /// <summary>
         /// 草子几分
@@ -70,7 +70,7 @@ namespace tyme.culture
         /// <summary>
         /// 几牛耕田
         /// </summary>
-        public string Cattle => $"{ByEarthBranch(1)}牛耕田";
+        public string Cattle => ByEarthBranch(1) + "牛耕田";
 
         /// <summary>
         /// 花收几分
@@ -80,27 +80,27 @@ namespace tyme.culture
         /// <summary>
         /// 几龙治水
         /// </summary>
-        public string Dragon => $"{ByEarthBranch(4)}龙治水";
+        public string Dragon => ByEarthBranch(4) + "龙治水";
 
         /// <summary>
         /// 几马驮谷
         /// </summary>
-        public string Horse => $"{ByEarthBranch(6)}马驮谷";
+        public string Horse => ByEarthBranch(6) + "马驮谷";
 
         /// <summary>
         /// 几鸡抢米
         /// </summary>
-        public string Chicken => $"{ByEarthBranch(9)}鸡抢米";
+        public string Chicken => ByEarthBranch(9) + "鸡抢米";
 
         /// <summary>
         /// 几姑看蚕
         /// </summary>
-        public string Silkworm => $"{ByEarthBranch(9)}姑看蚕";
+        public string Silkworm => ByEarthBranch(9) + "姑看蚕";
 
         /// <summary>
         /// 几屠共猪
         /// </summary>
-        public string Pig => $"{ByEarthBranch(11)}屠共猪";
+        public string Pig => ByEarthBranch(11) + "屠共猪";
 
         /// <summary>
         /// 甲田几分
@@ -110,12 +110,12 @@ namespace tyme.culture
         /// <summary>
         /// 几人分饼
         /// </summary>
-        public string Cake => $"{ByHeavenStem(2)}人分饼";
+        public string Cake => ByHeavenStem(2) + "人分饼";
 
         /// <summary>
         /// 几日得金
         /// </summary>
-        public string Gold => $"{ByHeavenStem(7)}日得金";
+        public string Gold => ByHeavenStem(7) + "日得金";
 
         /// <summary>
         /// 几人几丙

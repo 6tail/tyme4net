@@ -42,7 +42,7 @@ namespace tyme.lunar
         {
             if (month == 0 || month > 12 || month < -12)
             {
-                throw new ArgumentException($"illegal lunar month: {month}");
+                throw new ArgumentException("illegal lunar month: " + month);
             }
 
             if (month < 0 && -month != LunarYear.FromYear(year).LeapMonth)

@@ -10,11 +10,6 @@ namespace tyme.solar
     public class SolarWeek : WeekUnit
     {
         /// <summary>
-        /// 名称
-        /// </summary>
-        public static string[] Names = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
-
-        /// <summary>
         /// 公历月
         /// </summary>
         public SolarMonth SolarMonth => SolarMonth.FromYm(Year, Month);
@@ -29,7 +24,7 @@ namespace tyme.solar
         /// <exception cref="ArgumentException">参数异常</exception>
         public static void Validate(int year, int month, int index, int start)
         {
-            WeekUnit.Validate(index, start);
+            Validate(index, start);
             var m = SolarMonth.FromYm(year, month);
             if (index >= m.GetWeekCount(start))
             {

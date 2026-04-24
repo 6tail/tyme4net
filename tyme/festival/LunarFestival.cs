@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using tyme.enums;
+using tyme.evt;
 using tyme.lunar;
 using tyme.solar;
 
@@ -9,7 +9,7 @@ namespace tyme.festival
     /// <summary>
     /// 农历传统节日（依据国家标准《农历的编算和颁行》GB/T 33661-2017）
     /// </summary>
-    public class LunarFestival : AbstractTyme
+    public class LunarFestival : AbstractFestival
     {
         /// <summary>
         /// 名称
@@ -19,47 +19,34 @@ namespace tyme.festival
         /// <summary>
         /// 数据
         /// </summary>
-        public static string Data = "@0000101@0100115@0200202@0300303@04107@0500505@0600707@0700715@0800815@0900909@10124@1101208@122";
-
-        /// <summary>
-        /// 类型
-        /// </summary>
-        public FestivalType Type { get; }
-
-        /// <summary>
-        /// 索引
-        /// </summary>
-        public int Index { get; }
+        public static string Data = "2VV__0002Vj__0002WW__0002XX__0003b___0002ZZ__0002bb__0002bj__0002cj__0002dd__0003s___0002gc__0002hV_U000";
 
         /// <summary>
         /// 农历日
         /// </summary>
-        public LunarDay Day { get; }
+        public LunarDay Day => base.Day as LunarDay;
 
         /// <summary>
         /// 节气
         /// </summary>
-        public SolarTerm SolarTerm { get; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; }
+        public SolarTerm SolarTerm
+        {
+            get
+            {
+                var t = Day.GetSolarDay().TermDay;
+                return t.DayIndex == 0 ? t.SolarTerm : null;
+            }
+        }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="type">节日类型</param>
+        /// <param name="index">索引</param>
+        /// <param name="e">事件</param>
         /// <param name="day">农历日</param>
-        /// <param name="solarTerm">节气</param>
-        /// <param name="data">数据</param>
-        public LunarFestival(FestivalType type, LunarDay day, SolarTerm solarTerm, string data)
+        public LunarFestival(FestivalType type, int index, Event e, LunarDay day): base(type, index, e, day)
         {
-            Type = type;
-            Day = day;
-            SolarTerm = solarTerm;
-            Index = int.Parse(data.Substring(1, 2));
-            Name = Names[Index];
         }
 
         /// <summary>
@@ -75,25 +62,20 @@ namespace tyme.festival
             {
                 return null;
             }
-
-            var matcher = Regex.Match(Data, $@"@{index:D2}\d+");
-            if (!matcher.Success)
-            {
-                return null;
-            }
-
-            var data = matcher.Value;
-            var type = data[3] - '0';
-
-            switch (type)
-            {
-                case 0:
-                    return new LunarFestival(FestivalType.Day, LunarDay.FromYmd(year, int.Parse(data.Substring(4, 2)), int.Parse(data.Substring(6))), null, data);
-                case 1:
-                    var term = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                    return new LunarFestival(FestivalType.Term, term.GetSolarDay().GetLunarDay(), term, data);
-                case 2:
-                    return new LunarFestival(FestivalType.Eve, LunarDay.FromYmd(year + 1, 1, 1).Next(-1), null, data);
+            var start = index * 8;
+            var e = new Event(Names[index], "@" + Data.Substring(start, 8));
+            switch (e.Type) {
+                case EventType.LunarDay:
+                    var m = e.GetMonth(year);
+                    var d = LunarDay.FromYmd(m[0], m[1], e.GetValue(3));
+                    var offset = e.GetValue(5);
+                    return new LunarFestival(FestivalType.Day, index, e, 0 == offset ? d : d.Next(offset));
+                case EventType.TermDay:
+                    return new LunarFestival(FestivalType.Term, index, e, SolarTerm.FromIndex(year, e.GetValue(2)).GetSolarDay().GetLunarDay());
+                case EventType.SolarDay:
+                case EventType.SolarWeek:
+                case EventType.TermHs:
+                case EventType.TermEb:
                 default:
                     return null;
             }
@@ -108,59 +90,40 @@ namespace tyme.festival
         /// <returns>农历传统节日</returns>
         public static LunarFestival FromYmd(int year, int month, int day)
         {
-            var matcher = Regex.Match(Data, $@"@\d{{2}}0{month:D2}{day:D2}");
-            if (matcher.Success)
-            {
-                return new LunarFestival(FestivalType.Day, LunarDay.FromYmd(year, month, day), null, matcher.Value);
-            }
-
-            var lunarDay = LunarDay.FromYmd(year, month, day);
-            var solarDay = lunarDay.GetSolarDay();
-            var matches = Regex.Matches(Data, @"@\d{2}1\d{2}");
-            foreach (Match match in matches)
-            {
-                var data = match.Value;
-                var term = SolarTerm.FromIndex(year, int.Parse(data.Substring(4)));
-                var termDay = term.GetSolarDay();
-                if (termDay.Year == solarDay.Year && termDay.Month == solarDay.Month && termDay.Day == solarDay.Day)
-                {
-                    return new LunarFestival(FestivalType.Term, lunarDay, term, data);
+            var d = LunarDay.FromYmd(year, month, day);
+            for (int i = 0, j = Names.Length; i < j; i++) {
+                var start = i * 8;
+                var e = new Event(Names[i], '@' + Data.Substring(start, 8));
+                switch (e.Type) {
+                    case EventType.LunarDay:
+                        var offset = e.GetValue(5);
+                        if (0 == offset) {
+                            if (d.Month == e.GetValue(2) && d.Day == e.GetValue(3)) {
+                                return new LunarFestival(FestivalType.Day, i, e, d);
+                            }
+                        } else {
+                            var m = e.GetMonth(d.Year);
+                            var next = d.Next(-offset);
+                            if (next.Year == m[0] && next.Month == m[1] && next.Day == e.GetValue(3)) {
+                                return new LunarFestival(FestivalType.Day, i, e, d);
+                            }
+                        }
+                        break;
+                    case EventType.TermDay:
+                        var term = d.GetSolarDay().TermDay;
+                        if (term.DayIndex == 0 && term.SolarTerm.Index == e.GetValue(2) % 24) {
+                            return new LunarFestival(FestivalType.Term, i, e, d);
+                        }
+                        break;
+                    case EventType.SolarDay:
+                    case EventType.SolarWeek:
+                    case EventType.TermHs:
+                    case EventType.TermEb:
+                    default:
+                        break;
                 }
             }
-
-            if (Math.Abs(month) == 12 && day > 28)
-            {
-                matcher = Regex.Match(Data, @"@\d{2}2");
-                if (!matcher.Success)
-                {
-                    return null;
-                }
-
-                if (lunarDay.Next(1).Year != year)
-                {
-                    return new LunarFestival(FestivalType.Eve, lunarDay, null, matcher.Value);
-                }
-            }
-
             return null;
-        }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        /// <returns>名称</returns>
-        public override string GetName()
-        {
-            return Name;
-        }
-
-        /// <summary>
-        /// 完整描述
-        /// </summary>
-        /// <returns>完整描述</returns>
-        public override string ToString()
-        {
-            return $"{Day} {Name}";
         }
 
         /// <summary>

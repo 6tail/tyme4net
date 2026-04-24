@@ -10,15 +10,15 @@ public class EventTest
     void Init()
     {
         // 公历现代节日
-        // EventManager.Data = "@0VV__0Ux公历现代节日:元旦@0Xc__0Ux公历现代节日:三八妇女节@0Xg__0_Q公历现代节日:植树节@0ZV__0Ux公历现代节日:五一劳动节@0ZY__0Ux公历现代节日:五四青年节@0aV__0Ux公历现代节日:六一儿童节@0bV__0Uo公历现代节日:建党节@0cV__0Ug公历现代节日:八一建军节@0de__0_V公历现代节日:教师节@0eV__0Ux公历现代节日:国庆节";
+        // EventManager.Data = "@0VV__0Ux公历现代节日:元旦@0Xc__0Ux公历现代节日:妇女节@0Xg__0_Q公历现代节日:植树节@0ZV__0Ux公历现代节日:劳动节@0ZY__0Ux公历现代节日:青年节@0aV__0Ux公历现代节日:儿童节@0bV__0Uo公历现代节日:建党节@0cV__0Ug公历现代节日:建军节@0de__0_V公历现代节日:教师节@0eV__0Ux公历现代节日:国庆节";
         EventManager.Update("公历现代节日:元旦", Event.Builder().SolarDay(1, 1, 0).StartYear(1950).Build());
-        EventManager.Update("公历现代节日:三八妇女节", Event.Builder().SolarDay(3, 8, 0).StartYear(1950).Build());
+        EventManager.Update("公历现代节日:妇女节", Event.Builder().SolarDay(3, 8, 0).StartYear(1950).Build());
         EventManager.Update("公历现代节日:植树节", Event.Builder().SolarDay(3, 12, 0).StartYear(1979).Build());
-        EventManager.Update("公历现代节日:五一劳动节", Event.Builder().SolarDay(5, 1, 0).StartYear(1950).Build());
-        EventManager.Update("公历现代节日:五四青年节", Event.Builder().SolarDay(5, 4, 0).StartYear(1950).Build());
-        EventManager.Update("公历现代节日:六一儿童节", Event.Builder().SolarDay(6, 1, 0).StartYear(1950).Build());
+        EventManager.Update("公历现代节日:劳动节", Event.Builder().SolarDay(5, 1, 0).StartYear(1950).Build());
+        EventManager.Update("公历现代节日:青年节", Event.Builder().SolarDay(5, 4, 0).StartYear(1950).Build());
+        EventManager.Update("公历现代节日:儿童节", Event.Builder().SolarDay(6, 1, 0).StartYear(1950).Build());
         EventManager.Update("公历现代节日:建党节", Event.Builder().SolarDay(7, 1, 0).StartYear(1941).Build());
-        EventManager.Update("公历现代节日:八一建军节", Event.Builder().SolarDay(8, 1, 0).StartYear(1933).Build());
+        EventManager.Update("公历现代节日:建军节", Event.Builder().SolarDay(8, 1, 0).StartYear(1933).Build());
         EventManager.Update("公历现代节日:教师节", Event.Builder().SolarDay(9, 10, 0).StartYear(1985).Build());
         EventManager.Update("公历现代节日:国庆节", Event.Builder().SolarDay(10, 1, 0).StartYear(1950).Build());
 

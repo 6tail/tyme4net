@@ -84,7 +84,7 @@ namespace tyme.sixtycycle
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{Hour}时";
+            return Hour + "时";
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace tyme.sixtycycle
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return $"{Day}{GetName()}";
+            return Day + GetName();
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace tyme.lunar
         {
             if (day < 1)
             {
-                throw new ArgumentException($"illegal lunar day {day}");
+                throw new ArgumentException("illegal lunar day: " + day);
             }
 
             var m = LunarMonth.FromYm(year, month);
@@ -183,37 +183,7 @@ namespace tyme.lunar
         /// <summary>
         /// 九星
         /// </summary>
-        public NineStar NineStar
-        {
-            get
-            {
-                var d = GetSolarDay();
-                var y = d.Year;
-                var winterSolstice = SolarTerm.FromIndex(y, 0).GetSolarDay();
-                var summerSolstice = SolarTerm.FromIndex(y, 12).GetSolarDay();
-                var nextWinterSolstice = SolarTerm.FromIndex(y + 1, 0).GetSolarDay();
-                // 距冬至最近的甲子日
-                var w = winterSolstice.Next(winterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                // 距夏至最近的甲子日
-                var s = summerSolstice.Next(summerSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                // 距下个冬至最近的甲子日
-                var n = nextWinterSolstice.Next(nextWinterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                // 43210012345678876543210012345
-                //      w        s        n
-                //     冬至     夏至      冬至
-                if (d.IsBefore(w))
-                {
-                    return NineStar.FromIndex(w.Subtract(d) - 1);
-                }
-
-                if (d.IsBefore(s))
-                {
-                    return NineStar.FromIndex(d.Subtract(w));
-                }
-
-                return NineStar.FromIndex(d.IsBefore(n) ? n.Subtract(d) - 1 : d.Subtract(n));
-            }
-        }
+        public NineStar NineStar => GetSolarDay().NineStar;
 
         /// <summary>
         /// 太岁方位

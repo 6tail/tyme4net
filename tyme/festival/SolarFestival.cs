@@ -1,6 +1,5 @@
-﻿using System;
-using System.Text.RegularExpressions;
-using tyme.enums;
+﻿using tyme.enums;
+using tyme.evt;
 using tyme.solar;
 
 namespace tyme.festival
@@ -8,59 +7,38 @@ namespace tyme.festival
     /// <summary>
     /// 公历现代节日
     /// </summary>
-    public class SolarFestival : AbstractTyme
+    public class SolarFestival : AbstractFestival
     {
         /// <summary>
         /// 名称
         /// </summary>
-        public static string[] Names =
-            { "元旦", "妇女节", "植树节", "劳动节", "青年节", "儿童节", "建党节", "建军节", "教师节", "国庆节" };
+        public static string[] Names = { "元旦", "妇女节", "植树节", "劳动节", "青年节", "儿童节", "建党节", "建军节", "教师节", "国庆节" };
 
         /// <summary>
         /// 数据
         /// </summary>
-        public static string Data =
-            "@00001011950@01003081950@02003121979@03005011950@04005041950@05006011950@06007011941@07008011933@08009101985@09010011950";
+        public static string Data = "0VV__0Ux0Xc__0Ux0Xg__0_Q0ZV__0Ux0ZY__0Ux0aV__0Ux0bV__0Uo0cV__0Ug0de__0_V0eV__0Ux";
 
-        /// <summary>
-        /// 类型
-        /// </summary>
-        public FestivalType Type { get; }
-
-        /// <summary>
-        /// 索引
-        /// </summary>
-        public int Index { get; }
 
         /// <summary>
         /// 公历日
         /// </summary>
-        public SolarDay Day { get; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public string Name { get; }
+        public SolarDay Day => base.Day as SolarDay;
 
         /// <summary>
         /// 起始年
         /// </summary>
-        public int StartYear { get; }
+        public int StartYear => Event.StartYear;
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="type">节日类型</param>
+        /// <param name="index">索引</param>
+        /// <param name="e">事件</param>
         /// <param name="day">公历日</param>
-        /// <param name="startYear">起始年</param>
-        /// <param name="data">数据</param>
-        public SolarFestival(FestivalType type, SolarDay day, int startYear, string data)
+        public SolarFestival(FestivalType type, int index, Event e, SolarDay day) : base(type, index, e, day)
         {
-            Type = type;
-            Day = day;
-            StartYear = startYear;
-            Index = int.Parse(data.Substring(1, 2));
-            Name = Names[Index];
         }
 
         /// <summary>
@@ -71,31 +49,12 @@ namespace tyme.festival
         /// <returns>公历现代节日</returns>
         public static SolarFestival FromIndex(int year, int index)
         {
-            if (index < 0 || index >= Names.Length)
-            {
+            if (index < 0 || index >= Names.Length) {
                 return null;
             }
-
-            var matcher = Regex.Match(Data, $@"@{index:D2}\d+");
-            if (!matcher.Success)
-            {
-                return null;
-            }
-
-            var data = matcher.Value;
-            var type = data[3] - '0';
-
-            if (type != FestivalType.Day.GetCode())
-            {
-                return null;
-            }
-
-            var startYear = int.Parse(data.Substring(8));
-            return year < startYear
-                ? null
-                : new SolarFestival(FestivalType.Day,
-                    SolarDay.FromYmd(year, int.Parse(data.Substring(4, 2)), int.Parse(data.Substring(6, 2))), startYear,
-                    data);
+            var start = index * 8;
+            var e = new Event(Names[index], "@" + Data.Substring(start, 8));
+            return year < e.StartYear ? null : new SolarFestival(FestivalType.Day, index, e, SolarDay.FromYmd(year, e.GetValue(2), e.GetValue(3)));
         }
 
         /// <summary>
@@ -107,31 +66,15 @@ namespace tyme.festival
         /// <returns>公历现代节日</returns>
         public static SolarFestival FromYmd(int year, int month, int day)
         {
-            var matcher = Regex.Match(Data, $@"@\d{{2}}0{month:D2}{day:D2}\d+");
-            if (!matcher.Success) {
-                return null;
+            var d = SolarDay.FromYmd(year, month, day);
+            for (int i = 0, j = Names.Length; i < j; i++) {
+                var start = i * 8;
+                var e = new Event(Names[i], "@" + Data.Substring(start, 8));
+                if (d.Year >= e.StartYear && d.Month == e.GetValue(2) && d.Day == e.GetValue(3)) {
+                    return new SolarFestival(FestivalType.Day, i, e, d);
+                }
             }
-            var data = matcher.Value;
-            var startYear = int.Parse(data.Substring(8));
-            return year < startYear ? null : new SolarFestival(FestivalType.Day, SolarDay.FromYmd(year, month, day), startYear, data);
-        }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        /// <returns>名称</returns>
-        public override string GetName()
-        {
-            return Name;
-        }
-
-        /// <summary>
-        /// 完整描述
-        /// </summary>
-        /// <returns>完整描述</returns>
-        public override string ToString()
-        {
-            return $"{Day} {Name}";
+            return null;
         }
 
         /// <summary>

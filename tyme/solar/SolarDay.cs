@@ -4,6 +4,7 @@ using tyme.culture.dog;
 using tyme.culture.nine;
 using tyme.culture.phenology;
 using tyme.culture.plumrain;
+using tyme.culture.star.nine;
 using tyme.enums;
 using tyme.evt;
 using tyme.festival;
@@ -447,5 +448,38 @@ namespace tyme.solar
         /// 月相
         /// </summary>
         public Phase Phase => PhaseDay.Phase;
+        
+        /// <summary>
+        /// 九星
+        /// </summary>
+        public NineStar NineStar
+        {
+            get
+            {
+                var winterSolstice = SolarTerm.FromIndex(Year, 0).GetSolarDay();
+                var summerSolstice = SolarTerm.FromIndex(Year, 12).GetSolarDay();
+                var nextWinterSolstice = SolarTerm.FromIndex(Year + 1, 0).GetSolarDay();
+                // 距冬至最近的甲子日
+                var w = winterSolstice.Next(winterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 距夏至最近的甲子日
+                var s = summerSolstice.Next(summerSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 距下个冬至最近的甲子日
+                var n = nextWinterSolstice.Next(nextWinterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
+                // 43210012345678876543210012345
+                //      w        s        n
+                //     冬至     夏至      冬至
+                if (IsBefore(w))
+                {
+                    return NineStar.FromIndex(w.Subtract(this) - 1);
+                }
+
+                if (IsBefore(s))
+                {
+                    return NineStar.FromIndex(Subtract(w));
+                }
+
+                return NineStar.FromIndex(IsBefore(n) ? n.Subtract(this) - 1 : Subtract(n));
+            }
+        }
     }
 }

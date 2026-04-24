@@ -69,7 +69,7 @@ namespace tyme
                 }
             }
 
-            throw new ArgumentException($"illegal name: {GetName()}");
+            throw new ArgumentException("illegal name: " + name);
         }
 
         /// <summary>

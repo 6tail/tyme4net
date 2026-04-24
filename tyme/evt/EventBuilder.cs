@@ -27,15 +27,26 @@ namespace tyme.evt
             name = s;
             return this;
         }
-
+        
         /// <summary>
-        /// 编码事件类型
+        /// 获取指定下标的字符
         /// </summary>
-        /// <param name="type">事件类型</param>
-        /// <returns>编码</returns>
-        public static char EncodeType(EventType type)
+        /// <param name="index">下标</param>
+        /// <returns>字符</returns>
+        protected char GetChar(int index)
         {
-            return EventManager.Chars[type.GetCode()];
+            return EventManager.Chars[index];
+        }
+        
+        /// <summary>
+        /// 设置数值
+        /// </summary>
+        /// <param name="index">下标</param>
+        /// <param name="n">数值</param>
+        /// <returns>事件构造器</returns>
+        protected EventBuilder SetValue(int index, int n) {
+            Data[index] = GetChar(31 + n);
+            return this;
         }
 
         /// <summary>
@@ -48,11 +59,8 @@ namespace tyme.evt
         /// <returns>事件构造器</returns>
         protected EventBuilder Content(EventType type, int a, int b, int c)
         {
-            Data[1] = EncodeType(type);
-            Data[2] = EventManager.Chars[31 + a];
-            Data[3] = EventManager.Chars[31 + b];
-            Data[4] = EventManager.Chars[31 + c];
-            return this;
+            Data[1] = GetChar(type.GetCode());
+            return SetValue(2, a).SetValue(3, b).SetValue(4, c);
         }
 
         /// <summary>
@@ -137,7 +145,7 @@ namespace tyme.evt
             var n = year;
             for (var i = 0; i < 3; i++)
             {
-                Data[8 - i] = EventManager.Chars[n % size];
+                Data[8 - i] = GetChar(n % size);
                 n /= size;
             }
 
@@ -151,8 +159,7 @@ namespace tyme.evt
         /// <returns>事件构造器</returns>
         public EventBuilder Offset(int days)
         {
-            Data[5] = EventManager.Chars[31 + days];
-            return this;
+            return SetValue(5, days);
         }
 
         /// <summary>

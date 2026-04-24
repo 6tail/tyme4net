@@ -12,6 +12,14 @@
         {
             "一", "二", "三", "四", "五", "六", "七", "八", "九"
         };
+        
+        /// <summary>
+        /// 颜色
+        /// </summary>
+        public static string[] Colors =
+        {
+            "白", "黑", "碧", "绿", "黄", "白", "赤", "白", "紫"
+        };
 
         /// <summary>
         /// 初始化
@@ -60,12 +68,12 @@
         /// <summary>
         /// 颜色
         /// </summary>
-        public string Color => new[] { "白", "黑", "碧", "绿", "黄", "白", "赤", "白", "紫" }[Index];
+        public string Color => Colors[Index];
 
         /// <summary>
         /// 五行
         /// </summary>
-        public Element Element => Element.FromIndex(new[] { 4, 2, 0, 0, 2, 3, 3, 2, 1 }[Index]);
+        public Element Element => Direction.GetElement();
 
         /// <summary>
         /// 北斗九星

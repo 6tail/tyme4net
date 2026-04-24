@@ -69,7 +69,7 @@ namespace tyme.lunar
         {
             if (year < -1 || year > 9999)
             {
-                throw new ArgumentException($"illegal lunar year: {year}");
+                throw new ArgumentException("illegal lunar year: " + year);
             }
         }
 

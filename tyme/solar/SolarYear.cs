@@ -19,7 +19,7 @@ namespace tyme.solar
         {
             if (year < 1 || year > 9999)
             {
-                throw new ArgumentException($"illegal solar year: {year}");
+                throw new ArgumentException("illegal solar year: " + year);
             }
         }
 
@@ -83,7 +83,7 @@ namespace tyme.solar
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{Year}年";
+            return Year + "年";
         }
 
         /// <summary>

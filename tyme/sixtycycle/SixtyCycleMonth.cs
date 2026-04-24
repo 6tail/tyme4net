@@ -48,7 +48,7 @@ namespace tyme.sixtycycle
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{Month}月";
+            return Month + "月";
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace tyme.sixtycycle
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return $"{SixtyCycleYear}{GetName()}";
+            return SixtyCycleYear + GetName();
         }
 
         /// <summary>

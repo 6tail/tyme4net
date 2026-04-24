@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 namespace tyme.enums
@@ -5,6 +6,7 @@ namespace tyme.enums
     /// <summary>
     /// 节日类型
     /// </summary>
+    [Obsolete("已过时，可能在后续版本中删除。")]
     public enum FestivalType
     {
         /// <summary>

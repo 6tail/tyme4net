@@ -70,7 +70,7 @@ namespace tyme.sixtycycle
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{Day}日";
+            return Day + "日";
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace tyme.sixtycycle
         /// <returns>完整描述</returns>
         public override string ToString()
         {
-            return $"{SixtyCycleMonth}{GetName()}";
+            return SixtyCycleMonth + GetName();
         }
 
         /// <summary>
@@ -120,30 +120,7 @@ namespace tyme.sixtycycle
         /// <summary>
         /// 九星
         /// </summary>
-        public NineStar NineStar
-        {
-            get
-            {
-                var y = SolarDay.Year;
-                var winterSolstice = SolarTerm.FromIndex(y, 0).GetSolarDay();
-                var summerSolstice = SolarTerm.FromIndex(y, 12).GetSolarDay();
-                var nextWinterSolstice = SolarTerm.FromIndex(y + 1, 0).GetSolarDay();
-                var w = winterSolstice.Next(winterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                var s = summerSolstice.Next(summerSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                var n = nextWinterSolstice.Next(nextWinterSolstice.GetLunarDay().SixtyCycle.StepsCloseTo(0));
-                if (SolarDay.IsBefore(w))
-                {
-                    return NineStar.FromIndex(w.Subtract(SolarDay) - 1);
-                }
-
-                if (SolarDay.IsBefore(s))
-                {
-                    return NineStar.FromIndex(SolarDay.Subtract(w));
-                }
-
-                return NineStar.FromIndex(SolarDay.IsBefore(n) ? n.Subtract(SolarDay) - 1 : SolarDay.Subtract(n));
-            }
-        }
+        public NineStar NineStar => SolarDay.NineStar;
 
         /// <summary>
         /// 太岁方位

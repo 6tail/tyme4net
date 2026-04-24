@@ -20,12 +20,30 @@
         public Element(int index) : base(Names, index)
         {
         }
+        
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="names">名称列表</param>
+        /// <param name="index">索引值</param>
+        protected Element(string[] names, int index) : base(names, index)
+        {
+        }
 
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="name">名称</param>
         public Element(string name) : base(Names, name)
+        {
+        }
+        
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="names">名称列表</param>
+        /// <param name="name">名称</param>
+        protected Element(string[] names, string name) : base(names, name)
         {
         }
 

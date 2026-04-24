@@ -41,7 +41,12 @@ namespace tyme.evt
             }
         }
 
-        internal Event(string name, string data)
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="name">名称</param>
+        /// <param name="data">数据</param>
+        public Event(string name, string data)
         {
             Validate(data);
             this.name = name;
@@ -67,6 +72,34 @@ namespace tyme.evt
             var matcher = Regex.Match(EventManager.Data, EventManager.RegexExp + name);
             return matcher.Success ? new Event(name, matcher.Groups[1].Value) : null;
         }
+        
+        internal int GetCharIndex(int index) {
+            return EventManager.Chars.IndexOf(Data[index]);
+        }
+        
+        /// <summary>
+        /// 从数据取数值
+        /// </summary>
+        /// <param name="index">下标</param>
+        /// <returns>数值</returns>
+        public int GetValue(int index) {
+            return GetCharIndex(index) - 31;
+        }
+
+        /// <summary>
+        /// 从数据取年月
+        /// </summary>
+        /// <param name="year">年</param>
+        /// <returns>年月数组</returns>
+        public int[] GetMonth(int year) {
+            var y = year;
+            var m = GetValue(2);
+            if (m > 12) {
+                m = 1;
+                y += 1;
+            }
+            return new[] {y, m};
+        }
 
         /// <summary>
         /// 事件类型
@@ -76,8 +109,7 @@ namespace tyme.evt
         {
             get
             {
-                var t = EventManager.Chars.IndexOf(Data[1]);
-                switch (t)
+                switch (GetCharIndex(1))
                 {
                     case 1:
                         return EventType.SolarWeek;
@@ -116,7 +148,7 @@ namespace tyme.evt
                 var size = EventManager.Chars.Length;
                 for (var i = 0; i < 3; i++)
                 {
-                    n = n * size + EventManager.Chars.IndexOf(Data[6 + i]);
+                    n = n * size + GetCharIndex(6 + i);
                 }
 
                 return n;
@@ -187,7 +219,7 @@ namespace tyme.evt
                 return null;
             }
 
-            var offset = EventManager.Chars.IndexOf(Data[5]) - 31;
+            var offset = GetValue(5);
             return offset == 0 ? d : d.Next(offset);
         }
 
@@ -198,18 +230,12 @@ namespace tyme.evt
         /// <returns>公历日</returns>
         protected SolarDay GetSolarDayBySolarDay(int year)
         {
-            var y = year;
-            var m = EventManager.Chars.IndexOf(Data[2]) - 31;
-            if (m > 12)
-            {
-                m = 1;
-                y += 1;
-            }
-
-            var d = EventManager.Chars.IndexOf(Data[3]) - 31;
-            var delay = EventManager.Chars.IndexOf(Data[4]) - 31;
-            var month = SolarMonth.FromYm(y, m);
-            var lastDay = month.DayCount;
+            var month = GetMonth(year);
+            var y = month[0];
+            var m = month[1];
+            var d = GetValue(3);
+            var delay = GetValue(4);
+            var lastDay = SolarMonth.FromYm(y, m).DayCount;
             if (d > lastDay)
             {
                 if (delay == 0)
@@ -230,18 +256,12 @@ namespace tyme.evt
         /// <returns>公历日</returns>
         protected SolarDay GetSolarDayByLunarDay(int year)
         {
-            var y = year;
-            var m = EventManager.Chars.IndexOf(Data[2]) - 31;
-            if (m > 12)
-            {
-                m = 1;
-                y += 1;
-            }
-
-            var d = EventManager.Chars.IndexOf(Data[3]) - 31;
-            var delay = EventManager.Chars.IndexOf(Data[4]) - 31;
-            var month = LunarMonth.FromYm(y, m);
-            var lastDay = month.DayCount;
+            var month = GetMonth(year);
+            var y = month[0];
+            var m = month[1];
+            var d = GetValue(3);
+            var delay = GetValue(4);
+            var lastDay = LunarMonth.FromYm(y, m).DayCount;
             if (d > lastDay)
             {
                 if (delay == 0)
@@ -249,9 +269,7 @@ namespace tyme.evt
                     return null;
                 }
 
-                return delay < 0
-                    ? LunarDay.FromYmd(y, m, d + delay).GetSolarDay()
-                    : LunarDay.FromYmd(y, m, lastDay).GetSolarDay().Next(delay);
+                return delay < 0 ? LunarDay.FromYmd(y, m, d + delay).GetSolarDay() : LunarDay.FromYmd(y, m, lastDay).GetSolarDay().Next(delay);
             }
 
             return LunarDay.FromYmd(y, m, d).GetSolarDay();
@@ -265,15 +283,15 @@ namespace tyme.evt
         protected SolarDay GetSolarDayByWeek(int year)
         {
             // 第几个星期
-            var n = EventManager.Chars.IndexOf(Data[3]) - 31;
+            var n = GetValue(3);
             if (n == 0)
             {
                 return null;
             }
 
-            var m = SolarMonth.FromYm(year, EventManager.Chars.IndexOf(Data[2]) - 31);
+            var m = SolarMonth.FromYm(year, GetValue(2));
             // 星期几
-            var w = EventManager.Chars.IndexOf(Data[4]) - 31;
+            var w = GetValue(4);
             SolarDay d;
             if (n > 0)
             {
@@ -296,8 +314,8 @@ namespace tyme.evt
         /// <returns>公历日</returns>
         protected SolarDay GetSolarDayByTerm(int year)
         {
-            var offset = EventManager.Chars.IndexOf(Data[4]) - 31;
-            var d = SolarTerm.FromIndex(year, EventManager.Chars.IndexOf(Data[2]) - 31).GetSolarDay();
+            var d = SolarTerm.FromIndex(year, GetValue(2)).GetSolarDay();
+            var offset = GetValue(4);
             return offset == 0 ? d : d.Next(offset);
         }
 
@@ -309,7 +327,7 @@ namespace tyme.evt
         protected SolarDay GetSolarDayByTermHeavenStem(int year)
         {
             var d = GetSolarDayByTerm(year);
-            return d.Next(d.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(EventManager.Chars.IndexOf(Data[3]) - 31));
+            return d.Next(d.GetLunarDay().SixtyCycle.HeavenStem.StepsTo(GetValue(3)));
         }
 
         /// <summary>
@@ -320,7 +338,7 @@ namespace tyme.evt
         protected SolarDay GetSolarDayByTermEarthBranch(int year)
         {
             var d = GetSolarDayByTerm(year);
-            return d.Next(d.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(EventManager.Chars.IndexOf(Data[3]) - 31));
+            return d.Next(d.GetLunarDay().SixtyCycle.EarthBranch.StepsTo(GetValue(3)));
         }
     }
 }

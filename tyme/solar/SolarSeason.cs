@@ -34,7 +34,7 @@ namespace tyme.solar
         {
             if (index < 0 || index > 3)
             {
-                throw new ArgumentException($"illegal solar season index: {index}");
+                throw new ArgumentException("illegal solar season index: " + index);
             }
 
             SolarYear.Validate(year);

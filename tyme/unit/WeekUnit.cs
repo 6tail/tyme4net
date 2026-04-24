@@ -8,6 +8,11 @@ namespace tyme.unit
     public abstract class WeekUnit : MonthUnit
     {
         /// <summary>
+        /// 名称
+        /// </summary>
+        public static string[] Names = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
+        
+        /// <summary>
         /// 索引，0-5
         /// </summary>
         public int Index {get; protected set;}
@@ -27,12 +32,12 @@ namespace tyme.unit
         {
             if (index < 0 || index > 5)
             {
-                throw new ArgumentException($"illegal week index: {index}");
+                throw new ArgumentException("illegal week index: " + index);
             }
 
             if (start < 0 || start > 6)
             {
-                throw new ArgumentException($"illegal week start: {start}");
+                throw new ArgumentException("illegal week start: " + start);
             }
         }
     }

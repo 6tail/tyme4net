@@ -33,17 +33,17 @@ namespace tyme.unit
         {
             if (hour < 0 || hour > 23)
             {
-                throw new ArgumentException($"illegal hour: {hour}");
+                throw new ArgumentException("illegal hour: " + hour);
             }
 
             if (minute < 0 || minute > 59)
             {
-                throw new ArgumentException($"illegal minute: {minute}");
+                throw new ArgumentException("illegal minute: " + minute);
             }
 
             if (second < 0 || second > 59)
             {
-                throw new ArgumentException($"illegal second: {second}");
+                throw new ArgumentException("illegal second: " + second);
             }
         }
     }

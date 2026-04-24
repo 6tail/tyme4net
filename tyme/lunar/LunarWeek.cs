@@ -10,11 +10,6 @@ namespace tyme.lunar
     public class LunarWeek : WeekUnit
     {
         /// <summary>
-        /// 名称
-        /// </summary>
-        public static string[] Names = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
-
-        /// <summary>
         /// 农历
         /// </summary>
         public LunarMonth LunarMonth => LunarMonth.FromYm(Year, Month);
@@ -29,7 +24,7 @@ namespace tyme.lunar
         /// <exception cref="ArgumentException">参数异常</exception>
         public static void Validate(int year, int month, int index, int start)
         {
-            WeekUnit.Validate(index, start);
+            Validate(index, start);
             var m = LunarMonth.FromYm(year, month);
             if (index >= m.GetWeekCount(start))
             {

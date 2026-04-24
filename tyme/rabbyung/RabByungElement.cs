@@ -8,10 +8,18 @@ namespace tyme.rabbyung
     public class RabByungElement : Element
     {
         /// <summary>
+        /// 名称
+        /// </summary>
+        public new static string[] Names =
+        {
+            "木", "火", "土", "铁", "水"
+        };
+        
+        /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="index">索引值</param>
-        public RabByungElement(int index) : base(index)
+        public RabByungElement(int index) : base(Names, index)
         {
         }
 
@@ -19,7 +27,7 @@ namespace tyme.rabbyung
         /// 初始化
         /// </summary>
         /// <param name="name">名称</param>
-        public RabByungElement(string name) : base(name.Replace("铁", "金"))
+        public RabByungElement(string name) : base(Names, name)
         {
         }
 
@@ -85,15 +93,6 @@ namespace tyme.rabbyung
         public new RabByungElement GetRestrained()
         {
             return Next(-2);
-        }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        /// <returns>名称</returns>
-        public override string GetName()
-        {
-            return base.GetName().Replace("金", "铁");
         }
     }
 }

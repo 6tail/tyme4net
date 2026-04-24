@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using tyme.lunar;
 using tyme.unit;
 
 namespace tyme.rabbyung
@@ -14,11 +15,6 @@ namespace tyme.rabbyung
         /// 缓存
         /// </summary>
         protected static Dictionary<int, List<int>> Cache { get; } = new Dictionary<int, List<int>>();
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public static string[] Names = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
 
         /// <summary>
         /// 别名
@@ -67,7 +63,7 @@ namespace tyme.rabbyung
         {
             if (month == 0 || month > 12 || month < -12)
             {
-                throw new ArgumentException($"illegal rab-byung month: {month}");
+                throw new ArgumentException("illegal rab-byung month: " + month);
             }
 
             if (year < 1950 || year > 2050)
@@ -152,7 +148,7 @@ namespace tyme.rabbyung
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return (IsLeap ? "闰" : "") + Names[Month - 1];
+            return (IsLeap ? "闰" : "") + LunarMonth.Names[Month - 1];
         }
 
         /// <summary>

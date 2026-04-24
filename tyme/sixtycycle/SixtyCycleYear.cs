@@ -24,7 +24,7 @@ namespace tyme.sixtycycle
         {
             if (year < -1 || year > 9999)
             {
-                throw new ArgumentException($"illegal sixty cycle year: {year}");
+                throw new ArgumentException("illegal sixty cycle year: " + year);
             }
 
             Year = year;
@@ -46,7 +46,7 @@ namespace tyme.sixtycycle
         /// <returns>名称</returns>
         public override string GetName()
         {
-            return $"{SixtyCycle}年";
+            return SixtyCycle + "年";
         }
 
         /// <summary>
