@@ -8,6 +8,7 @@ using tyme.culture.star.nine;
 using tyme.enums;
 using tyme.evt;
 using tyme.festival;
+using tyme.hijri;
 using tyme.holiday;
 using tyme.jd;
 using tyme.lunar;
@@ -125,7 +126,7 @@ namespace tyme.solar
         /// <summary>
         /// 推移
         /// </summary>
-        /// <param name="n">推移步数</param>
+        /// <param name="n">推移天数</param>
         /// <returns>推移后的公历日</returns>
         public new SolarDay Next(int n)
         {
@@ -448,7 +449,7 @@ namespace tyme.solar
         /// 月相
         /// </summary>
         public Phase Phase => PhaseDay.Phase;
-        
+
         /// <summary>
         /// 九星
         /// </summary>
@@ -480,6 +481,22 @@ namespace tyme.solar
 
                 return NineStar.FromIndex(IsBefore(n) ? n.Subtract(this) - 1 : Subtract(n));
             }
+        }
+
+        /// <summary>
+        /// 回历日
+        /// </summary>
+        /// <returns>回历日</returns>
+        public HijriDay GetHijriDay()
+        {
+            var d = Subtract(new SolarDay(622, 7, 16));
+            var z = (int)Math.Floor(d / 10631.0);
+            d -= z * 10631;
+            var y = (int)Math.Floor((d + 0.5) / 354.366);
+            d -= (int)Math.Floor(y * 354.366 + 0.5);
+            var m = (int)Math.Floor((d + 0.11) / 29.51);
+            d -= (int)Math.Floor(m * 29.5 + 0.5);
+            return new HijriDay(z * 30 + y + 1, m + 1, d + 1);
         }
     }
 }

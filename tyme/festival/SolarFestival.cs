@@ -1,5 +1,4 @@
-﻿using tyme.enums;
-using tyme.evt;
+﻿using tyme.evt;
 using tyme.solar;
 
 namespace tyme.festival
@@ -33,11 +32,10 @@ namespace tyme.festival
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="type">节日类型</param>
         /// <param name="index">索引</param>
         /// <param name="e">事件</param>
         /// <param name="day">公历日</param>
-        public SolarFestival(FestivalType type, int index, Event e, SolarDay day) : base(type, index, e, day)
+        public SolarFestival(int index, Event e, SolarDay day) : base(index, e, day)
         {
         }
 
@@ -54,7 +52,7 @@ namespace tyme.festival
             }
             var start = index * 8;
             var e = new Event(Names[index], "@" + Data.Substring(start, 8));
-            return year < e.StartYear ? null : new SolarFestival(FestivalType.Day, index, e, SolarDay.FromYmd(year, e.GetValue(2), e.GetValue(3)));
+            return year < e.StartYear ? null : new SolarFestival(index, e, SolarDay.FromYmd(year, e.GetValue(2), e.GetValue(3)));
         }
 
         /// <summary>
@@ -71,7 +69,7 @@ namespace tyme.festival
                 var start = i * 8;
                 var e = new Event(Names[i], "@" + Data.Substring(start, 8));
                 if (d.Year >= e.StartYear && d.Month == e.GetValue(2) && d.Day == e.GetValue(3)) {
-                    return new SolarFestival(FestivalType.Day, i, e, d);
+                    return new SolarFestival(i, e, d);
                 }
             }
             return null;

@@ -131,3 +131,7 @@
 3. 优化：公历周SolarWeek和农历周LunarWeek共用名称。
 4. 优化：藏历月RabByungMonth使用农历月LunarMonth的名称。
 5. 优化：藏历五行使用单独的名称。
+
+## [1.5.0] - 2026-05-22
+1. 移除：节日类型FestivalType。
+2. 新增：回历。

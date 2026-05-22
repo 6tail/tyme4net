@@ -41,11 +41,10 @@ namespace tyme.festival
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="type">节日类型</param>
         /// <param name="index">索引</param>
         /// <param name="e">事件</param>
         /// <param name="day">农历日</param>
-        public LunarFestival(FestivalType type, int index, Event e, LunarDay day): base(type, index, e, day)
+        public LunarFestival(int index, Event e, LunarDay day): base(index, e, day)
         {
         }
 
@@ -69,9 +68,9 @@ namespace tyme.festival
                     var m = e.GetMonth(year);
                     var d = LunarDay.FromYmd(m[0], m[1], e.GetValue(3));
                     var offset = e.GetValue(5);
-                    return new LunarFestival(FestivalType.Day, index, e, 0 == offset ? d : d.Next(offset));
+                    return new LunarFestival(index, e, 0 == offset ? d : d.Next(offset));
                 case EventType.TermDay:
-                    return new LunarFestival(FestivalType.Term, index, e, SolarTerm.FromIndex(year, e.GetValue(2)).GetSolarDay().GetLunarDay());
+                    return new LunarFestival(index, e, SolarTerm.FromIndex(year, e.GetValue(2)).GetSolarDay().GetLunarDay());
                 case EventType.SolarDay:
                 case EventType.SolarWeek:
                 case EventType.TermHs:
@@ -99,20 +98,20 @@ namespace tyme.festival
                         var offset = e.GetValue(5);
                         if (0 == offset) {
                             if (d.Month == e.GetValue(2) && d.Day == e.GetValue(3)) {
-                                return new LunarFestival(FestivalType.Day, i, e, d);
+                                return new LunarFestival(i, e, d);
                             }
                         } else {
                             var m = e.GetMonth(d.Year);
                             var next = d.Next(-offset);
                             if (next.Year == m[0] && next.Month == m[1] && next.Day == e.GetValue(3)) {
-                                return new LunarFestival(FestivalType.Day, i, e, d);
+                                return new LunarFestival(i, e, d);
                             }
                         }
                         break;
                     case EventType.TermDay:
                         var term = d.GetSolarDay().TermDay;
                         if (term.DayIndex == 0 && term.SolarTerm.Index == e.GetValue(2) % 24) {
-                            return new LunarFestival(FestivalType.Term, i, e, d);
+                            return new LunarFestival(i, e, d);
                         }
                         break;
                     case EventType.SolarDay:
